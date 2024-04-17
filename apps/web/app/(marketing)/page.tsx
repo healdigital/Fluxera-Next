@@ -89,6 +89,7 @@ function Home() {
             height={1916}
             src={`/images/dashboard-demo.webp`}
             alt={`App Image`}
+            sizes={'(max-width: 1024px) 100vw, 1024px'}
           />
         </div>
       </div>
@@ -169,6 +170,7 @@ function Home() {
                 width={'2094'}
                 height={'2416'}
                 alt={'Dashboard'}
+                sizes={'(max-width: 1024px) 100vw, 1024px'}
               />
             </LeftFeatureContainer>
 
@@ -226,7 +228,8 @@ function Home() {
                 src={'/images/billing.webp'}
                 width={'2456'}
                 height={'1454'}
-                alt={'Sign In'}
+                alt={'Billing'}
+                sizes={'(max-width: 1024px) 100vw, 1024px'}
               />
             </RightFeatureContainer>
           </FeatureShowcaseContainer>
