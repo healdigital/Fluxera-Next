@@ -9,7 +9,7 @@ import { CmsType } from './cms.type';
  * @throws {Error} If the specified CMS type is unknown.
  */
 export async function createCmsClient(
-    type: CmsType = process.env.CMS_CLIENT as CmsType,
+  type: CmsType = process.env.CMS_CLIENT as CmsType,
 ): Promise<CmsClient> {
   return cmsClientFactory(type);
 }
@@ -41,7 +41,7 @@ async function getKeystaticClient() {
   }
 
   console.error(
-      `[CMS] Keystatic client is only available in Node.js runtime. Please choose a different CMS client. Returning a mock client instead of throwing an error.`,
+    `[CMS] Keystatic client is only available in Node.js runtime. Please choose a different CMS client. Returning a mock client instead of throwing an error.`,
   );
 
   return mockCMSClient() as unknown as CmsClient;
