@@ -309,6 +309,17 @@ Now, replicate thr webhooks at `apps/web/supabase/seed.sql` using the UI:
 2. Please remember to set the endpoint to `/api/db/webhook` using your real APP URL. If your APP URL is `https://myapp.vercel.app`, the endpoint will be `https://myapp.vercel.app/api/db/webhook`.
 3. Use 5000 as the timeout.
 
+## Authentication
+
+From your Supabase dashboard, please visit Authentication->URL Configuration and set the following:
+
+- **Site URL**: The URL of your application (e.g., `http://mypp.com`)
+- **Redirect URLs**: The URL to redirect the user after signing in (e.g., `http://myapp.com/auth/callback`)
+
+Remember to update the mailing sender in Supabase too, as the default sender is most likely going to spam and has very limited quota.
+
+You can do so from Settings->Authentication->SMTP Settings.
+
 ## Deploying to Vercel
 
 Deploying to Vercel is straightforward. You can deploy the application using the Vercel CLI or the Vercel dashboard.
@@ -317,7 +328,7 @@ No additional configuration is needed to deploy the application to Vercel. If yo
 
 Since Vercel Edge runtime uses Cloudflare, the steps are similar to deploying to Cloudflare.
 
-## Deploying to Cloudflare
+## Deploying to Cloudflare 🔥
 
 To deploy the application to Cloudflare, you need to do the following:
 
@@ -326,6 +337,18 @@ To deploy the application to Cloudflare, you need to do the following:
 3. Install the Cloudflare CLI
 4. Switching CMS
 5. Setting Node.js Compatibility Flags
+
+### 0. Limitations
+
+Before you continue, **please evaluate the limitations of the Edge runtime**. The Edge runtime does not support all Node.js features, so you may need to adjust your application accordingly.
+
+Cloudflare is cheaper and faster than many other providers, but running your application on Cloudflare Workers means not having access to the vast Node.js ecosystem.
+
+Makerkit uses Cloudflare as baseline, so you can deploy it to Cloudflare Workers without any issues. However, you will need to keep in mind the limitations of the Edge runtime when adding new features.
+
+One more thing to consider is that the Edge runtime does run close to your users, but may run far from your database. Consider read replicas or other strategies to reduce latency in all situations.
+
+If your mind is set on using Cloudflare, please follow the instructions below.
 
 ### 1. Opting in to the Edge runtime
 

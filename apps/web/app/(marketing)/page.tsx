@@ -51,7 +51,7 @@ function Home() {
                 <Heading
                   level={2}
                   className={
-                    'text-center font-sans text-2xl font-normal text-muted-foreground p-0'
+                    'p-0 text-center font-sans text-2xl font-normal text-muted-foreground'
                   }
                 >
                   <span>Build and launch a SaaS in days, not months</span>
@@ -60,17 +60,17 @@ function Home() {
                 <Heading
                   level={2}
                   className={
-                    'text-center font-sans text-2xl font-normal text-muted-foreground p-0'
+                    'p-0 text-center font-sans text-2xl font-normal text-muted-foreground'
                   }
                 >
                   <span>Focus on your business, not on the tech</span>
                 </Heading>
 
                 <Heading
-                    level={2}
-                    className={
-                      'text-center font-sans text-2xl font-normal text-muted-foreground p-0'
-                    }
+                  level={2}
+                  className={
+                    'p-0 text-center font-sans text-2xl font-normal text-muted-foreground'
+                  }
                 >
                   Ship something great, today.
                 </Heading>
