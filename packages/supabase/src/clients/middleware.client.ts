@@ -4,7 +4,6 @@ import { type CookieOptions, createServerClient } from '@supabase/ssr';
 
 import { Database } from '../database.types';
 import { getSupabaseClientKeys } from '../get-supabase-client-keys';
-import '../mock-fetch';
 
 /**
  * Creates a middleware client for Supabase.

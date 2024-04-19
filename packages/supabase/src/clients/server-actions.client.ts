@@ -10,7 +10,6 @@ import {
   warnServiceRoleKeyUsage,
 } from '../get-service-role-key';
 import { getSupabaseClientKeys } from '../get-supabase-client-keys';
-import '../mock-fetch';
 
 const keys = getSupabaseClientKeys();
 const serviceRoleKey = getServiceRoleKey();

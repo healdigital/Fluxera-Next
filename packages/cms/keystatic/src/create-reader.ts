@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import './mock-fetch';
+
 const STORAGE_KIND = process.env.KEYSTATIC_STORAGE_KIND ?? 'local';
 
 /**
