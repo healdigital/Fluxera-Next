@@ -18,21 +18,10 @@ export async function initializeI18nClient(
     return Promise.resolve(clientInstance);
   }
 
-  const loadedLanguages: string[] = [];
-  const loadedNamespaces: string[] = [];
-
   await i18next
     .use(
       resourcesToBackend(async (language, namespace, callback) => {
         const data = await resolver(language, namespace);
-
-        if (!loadedLanguages.includes(language)) {
-          loadedLanguages.push(language);
-        }
-
-        if (!loadedNamespaces.includes(namespace)) {
-          loadedNamespaces.push(namespace);
-        }
 
         return callback(null, data);
       }),
