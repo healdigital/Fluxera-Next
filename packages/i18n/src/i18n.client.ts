@@ -47,8 +47,6 @@ export async function initializeI18nClient(
       },
     );
 
-  // keep component suspended until all languages and namespaces are loaded
-
   clientInstance = i18next;
 
   return clientInstance;
