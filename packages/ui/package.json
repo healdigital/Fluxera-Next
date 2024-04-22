@@ -58,8 +58,8 @@
     "class-variance-authority": "^0.7.0",
     "date-fns": "^3.6.0",
     "eslint": "^8.57.0",
-    "lucide-react": "^0.368.0",
-    "next": "14.2.2",
+    "lucide-react": "^0.372.0",
+    "next": "14.3.0-canary.7",
     "next-themes": "0.3.0",
     "prettier": "^3.2.5",
     "react-day-picker": "^8.10.1",
@@ -69,7 +69,7 @@
     "tailwindcss": "3.4.3",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.4.5",
-    "zod": "^3.22.5"
+    "zod": "^3.23.0"
   },
   "eslintConfig": {
     "root": true,
@@ -94,7 +94,6 @@
     "./navigation-menu": "./src/shadcn/navigation-menu.tsx",
     "./form": "./src/shadcn/form.tsx",
     "./input": "./src/shadcn/input.tsx",
-    "./textarea": "./src/shadcn/textarea.tsx",
     "./label": "./src/shadcn/label.tsx",
     "./popover": "./src/shadcn/popover.tsx",
     "./scroll-area": "./src/shadcn/scroll-area.tsx",
