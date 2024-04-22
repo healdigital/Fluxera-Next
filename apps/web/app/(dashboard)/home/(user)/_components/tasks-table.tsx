@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Pencil, Trash } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import {
   AlertDialog,
@@ -16,8 +17,9 @@ import {
 } from '@kit/ui/alert-dialog';
 import { Button } from '@kit/ui/button';
 import { DataTable } from '@kit/ui/enhanced-data-table';
+import { Trans } from '@kit/ui/trans';
 
-import { deleteTaskAction } from '~/(dashboard)/home/(user)/server-actions';
+import { deleteTaskAction } from '~/(dashboard)/home/(user)/_lib/server/server-actions';
 import { Database } from '~/lib/database.types';
 
 type Task = Database['public']['Tables']['tasks']['Row'];
@@ -28,17 +30,21 @@ export function TasksTable(props: {
   pageSize: number;
   pageCount: number;
 }) {
+  const columns = useGetColumns();
+
   return (
     <div>
-      <DataTable {...props} columns={getColumns()} />
+      <DataTable {...props} columns={columns} />
     </div>
   );
 }
 
-function getColumns(): ColumnDef<Task>[] {
+function useGetColumns(): ColumnDef<Task>[] {
+  const { t } = useTranslation('tasks');
+
   return [
     {
-      header: 'Task',
+      header: t('task'),
       cell: ({ row }) => (
         <Link
           className={'hover:underline'}
@@ -49,11 +55,11 @@ function getColumns(): ColumnDef<Task>[] {
       ),
     },
     {
-      header: 'Created At',
+      header: t('createdAt'),
       accessorKey: 'created_at',
     },
     {
-      header: 'Updated At',
+      header: t('updatedAt'),
       accessorKey: 'updated_at',
     },
     {
@@ -92,19 +98,25 @@ function ConfirmDeleteTask(
       <AlertDialogTrigger asChild>{props.children}</AlertDialogTrigger>
 
       <AlertDialogContent>
-        <AlertDialogHeader>Delete Task</AlertDialogHeader>
+        <AlertDialogHeader>
+          <Trans i18nKey={'tasks:deleteTask'} />
+        </AlertDialogHeader>
 
         <AlertDialogDescription>
-          Are you sure you want to delete this task?
+          <Trans i18nKey={'tasks:deleteTaskConfirmation'} />
         </AlertDialogDescription>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            <Trans i18nKey={'common:cancel'} />
+          </AlertDialogCancel>
 
           <form action={deleteTaskAction}>
             <input type="hidden" name={'id'} value={props.taskId} />
 
-            <Button variant={'destructive'}>Delete</Button>
+            <Button variant={'destructive'}>
+              <Trans i18nKey={'tasks:deleteTask'} />
+            </Button>
           </form>
         </AlertDialogFooter>
       </AlertDialogContent>

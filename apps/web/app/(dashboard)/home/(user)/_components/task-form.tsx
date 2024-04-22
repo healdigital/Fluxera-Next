@@ -13,8 +13,9 @@ import {
 } from '@kit/ui/form';
 import { Input } from '@kit/ui/input';
 import { Textarea } from '@kit/ui/textarea';
+import { Trans } from '@kit/ui/trans';
 
-import { WriteTaskSchema } from '~/(dashboard)/home/(user)/_lib/schema/write-task.schema';
+import { WriteTaskSchema } from '../_lib/schema/write-task.schema';
 
 export function TaskForm(props: {
   task?: z.infer<typeof WriteTaskSchema>;
@@ -36,13 +37,17 @@ export function TaskForm(props: {
           render={(item) => {
             return (
               <FormItem>
-                <FormLabel>Task</FormLabel>
+                <FormLabel>
+                  <Trans i18nKey={'tasks:taskTitle'} />
+                </FormLabel>
 
                 <FormControl>
                   <Input required {...item.field} />
                 </FormControl>
 
-                <FormDescription>Enter a name for your task</FormDescription>
+                <FormDescription>
+                  <Trans i18nKey={'tasks:taskTitleDescription'} />
+                </FormDescription>
 
                 <FormMessage />
               </FormItem>
@@ -55,14 +60,16 @@ export function TaskForm(props: {
           render={(item) => {
             return (
               <FormItem>
-                <FormLabel>Task Description</FormLabel>
+                <FormLabel>
+                  <Trans i18nKey={'tasks:taskDescription'} />
+                </FormLabel>
 
                 <FormControl>
                   <Textarea {...item.field} />
                 </FormControl>
 
                 <FormDescription>
-                  Enter a description for your task
+                  <Trans i18nKey={'tasks:taskDescriptionDescription'} />
                 </FormDescription>
 
                 <FormMessage />

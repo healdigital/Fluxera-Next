@@ -13,10 +13,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@kit/ui/dialog';
+import { Trans } from '@kit/ui/trans';
 
-import { TaskForm } from '~/(dashboard)/home/(user)/_components/task-form';
-
-import { addTaskAction } from '../server-actions';
+import { TaskForm } from '../_components/task-form';
+import { addTaskAction } from '../_lib/server/server-actions';
 
 export function NewTaskDialog() {
   const [pending, startTransition] = useTransition();
@@ -27,22 +27,32 @@ export function NewTaskDialog() {
       <DialogTrigger asChild>
         <Button>
           <PlusCircle className={'mr-1 h-4'} />
-          <span>Add a Task</span>
+          <span>
+            <Trans i18nKey={'tasks:addNewTask'} />
+          </span>
         </Button>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add a Task</DialogTitle>
+          <DialogTitle>
+            <Trans i18nKey={'tasks:addNewTask'} />
+          </DialogTitle>
 
           <DialogDescription>
-            Fill out the form below to add a new task
+            <Trans i18nKey={'tasks:addNewTaskDescription'} />
           </DialogDescription>
         </DialogHeader>
 
         <TaskForm
           SubmitButton={() => (
-            <Button>{pending ? 'Adding...' : 'Add Task'}</Button>
+            <Button>
+              {pending ? (
+                <Trans i18nKey={'tasks:addingTask'} />
+              ) : (
+                <Trans i18nKey={'tasks:addTask'} />
+              )}
+            </Button>
           )}
           onSubmit={(data) => {
             startTransition(async () => {

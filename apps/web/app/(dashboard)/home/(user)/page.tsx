@@ -54,7 +54,9 @@ function UserHomePage(props: { searchParams: SearchParams }) {
       <PageBody className={'space-y-4'}>
         <div className={'flex items-center justify-between'}>
           <div>
-            <Heading level={4}>Tasks</Heading>
+            <Heading level={4}>
+              <Trans i18nKey={'tasks:tasksTabLabel'} defaults={'Tasks'} />
+            </Heading>
           </div>
 
           <div className={'flex items-center space-x-2'}>
@@ -90,13 +92,17 @@ function UserHomePage(props: { searchParams: SearchParams }) {
                 <If condition={props.count === 0 && query}>
                   <div className={'flex flex-col space-y-2.5'}>
                     <p>
-                      No tasks found for the search query <code>{query}</code>
+                      <Trans
+                        i18nKey={'tasks:noTasksFound'}
+                        values={{ query }}
+                      />
                     </p>
 
                     <form>
                       <input type="hidden" name={'query'} value={''} />
+
                       <Button variant={'outline'} size={'sm'}>
-                        Clear search
+                        <Trans i18nKey={'tasks:clearSearch'} />
                       </Button>
                     </form>
                   </div>
