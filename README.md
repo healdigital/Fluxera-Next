@@ -1314,7 +1314,7 @@ NEXT_PUBLIC_MONITORING_PROVIDER=sentry
 To use Baselime, you need to set the following environment variables:
 
 ```bash
-BASELIME_KEY=your_key
+NEXT_PUBLIC_BASELIME_KEY=your_key
 NEXT_PUBLIC_MONITORING_PROVIDER=baselime
 ```
 
@@ -1397,6 +1397,34 @@ async function serverSideFunction() {
 ```
 
 In the future - this will be automatically captured by the `enhanceAction` and `enhanceRouteHandler` functions - so you won't need to do this manually unless you're swallowing the errors in the inner function (in which case, you should rethrow the error or capture manually).
+
+## Merging Conflicts
+
+It is very likely that you will encounter merging conflicts when working with the repository.
+
+Generally speaking, when encountering conflicts on the following files, you need to accept *any of them* but make sure to re-generate them:
+1. pnpm-lock.yaml
+2. database.types.ts
+
+### pnpm-lock.yaml
+To fix the conflicts, you can run the following command:
+
+```bash
+pnpm i
+```
+
+1. The lock file will be regenerated according to the changes in the repository and your local changes.
+
+### Database Types
+For the database types, reset the supabase local state and run the following command:
+
+```bash
+pnpm run supabase:web:typegen
+```
+
+This will regenerate the types according to the changes in the repository and your local changes.
+
+For the rest of the files, you need to resolve the conflicts manually.
 
 ## Going to Production
 
