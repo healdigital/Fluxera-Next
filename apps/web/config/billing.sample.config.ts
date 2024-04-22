@@ -18,10 +18,10 @@ export default createBillingSchema({
   products: [
     {
       id: 'starter',
-      name: 'Starter',
-      description: 'The perfect plan to get started',
+      name: 'billing:plans.starter.name',
+      description: 'billing:plans.starter.description',
       currency: 'USD',
-      badge: `Value`,
+      badge: `billing:plans.starter.badge`,
       plans: [
         {
           name: 'Starter Monthly',
@@ -32,7 +32,7 @@ export default createBillingSchema({
           lineItems: [
             {
               id: 'price_1NNwYHI1i3VnbZTqI2UzaHIe',
-              name: 'Addon 2',
+              name: 'billing:plans.starter.base',
               cost: 9.99,
               type: 'flat',
             },
@@ -46,21 +46,24 @@ export default createBillingSchema({
           lineItems: [
             {
               id: 'starter-yearly',
-              name: 'Base',
+              name: 'billing:plans.starter.base',
               cost: 99.99,
               type: 'flat',
             },
           ],
         },
       ],
-      features: ['Feature 1', 'Feature 2', 'Feature 3'],
+      features: [
+        'billing:plans.starter.features.maxTasks',
+        'billing:plans.features.chatSupport',
+      ],
     },
     {
       id: 'pro',
-      name: 'Pro',
-      badge: `Popular`,
+      name: 'billing:plans.pro.name',
+      badge: 'billing:plans.pro.badge',
       highlighted: true,
-      description: 'The perfect plan for professionals',
+      description: 'billing:plans.pro.description',
       currency: 'USD',
       plans: [
         {
@@ -93,17 +96,14 @@ export default createBillingSchema({
         },
       ],
       features: [
-        'Feature 1',
-        'Feature 2',
-        'Feature 3',
-        'Feature 4',
-        'Feature 5',
+        'billing:plans.pro.features.maxTasks',
+        'billing:plans.features.chatSupport',
       ],
     },
     {
       id: 'enterprise',
-      name: 'Enterprise',
-      description: 'The perfect plan for enterprises',
+      name: 'billing:plans.enterprise.name',
+      description: 'billing:plans.enterprise.description',
       currency: 'USD',
       plans: [
         {
@@ -136,13 +136,8 @@ export default createBillingSchema({
         },
       ],
       features: [
-        'Feature 1',
-        'Feature 2',
-        'Feature 3',
-        'Feature 4',
-        'Feature 5',
-        'Feature 6',
-        'Feature 7',
+        'billing:plans.enterprise.features.maxTasks',
+        'billing:plans.enterprise.features.chatSupport',
       ],
     },
   ],

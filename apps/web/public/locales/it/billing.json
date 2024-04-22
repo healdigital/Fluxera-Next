@@ -109,5 +109,39 @@
       "heading": "Il tuo pagamento non è riuscito",
       "description": "Il tuo pagamento non è riuscito. "
     }
+  },
+  "plans": {
+    "features": {
+      "maxTasks": "Fino a 10 attività",
+      "chatSupport": "Supporto via chat"
+    },
+    "starter": {
+      "name": "Antipasto",
+      "description": "Per i piccoli team appena agli inizi",
+      "badge": "Valore",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Fino a 10 attività"
+      }
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "Per team in crescita",
+      "badge": "Popolare",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Fino a 20 attività"
+      }
+    },
+    "enterprise": {
+      "name": "Impresa",
+      "description": "Per grandi team e organizzazioni",
+      "badge": "Costume",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Compiti illimitati",
+        "chatSupport": "Supporto prioritario"
+      }
+    }
   }
 }

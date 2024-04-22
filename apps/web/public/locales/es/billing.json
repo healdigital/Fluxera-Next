@@ -109,5 +109,39 @@
       "heading": "Tu pago ha fallado",
       "description": "Tu pago ha fallado. Por favor, actualiza tu método de pago."
     }
+  },
+  "plans": {
+    "features": {
+      "maxTasks": "Hasta 10 tareas",
+      "chatSupport": "Soporte por chat"
+    },
+    "starter": {
+      "name": "Inicio",
+      "description": "Para equipos pequeños que recién comienzan",
+      "badge": "Valor",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Hasta 10 tareas"
+      }
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "Para equipos en crecimiento",
+      "badge": "Popular",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Hasta 20 tareas"
+      }
+    },
+    "enterprise": {
+      "name": "Empresa",
+      "description": "Para grandes equipos y organizaciones",
+      "badge": "Costumbre",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Tareas ilimitadas",
+        "chatSupport": "Apoyo prioritario"
+      }
+    }
   }
 }

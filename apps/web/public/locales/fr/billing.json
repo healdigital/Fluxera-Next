@@ -109,5 +109,39 @@
       "heading": "Votre paiement a échoué",
       "description": "Votre paiement a échoué. "
     }
+  },
+  "plans": {
+    "features": {
+      "maxTasks": "Jusqu'à 10 tâches",
+      "chatSupport": "Assistance par chat"
+    },
+    "starter": {
+      "name": "Entrée",
+      "description": "Pour les petites équipes qui débutent",
+      "badge": "Valeur",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Jusqu'à 10 tâches"
+      }
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "Pour les équipes en pleine croissance",
+      "badge": "Populaire",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Jusqu'à 20 tâches"
+      }
+    },
+    "enterprise": {
+      "name": "Entreprise",
+      "description": "Pour les grandes équipes et organisations",
+      "badge": "Coutume",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Tâches illimitées",
+        "chatSupport": "Assistance prioritaire"
+      }
+    }
   }
 }

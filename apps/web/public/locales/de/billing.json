@@ -109,5 +109,39 @@
       "heading": "Ihre Zahlung ist fehlgeschlagen",
       "description": "Ihre Zahlung ist fehlgeschlagen. "
     }
+  },
+  "plans": {
+    "features": {
+      "maxTasks": "Bis zu 10 Aufgaben",
+      "chatSupport": "Chat-Unterstützung"
+    },
+    "starter": {
+      "name": "Anlasser",
+      "description": "Für kleine Teams, die gerade erst anfangen",
+      "badge": "Wert",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Bis zu 10 Aufgaben"
+      }
+    },
+    "pro": {
+      "name": "Profi",
+      "description": "Für wachsende Teams",
+      "badge": "Beliebt",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Bis zu 20 Aufgaben"
+      }
+    },
+    "enterprise": {
+      "name": "Unternehmen",
+      "description": "Für große Teams und Organisationen",
+      "badge": "Brauch",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Unbegrenzte Aufgaben",
+        "chatSupport": "Vorrangiger Support"
+      }
+    }
   }
 }

@@ -109,5 +109,39 @@
       "heading": "您的付款失败",
       "description": "您的付款失败。"
     }
+  },
+  "plans": {
+    "features": {
+      "maxTasks": "最多 10 个任务",
+      "chatSupport": "聊天支持"
+    },
+    "starter": {
+      "name": "起动机",
+      "description": "对于刚刚起步的小团队",
+      "badge": "价值",
+      "base": "根据",
+      "features": {
+        "maxTasks": "最多 10 个任务"
+      }
+    },
+    "pro": {
+      "name": "专业版",
+      "description": "对于成长中的团队",
+      "badge": "受欢迎的",
+      "base": "根据",
+      "features": {
+        "maxTasks": "最多 20 个任务"
+      }
+    },
+    "enterprise": {
+      "name": "企业",
+      "description": "对于大型团队和组织",
+      "badge": "风俗",
+      "base": "根据",
+      "features": {
+        "maxTasks": "无限任务",
+        "chatSupport": "优先支持"
+      }
+    }
   }
 }

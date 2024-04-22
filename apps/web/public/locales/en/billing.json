@@ -109,5 +109,39 @@
       "heading": "Your payment failed",
       "description": "Your payment failed. Please update your payment method."
     }
+  },
+  "plans": {
+    "features": {
+      "maxTasks": "Up to 10 tasks",
+      "chatSupport": "Chat support"
+    },
+    "starter": {
+      "name": "Starter",
+      "description": "For small teams just getting started",
+      "badge": "Value",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Up to 10 tasks"
+      }
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "For growing teams",
+      "badge": "Popular",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Up to 20 tasks"
+      }
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "description": "For large teams and organizations",
+      "badge": "Custom",
+      "base": "Base",
+      "features": {
+        "maxTasks": "Unlimited tasks",
+        "chatSupport": "Priority support"
+      }
+    }
   }
 }

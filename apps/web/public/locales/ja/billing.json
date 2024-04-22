@@ -109,5 +109,39 @@
       "heading": "お支払いに失敗しました",
       "description": "お支払いに失敗しました。"
     }
+  },
+  "plans": {
+    "features": {
+      "maxTasks": "最大10個のタスク",
+      "chatSupport": "チャットサポート"
+    },
+    "starter": {
+      "name": "スターター",
+      "description": "始めたばかりの小規模チーム向け",
+      "badge": "価値",
+      "base": "ベース",
+      "features": {
+        "maxTasks": "最大10個のタスク"
+      }
+    },
+    "pro": {
+      "name": "プロ",
+      "description": "成長するチームのために",
+      "badge": "人気のある",
+      "base": "ベース",
+      "features": {
+        "maxTasks": "最大20のタスク"
+      }
+    },
+    "enterprise": {
+      "name": "企業",
+      "description": "大規模なチームや組織向け",
+      "badge": "カスタム",
+      "base": "ベース",
+      "features": {
+        "maxTasks": "無制限のタスク",
+        "chatSupport": "優先サポート"
+      }
+    }
   }
 }
