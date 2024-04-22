@@ -42,13 +42,8 @@ function UserHomePage(props: { searchParams: SearchParams }) {
   return (
     <>
       <UserAccountHeader
-        title={<Trans i18nKey={'common:homeTabLabel'} defaults={'Home'} />}
-        description={
-          <Trans
-            i18nKey={'common:homeTabDescription'}
-            defaults={'Welcome to your Home Page'}
-          />
-        }
+        title={<Trans i18nKey={'common:homeTabLabel'} />}
+        description={<Trans i18nKey={'common:homeTabDescription'} />}
       />
 
       <PageBody className={'space-y-4'}>
