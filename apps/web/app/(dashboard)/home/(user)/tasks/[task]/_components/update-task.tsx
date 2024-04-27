@@ -16,7 +16,7 @@ export function UpdateTask(props: {
   task: z.infer<typeof WriteTaskSchema> & { id: string };
 }) {
   const [pending, startTransition] = useTransition();
-  const captchaToken = useCaptchaToken();
+  const { captchaToken, resetCaptchaToken } = useCaptchaToken();
 
   return (
     <div>
@@ -40,6 +40,8 @@ export function UpdateTask(props: {
               id: props.task.id,
               captchaToken,
             });
+
+            resetCaptchaToken();
           });
         }}
       />

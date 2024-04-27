@@ -22,7 +22,7 @@ import { addTaskAction } from '../_lib/server/server-actions';
 export function NewTaskDialog() {
   const [pending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
-  const captchaToken = useCaptchaToken();
+  const { captchaToken, resetCaptchaToken } = useCaptchaToken();
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -59,6 +59,8 @@ export function NewTaskDialog() {
           onSubmit={(data) => {
             startTransition(async () => {
               await addTaskAction({ ...data, captchaToken });
+
+              resetCaptchaToken();
 
               setIsOpen(false);
             });
