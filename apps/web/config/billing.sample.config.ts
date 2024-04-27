@@ -35,26 +35,6 @@ export default createBillingSchema({
               cost: 9.99,
               type: 'flat' as const,
             },
-            {
-              id: 'price_1P8N0zI1i3VnbZTqtUPc1Zvr',
-              name: 'Addon 3',
-              cost: 0,
-              type: 'per_seat' as const,
-              tiers: [
-                {
-                  upTo: 1,
-                  cost: 0,
-                },
-                {
-                  upTo: 5,
-                  cost: 4,
-                },
-                {
-                  upTo: 'unlimited',
-                  cost: 3,
-                },
-              ],
-            },
           ],
         },
         {
