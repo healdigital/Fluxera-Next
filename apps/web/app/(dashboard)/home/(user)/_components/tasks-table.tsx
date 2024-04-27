@@ -1,5 +1,7 @@
 'use client';
 
+import { useFormStatus } from 'react-dom';
+
 import Link from 'next/link';
 
 import { ColumnDef } from '@tanstack/react-table';
@@ -114,12 +116,20 @@ function ConfirmDeleteTask(
           <form action={deleteTaskAction}>
             <input type="hidden" name={'id'} value={props.taskId} />
 
-            <Button variant={'destructive'}>
-              <Trans i18nKey={'tasks:deleteTask'} />
-            </Button>
+            <SubmitButton />
           </form>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button disabled={pending} variant={'destructive'}>
+      <Trans i18nKey={'tasks:deleteTask'} />
+    </Button>
   );
 }

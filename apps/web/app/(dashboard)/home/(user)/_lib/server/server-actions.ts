@@ -50,15 +50,10 @@ export const updateTaskAction = enhanceAction(
   async (params) => {
     const logger = await getLogger();
     const client = getSupabaseServerActionClient();
-    const auth = await requireUser(client);
-
-    if (!auth.data) {
-      redirect(auth.redirectTo);
-    }
 
     logger.info(params, `Updating task...`);
 
-    const { id, ...task } = params;
+    const { id, captchaToken: _, ...task } = params;
 
     const { data, error } = await client
       .from('tasks')
@@ -90,11 +85,6 @@ export const deleteTaskAction = enhanceAction(async (data: FormData) => {
 
   const logger = await getLogger();
   const client = getSupabaseServerActionClient();
-  const auth = await requireUser(client);
-
-  if (!auth.data) {
-    redirect(auth.redirectTo);
-  }
 
   logger.info({ id }, `Deleting task...`);
 
