@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 
 import { PlusCircle } from 'lucide-react';
 
+import { useCaptchaToken } from '@kit/auth/captcha/client';
 import { Button } from '@kit/ui/button';
 import {
   Dialog,
@@ -21,6 +22,7 @@ import { addTaskAction } from '../_lib/server/server-actions';
 export function NewTaskDialog() {
   const [pending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
+  const captchaToken = useCaptchaToken();
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -56,7 +58,8 @@ export function NewTaskDialog() {
           )}
           onSubmit={(data) => {
             startTransition(async () => {
-              await addTaskAction(data);
+              await addTaskAction({ ...data, captchaToken });
+
               setIsOpen(false);
             });
           }}

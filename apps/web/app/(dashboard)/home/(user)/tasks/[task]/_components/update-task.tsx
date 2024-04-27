@@ -4,6 +4,7 @@ import { useTransition } from 'react';
 
 import { z } from 'zod';
 
+import { useCaptchaToken } from '@kit/auth/captcha/client';
 import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
@@ -15,6 +16,7 @@ export function UpdateTask(props: {
   task: z.infer<typeof WriteTaskSchema> & { id: string };
 }) {
   const [pending, startTransition] = useTransition();
+  const captchaToken = useCaptchaToken();
 
   return (
     <div>
@@ -33,7 +35,11 @@ export function UpdateTask(props: {
         )}
         onSubmit={(data) => {
           startTransition(async () => {
-            await updateTaskAction({ ...data, id: props.task.id });
+            await updateTaskAction({
+              ...data,
+              id: props.task.id,
+              captchaToken,
+            });
           });
         }}
       />

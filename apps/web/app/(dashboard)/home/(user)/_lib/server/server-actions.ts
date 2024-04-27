@@ -12,6 +12,10 @@ import { getSupabaseServerActionClient } from '@kit/supabase/server-actions-clie
 
 import { WriteTaskSchema } from '../schema/write-task.schema';
 
+const CaptchaSchema = z.object({
+  captchaToken: z.string().min(1),
+});
+
 export const addTaskAction = enhanceAction(
   async (task, user) => {
     const logger = await getLogger();
@@ -36,7 +40,8 @@ export const addTaskAction = enhanceAction(
     return null;
   },
   {
-    schema: WriteTaskSchema,
+    schema: WriteTaskSchema.and(CaptchaSchema),
+    captcha: true,
   },
 );
 
@@ -72,7 +77,10 @@ export const updateTaskAction = enhanceAction(
     return null;
   },
   {
-    schema: WriteTaskSchema.and(z.object({ id: z.string() })),
+    captcha: true,
+    schema: WriteTaskSchema.and(z.object({ id: z.string() })).and(
+      CaptchaSchema,
+    ),
   },
 );
 
