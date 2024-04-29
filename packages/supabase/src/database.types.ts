@@ -680,6 +680,58 @@ export type Database = {
           },
         ]
       }
+      tasks: {
+        Row: {
+          account_id: string
+          created_at: string
+          description: string | null
+          done: boolean
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          account_id: string
+          created_at?: string
+          description?: string | null
+          done?: boolean
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string
+          created_at?: string
+          description?: string | null
+          done?: boolean
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "user_account_workspace"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "user_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       user_account_workspace: {
@@ -852,10 +904,6 @@ export type Database = {
         }
         Returns: boolean
       }
-      install_extensions: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
       is_account_owner: {
         Args: {
           account_id: string
@@ -968,6 +1016,8 @@ export type Database = {
         | "settings.manage"
         | "members.manage"
         | "invites.manage"
+        | "tasks.write"
+        | "tasks.delete"
       billing_provider: "stripe" | "lemon-squeezy" | "paddle"
       notification_channel: "in_app" | "email"
       notification_type: "info" | "warning" | "error"
