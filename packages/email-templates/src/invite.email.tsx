@@ -35,7 +35,7 @@ export function renderInviteEmail(props: Props) {
       <Preview>{previewText}</Preview>
 
       <Tailwind>
-        <Body className="mx-auto my-auto bg-gray-50 font-sans">
+        <Body className="mx-auto my-auto bg-[#ffffff] font-sans">
           <Container className="mx-auto my-[40px] w-[465px] rounded-lg border border-solid border-[#eaeaea] bg-white p-[20px]">
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
               Join <strong>{props.teamName}</strong> on{' '}
