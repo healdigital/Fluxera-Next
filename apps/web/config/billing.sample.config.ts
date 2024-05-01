@@ -44,7 +44,7 @@ export default createBillingSchema({
           interval: 'year',
           lineItems: [
             {
-              id: 'price_1PBZTjKgHmU99VeOjAIBIT6r',
+              id: 'price_1PBZTjKgHmU99VeOMbvSb4pO',
               name: 'billing:plans.starter.base',
               cost: 99.99,
               type: 'flat' as const,
