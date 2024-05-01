@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import './mock-fetch';
+import { mockWorkerdFetch } from './mock-fetch';
 
 const STORAGE_KIND = process.env.KEYSTATIC_STORAGE_KIND ?? 'local';
 
@@ -24,6 +24,8 @@ export async function createKeystaticReader() {
 
     case 'github':
     case 'cloud': {
+      mockWorkerdFetch();
+
       const { default: config } = await import('./keystatic.config');
 
       const githubConfig = z

@@ -11,7 +11,7 @@
  * Based on: https://gist.github.com/tjenkinson/53b5724bf8112487f6bd797368e02b56
  * Fixes: https://github.com/cloudflare/workerd/issues/698
  */
-function mockWorkerdFetch() {
+export function mockWorkerdFetch() {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async function (...args) {
     try {
@@ -33,5 +33,3 @@ function mockWorkerdFetch() {
     }
   };
 }
-
-mockWorkerdFetch();
