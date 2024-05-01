@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Bell, CircleAlert, Info, TriangleAlert, XIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +33,15 @@ export function NotificationsPopover(params: {
 
   const onNotifications = useCallback(
     (notifications: PartialNotification[]) => {
-      setNotifications((existing) => [...notifications, ...existing]);
+      setNotifications((existing) => {
+        const unique = new Set(existing.map((notification) => notification.id));
+
+        const notificationsFiltered = notifications.filter(
+          (notification) => !unique.has(notification.id),
+        );
+
+        return [...notificationsFiltered, ...existing];
+      });
     },
     [],
   );
@@ -45,10 +53,6 @@ export function NotificationsPopover(params: {
     accountIds: params.accountIds,
     realtime: params.realtime,
   });
-
-  const unread = notifications.filter(
-    (notification) => !notification.dismissed,
-  );
 
   const timeAgo = (createdAt: string) => {
     const date = new Date(createdAt);
@@ -108,21 +112,27 @@ export function NotificationsPopover(params: {
     return text.slice(0, 1).toUpperCase() + text.slice(1);
   };
 
+  useEffect(() => {
+    return () => {
+      setNotifications([]);
+    };
+  }, []);
+
   return (
     <Popover modal open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button className={'h-9 w-9'} variant={'ghost'}>
-          <Bell className={'min-h-5 min-w-5'} />
+        <Button className={'relative h-9 w-9'} variant={'ghost'}>
+          <Bell className={'min-h-4 min-w-4'} />
 
           <span
             className={cn(
-              `fade-in animate-in zoom-in absolute right-5 top-5 mt-0 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[0.65rem] text-white`,
+              `fade-in animate-in zoom-in absolute right-1 top-1 mt-0 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[0.65rem] text-white`,
               {
-                hidden: !unread.length,
+                hidden: !notifications.length,
               },
             )}
           >
-            {unread.length}
+            {notifications.length}
           </span>
         </Button>
       </PopoverTrigger>
