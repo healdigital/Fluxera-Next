@@ -4,7 +4,11 @@ import { createKeystaticReader } from './create-reader';
 import { PostEntryProps } from './keystatic.config';
 import './mock-fetch';
 
-export class KeystaticClient implements CmsClient {
+export function createKeystaticClient() {
+  return new KeystaticClient();
+}
+
+class KeystaticClient implements CmsClient {
   async getContentItems(options: Cms.GetContentItemsOptions) {
     const reader = await createKeystaticReader();
 
