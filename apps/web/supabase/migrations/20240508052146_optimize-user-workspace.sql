@@ -1,9 +1,5 @@
 drop view if exists "public"."user_account_workspace";
 
-CREATE INDEX ix_accounts_is_personal_account ON public.accounts USING btree (is_personal_account);
-
-CREATE INDEX ix_accounts_primary_owner_user_id ON public.accounts USING btree (primary_owner_user_id);
-
 set check_function_bodies = off;
 
 CREATE OR REPLACE FUNCTION public.team_account_workspace(account_slug text)
