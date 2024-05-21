@@ -53,7 +53,7 @@ export default createBillingSchema({
         },
       ],
       features: [
-        'billing:plans.starter.features.maxTasks',
+        'billing:plans.starter.features.maxTokens',
         'billing:plans.features.chatSupport',
       ],
     },
@@ -95,7 +95,7 @@ export default createBillingSchema({
         },
       ],
       features: [
-        'billing:plans.pro.features.maxTasks',
+        'billing:plans.pro.features.maxTokens',
         'billing:plans.features.chatSupport',
       ],
     },
@@ -127,7 +127,7 @@ export default createBillingSchema({
         },
       ],
       features: [
-        'billing:plans.enterprise.features.maxTasks',
+        'billing:plans.enterprise.features.maxTokens',
         'billing:plans.enterprise.features.chatSupport',
       ],
     },
