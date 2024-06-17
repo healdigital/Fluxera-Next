@@ -46,7 +46,7 @@ export function MultiFactorChallengeContainer({
 
   const verifyMFAChallenge = useVerifyMFAChallenge({
     onSuccess: () => {
-      router.replace(paths.redirectPath);
+      router.push(paths.redirectPath);
     },
   });
 
