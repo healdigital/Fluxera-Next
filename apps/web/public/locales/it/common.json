@@ -49,6 +49,16 @@
   "noData": "Nessun dato disponibile",
   "pageNotFoundHeading": "Ahia! ",
   "errorPageHeading": "Ahia! ",
+  "routes": {
+    "home": "Casa",
+    "account": "Account",
+    "members": "Membri",
+    "billing": "Fatturazione",
+    "dashboard": "Pannello di controllo",
+    "settings": "Impostazioni",
+    "profile": "Profilo",
+    "chat": "Chat"
+  },
   "roles": {
     "owner": {
       "label": "Proprietario"

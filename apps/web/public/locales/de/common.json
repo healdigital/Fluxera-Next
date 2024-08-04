@@ -1,15 +1,6 @@
 {
-  "homeTabLabel": "Heim",
   "homeTabDescription": "Willkommen auf Ihrer Homepage",
-  "accountMembers": "Mitglieder",
-  "membersTabDescription": "Hier können Sie die Mitglieder Ihres Teams verwalten.",
-  "billingTabLabel": "Abrechnung",
-  "billingTabDescription": "Verwalten Sie Ihre Abrechnung und Ihr Abonnement",
-  "yourAccountTabLabel": "Account Einstellungen",
-  "dashboardTabLabel": "Armaturenbrett",
-  "settingsTabLabel": "Einstellungen",
-  "profileSettingsTabLabel": "Profil",
-  "subscriptionSettingsTabLabel": "Abonnement",
+  "accountMembers": "Kontomitglieder",
   "dashboardTabDescription": "Eine Übersicht über die Aktivität und Leistung Ihres Kontos in allen Ihren Projekten.",
   "settingsTabDescription": "Verwalten Sie Ihre Einstellungen und Präferenzen.",
   "emailAddress": "E-Mail-Adresse",
@@ -48,7 +39,16 @@
   "pageOfPages": "Seite {{page}} von {{total}}",
   "noData": "Keine Daten verfügbar",
   "pageNotFoundHeading": "Autsch! ",
-  "errorPageHeading": "Autsch! ",
+  "errorPageHeading": "Autsch!",
+  "routes": {
+    "home": "Zuhause",
+    "members": "Teammitglieder",
+    "billing": "Abrechnung",
+    "dashboard": "Instrumententafel",
+    "settings": "Einstellungen",
+    "profile": "Profil",
+    "chat": "AI Chat"
+  },
   "roles": {
     "owner": {
       "label": "Eigentümer"

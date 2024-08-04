@@ -49,6 +49,16 @@
   "noData": "データなし",
   "pageNotFoundHeading": "ああ！ ",
   "errorPageHeading": "ああ！ ",
+  "routes": {
+    "home": "ホーム",
+    "account": "アカウント",
+    "members": "メンバー",
+    "billing": "請求",
+    "dashboard": "ダッシュボード",
+    "settings": "設定",
+    "profile": "プロフィール",
+    "chat": "チャット"
+  },
   "roles": {
     "owner": {
       "label": "所有者"

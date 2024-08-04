@@ -49,6 +49,16 @@
   "noData": "无可用数据",
   "pageNotFoundHeading": "哎哟! ",
   "errorPageHeading": "哎哟! ",
+  "routes": {
+    "home": "家",
+    "account": "帐户",
+    "members": "会员",
+    "billing": "计费",
+    "dashboard": "仪表板",
+    "settings": "设置",
+    "profile": "轮廓",
+    "chat": "聊天"
+  },
   "roles": {
     "owner": {
       "label": "所有者"

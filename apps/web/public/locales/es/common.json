@@ -42,6 +42,17 @@
   "noData": "No hay datos disponibles",
   "pageNotFoundHeading": "¡Ay! :|",
   "errorPageHeading": "¡Ay! :|",
+  "routes": {
+    "home": "Inicio",
+    "account": "Cuenta",
+    "members": "Miembros",
+    "billing": "Facturación",
+    "dashboard": "Tablero",
+    "settings": "Configuraciones",
+    "profile": "Perfil",
+    "chat": "Chat"
+  },
+  "ro"
   "roles": {
     "owner": {
       "label": "Propietario"
