@@ -58,6 +58,7 @@
   "routes": {
     "home": "Home",
     "account": "Account",
+    "chat": "AI Chat",
     "members": "Members",
     "billing": "Billing",
     "dashboard": "Dashboard",
