@@ -52,7 +52,6 @@
     "profile": "Perfil",
     "chat": "Chat"
   },
-  "ro"
   "roles": {
     "owner": {
       "label": "Propietario"
