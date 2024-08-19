@@ -1,7 +1,8 @@
 import { StreamingTextResponse } from 'ai';
 
 import { enhanceRouteHandler } from '@kit/next/routes';
-import { getSupabaseRouteHandlerClient } from '@kit/supabase/route-handler-client';
+import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import {
   StreamResponseSchema,
@@ -22,11 +23,8 @@ export const POST = enhanceRouteHandler(
       return new StreamingTextResponse(fakeDataStreamer());
     }
 
-    const client = getSupabaseRouteHandlerClient();
-
-    const adminClient = getSupabaseRouteHandlerClient({
-      admin: true,
-    });
+    const client = getSupabaseServerClient();
+    const adminClient = getSupabaseServerAdminClient();
 
     const service = createChatLLMService(client, adminClient);
     const referenceId = params.referenceId as string;

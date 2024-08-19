@@ -1,6 +1,6 @@
 import { use } from 'react';
 
-import { getSupabaseServerComponentClient } from '@kit/supabase/server-component-client';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { createTeamAccountsApi } from '@kit/team-accounts/api';
 
 import { withI18n } from '~/lib/i18n/with-i18n';
@@ -15,7 +15,7 @@ interface Props {
 
 function ChatPage(props: Props) {
   const teamAccountsApi = createTeamAccountsApi(
-    getSupabaseServerComponentClient(),
+    getSupabaseServerClient(),
   );
 
   const account = use(teamAccountsApi.getTeamAccount(props.params.account));

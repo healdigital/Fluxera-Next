@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import { Pencil } from 'lucide-react';
 
-import { getSupabaseServerComponentClient } from '@kit/supabase/server-component-client';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { Button } from '@kit/ui/button';
 import { Sidebar, SidebarContent } from '@kit/ui/sidebar';
 
@@ -18,7 +18,7 @@ async function ChatLayout({
     account: string;
   };
 }>) {
-  const client = getSupabaseServerComponentClient();
+  const client = getSupabaseServerClient();
   const service = createChatMessagesService(client);
 
   const chats = await service.getChats(params.account);

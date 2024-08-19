@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 import { enhanceAction } from '@kit/next/actions';
 import { getLogger } from '@kit/shared/logger';
-import { getSupabaseServerActionClient } from '@kit/supabase/server-actions-client';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import { WriteTaskSchema } from '../schema/write-task.schema';
 
@@ -17,7 +17,7 @@ const CaptchaSchema = z.object({
 export const addTaskAction = enhanceAction(
   async (params, user) => {
     const logger = await getLogger();
-    const client = getSupabaseServerActionClient();
+    const client = getSupabaseServerClient();
     const { captchaToken: _, ...task } = params;
 
     logger.info(task, `Adding task...`);
@@ -47,7 +47,7 @@ export const addTaskAction = enhanceAction(
 export const updateTaskAction = enhanceAction(
   async (params) => {
     const logger = await getLogger();
-    const client = getSupabaseServerActionClient();
+    const client = getSupabaseServerClient();
 
     logger.info(params, `Updating task...`);
 
@@ -82,7 +82,7 @@ export const deleteTaskAction = enhanceAction(async (data: FormData) => {
   const id = z.string().parse(data.get('id'));
 
   const logger = await getLogger();
-  const client = getSupabaseServerActionClient();
+  const client = getSupabaseServerClient();
 
   logger.info({ id }, `Deleting task...`);
 

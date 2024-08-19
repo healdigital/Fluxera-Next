@@ -1,6 +1,6 @@
 import { use } from 'react';
 
-import { getSupabaseServerComponentClient } from '@kit/supabase/server-component-client';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { createTeamAccountsApi } from '@kit/team-accounts/api';
 
 import { createChatMessagesService } from '~/home/[account]/chat/_lib/server/chat-messages.service';
@@ -20,7 +20,7 @@ interface Props {
 }
 
 function ChatPage(props: Props) {
-  const client = getSupabaseServerComponentClient();
+  const client = getSupabaseServerClient();
 
   const teamAccountsApi = createTeamAccountsApi(client);
   const service = createChatMessagesService(client);

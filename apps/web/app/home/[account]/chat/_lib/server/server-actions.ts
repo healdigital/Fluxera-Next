@@ -6,7 +6,8 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 import { enhanceAction } from '@kit/next/actions';
-import { getSupabaseServerActionClient } from '@kit/supabase/server-actions-client';
+import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import { createChatLLMService } from '~/home/[account]/chat/_lib/server/chat-llm.service';
 
@@ -23,8 +24,8 @@ const CreateChatSchema = z.object({
 
 export const createChatAction = enhanceAction(
   async (body) => {
-    const client = getSupabaseServerActionClient();
-    const adminClient = getSupabaseServerActionClient({ admin: true });
+    const client = getSupabaseServerClient();
+    const adminClient = getSupabaseServerAdminClient();
 
     const service = createChatMessagesService(client);
     const chatService = createChatLLMService(client, adminClient);
@@ -67,7 +68,7 @@ export const deleteChatAction = enhanceAction(async (data: FormData) => {
     throw new Error('Chat reference ID is required');
   }
 
-  const client = getSupabaseServerActionClient();
+  const client = getSupabaseServerClient();
   const service = createChatMessagesService(client);
 
   await service.deleteChat({ chatReferenceId });
@@ -79,7 +80,7 @@ export const deleteChatAction = enhanceAction(async (data: FormData) => {
 
 export const renameChatAction = enhanceAction(
   async (data) => {
-    const client = getSupabaseServerActionClient();
+    const client = getSupabaseServerClient();
     const service = createChatMessagesService(client);
 
     await service.updateChat({
@@ -100,7 +101,7 @@ export const renameChatAction = enhanceAction(
 
 export const updateChatSettingsAction = enhanceAction(
   async (data) => {
-    const client = getSupabaseServerActionClient();
+    const client = getSupabaseServerClient();
     const service = createChatMessagesService(client);
 
     await service.updateChat({
