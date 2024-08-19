@@ -6,8 +6,8 @@ import {
   VenetianMask,
 } from 'lucide-react';
 
-import { Database } from '@kit/supabase/database';
-import { getSupabaseServerComponentClient } from '@kit/supabase/server-component-client';
+import { Tables } from '@kit/supabase/database';
+import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client';
 import { Alert, AlertDescription, AlertTitle } from '@kit/ui/alert';
 import { AppBreadcrumbs } from '@kit/ui/app-breadcrumbs';
 import { Badge } from '@kit/ui/badge';
@@ -32,9 +32,8 @@ import { AdminMembersTable } from './admin-members-table';
 import { AdminMembershipsTable } from './admin-memberships-table';
 import { AdminReactivateUserDialog } from './admin-reactivate-user-dialog';
 
-type Db = Database['public']['Tables'];
-type Account = Db['accounts']['Row'];
-type Membership = Db['accounts_memberships']['Row'];
+type Account = Tables<'accounts'>;
+type Membership = Tables<'accounts_memberships'>;
 
 export function AdminAccountPage(props: {
   account: Account & { memberships: Membership[] };
@@ -49,9 +48,7 @@ export function AdminAccountPage(props: {
 }
 
 async function PersonalAccountPage(props: { account: Account }) {
-  const client = getSupabaseServerComponentClient({
-    admin: true,
-  });
+  const client = getSupabaseServerAdminClient();
 
   const memberships = await getMemberships(props.account.id);
   const { data, error } = await client.auth.admin.getUserById(props.account.id);
@@ -196,9 +193,7 @@ async function TeamAccountPage(props: {
 }
 
 async function SubscriptionsTable(props: { accountId: string }) {
-  const client = getSupabaseServerComponentClient({
-    admin: true,
-  });
+  const client = getSupabaseServerAdminClient();
 
   const { data: subscription, error } = await client
     .from('subscriptions')
@@ -345,9 +340,7 @@ async function SubscriptionsTable(props: { accountId: string }) {
 }
 
 async function getMemberships(userId: string) {
-  const client = getSupabaseServerComponentClient({
-    admin: true,
-  });
+  const client = getSupabaseServerAdminClient();
 
   const memberships = await client
     .from('accounts_memberships')
@@ -370,9 +363,7 @@ async function getMemberships(userId: string) {
 }
 
 async function getMembers(accountSlug: string) {
-  const client = getSupabaseServerComponentClient({
-    admin: true,
-  });
+  const client = getSupabaseServerAdminClient();
 
   const members = await client.rpc('get_account_members', {
     account_slug: accountSlug,
