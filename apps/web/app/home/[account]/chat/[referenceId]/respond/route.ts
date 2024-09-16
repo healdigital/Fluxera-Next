@@ -1,5 +1,3 @@
-import { StreamingTextResponse } from 'ai';
-
 import { enhanceRouteHandler } from '@kit/next/routes';
 import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
@@ -11,18 +9,8 @@ import {
 
 export const dynamic = 'force-dynamic';
 
-let FAKE_STREAMER = false;
-
-if (process.env.NODE_ENV === 'production') {
-  FAKE_STREAMER = false;
-}
-
 export const POST = enhanceRouteHandler(
   async ({ body, params }) => {
-    if (FAKE_STREAMER) {
-      return new StreamingTextResponse(fakeDataStreamer());
-    }
-
     const client = getSupabaseServerClient();
     const adminClient = getSupabaseServerAdminClient();
 
@@ -43,30 +31,3 @@ export const POST = enhanceRouteHandler(
     schema: StreamResponseSchema,
   },
 );
-
-function fakeDataStreamer() {
-  let timerId: number | undefined;
-  const encoder = new TextEncoder();
-  let closed = false;
-
-  return new ReadableStream({
-    start(controller) {
-      // @ts-ignore
-      timerId = setInterval(() => {
-        if (closed) return;
-
-        controller.enqueue(encoder.encode('TEXT'));
-      }, 200);
-
-      setTimeout(() => {
-        controller.close();
-        closed = true;
-      }, 5_000);
-    },
-    cancel() {
-      if (typeof timerId === 'number') {
-        clearInterval(timerId);
-      }
-    },
-  });
-}

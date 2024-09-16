@@ -27,7 +27,7 @@ async function ChatLayout({
 
   return (
     <div className={'flex h-screen overflow-y-hidden'}>
-      <Sidebar className={'h-auto space-y-2 py-2 shadow-none'}>
+      <Sidebar className={'h-auto space-y-2 py-2 shadow-none border-r'}>
         <SidebarContent className={'py-1'}>
           <Button
             asChild

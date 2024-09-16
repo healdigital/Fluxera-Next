@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Message, nanoid } from 'ai';
+import { Message, generateId } from 'ai';
 import { useChat } from 'ai/react';
 import {
   Bot,
@@ -152,7 +152,7 @@ export function ChatContainer(
             // and navigate to the chat
             startTransition(async () => {
               // assign an ID
-              const referenceId = nanoid(8);
+              const referenceId = generateId(8);
 
               const response = // create a chat
                 await createChatAction({

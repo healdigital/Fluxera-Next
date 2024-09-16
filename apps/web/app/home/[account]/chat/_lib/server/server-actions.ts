@@ -15,6 +15,7 @@ import { ReferenceIdSchema } from '../schema/reference-id.schema';
 import { RenameChatSchema } from '../schema/rename-chat.schema';
 import { UpdateChatSchema } from '../schema/update-chat.schema';
 import { createChatMessagesService } from './chat-messages.service';
+import { getLogger } from '@kit/shared/logger';
 
 const CreateChatSchema = z.object({
   content: z.string().min(1).max(2000),
@@ -24,6 +25,8 @@ const CreateChatSchema = z.object({
 
 export const createChatAction = enhanceAction(
   async (body) => {
+    const logger = await getLogger();
+
     const client = getSupabaseServerClient();
     const adminClient = getSupabaseServerAdminClient();
 
@@ -31,6 +34,11 @@ export const createChatAction = enhanceAction(
     const chatService = createChatLLMService(client, adminClient);
 
     try {
+      logger.info({
+        accountId: body.accountId,
+        name: 'chats.create'
+      }, `Creating new chat...`);
+
       const chatName = await chatService.createChatNameFromMessage({
         message: body.content,
         accountId: body.accountId,
@@ -45,14 +53,24 @@ export const createChatAction = enhanceAction(
 
       revalidatePath('/home/[account]/chat', 'layout');
 
+      logger.info({
+        accountId: body.accountId,
+        name: 'chats.create'
+      }, `Chat successfully created`);
+
       return {
         success: true,
         message: null,
       };
-    } catch (e) {
+    } catch (error) {
+      logger.error({
+        error,
+        name: 'chats.create'
+      }, 'Error creating chat');
+
       return {
         success: false,
-        message: e instanceof Error ? e.message : 'chats:errorCreatingChat',
+        message: error instanceof Error ? error.message : 'chats:errorCreatingChat',
       };
     }
   },

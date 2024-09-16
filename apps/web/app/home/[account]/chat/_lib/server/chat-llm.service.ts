@@ -3,7 +3,7 @@ import 'server-only';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 import { openai } from '@ai-sdk/openai';
-import { StreamingTextResponse, generateText, streamText } from 'ai';
+import { generateText, streamText } from 'ai';
 import { encodeChat } from 'gpt-tokenizer';
 import { z } from 'zod';
 
@@ -135,10 +135,7 @@ class ChatLLMService {
       maxTokens: settings.maxTokens,
       temperature: settings.temperature,
       messages,
-    });
-
-    const stream = result.toAIStream({
-      onFinal: async (completion) => {
+      onFinish: async ({ text }) => {
         // get the chat ID using the reference ID
         const chatId =
           await chatMessagesService.getChatIdByReferenceId(referenceId);
@@ -157,7 +154,7 @@ class ChatLLMService {
           messages: [
             lastMessage,
             {
-              content: completion,
+              content: text,
               role: 'assistant',
             },
           ],
@@ -188,7 +185,7 @@ class ChatLLMService {
       },
     });
 
-    return new StreamingTextResponse(stream);
+    return result.toDataStreamResponse();
   }
 
   /**
