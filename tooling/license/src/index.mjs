@@ -1,32 +1,51 @@
 import { execSync } from 'child_process';
 
+const endpoint = 'https://makerkit.dev/api/license/check';
+
 async function checkLicense() {
   let gitUser, gitEmail;
 
   try {
-    gitUser = execSync('git config user.name').toString().trim();
+    gitUser =
+      execSync('git config user.username').toString().trim() ||
+      execSync('git config user.name').toString().trim();
+  } catch (error) {
+    return;
+  }
+
+  if (!gitUser && !gitEmail) {
+    throw new Error(
+      "Please set the git user name with the command 'git config user.username <username>'. The username needs to match the GitHub username in your Makerkit organization.",
+    );
+  }
+
+  try {
     gitEmail = execSync('git config user.email').toString().trim();
   } catch (error) {
-    console.error('Error getting git config:', error.message);
-    process.exit(1);
+    console.info('Error getting git config:', error.message);
+
+    if (!gitUser) {
+      throw new Error(
+        "Please set the git user name with the command 'git config user.username <username>'. The username needs to match the GitHub username in your Makerkit organization.",
+      );
+    }
   }
 
-  if (!gitUser) {
-    console.error(
-      "Please set the git user name with the command 'git config user.name <username>'. The username needs to match the username in your Makerkit organization.",
-    );
+  const searchParams = new URLSearchParams();
 
-    process.exit(1);
+  searchParams.append('username', gitUser);
+
+  if (gitEmail) {
+    searchParams.append('email', gitEmail);
   }
 
-  const res = await fetch(
-    `https://makerkit.dev/api/license/check?username=${encodeURIComponent(gitUser)}&email=${encodeURIComponent(gitEmail)}`,
-  );
+  const res = await fetch(`${endpoint}?${searchParams.toString()}`);
+
   if (res.status === 200) {
     return Promise.resolve();
   } else {
     return Promise.reject(
-      new Error(`License check failed with status code: ${res.status}`),
+      new Error(`License check failed. Please set the git user name with the command 'git config user.username <username>'. The username needs to match the GitHub username in your Makerkit organization.`),
     );
   }
 }
@@ -39,8 +58,7 @@ function checkVisibility() {
       .toString()
       .trim();
   } catch (error) {
-    console.error('Error getting git remote URL:', error.message);
-    process.exit(1);
+    return Promise.resolve();
   }
 
   if (!remoteUrl.includes('github.com')) {
@@ -48,13 +66,13 @@ function checkVisibility() {
   }
 
   let ownerRepo;
+
   if (remoteUrl.startsWith('https://github.com/')) {
     ownerRepo = remoteUrl.slice('https://github.com/'.length);
   } else if (remoteUrl.startsWith('git@github.com:')) {
     ownerRepo = remoteUrl.slice('git@github.com:'.length);
   } else {
-    console.error('Unsupported GitHub URL format');
-    process.exit(1);
+    return;
   }
 
   ownerRepo = ownerRepo.replace(/\.git$/, '');
@@ -78,20 +96,19 @@ function checkVisibility() {
         console.error(
           'The repository has been LEAKED on GitHub. Please delete the repository. A DMCA Takedown Request will automatically be requested in the coming hours.',
         );
+
         process.exit(1);
       }
     });
 }
 
 async function main() {
-  if (process.env.NODE_ENV === 'production') {
-    return;
-  }
-
   try {
     await checkVisibility();
     await checkLicense();
   } catch (error) {
+    console.error(`Check failed with error: ${error.message}`);
+
     process.exit(1);
   }
 }
