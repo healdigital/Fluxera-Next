@@ -1,6 +1,6 @@
 import { use } from 'react';
 
-import { getSupabaseServerClient } from '@kit/supabase/server-client';
+import { getSupabaseServerComponentClient } from '@kit/supabase/server-component-client';
 import { createTeamAccountsApi } from '@kit/team-accounts/api';
 
 import { createChatMessagesService } from '~/home/[account]/chat/_lib/server/chat-messages.service';
@@ -9,29 +9,30 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 import { ChatContainer } from '../_components/chat-container';
 
 interface Props {
-  params: {
+  params: Promise<{
     account: string;
     referenceId: string;
-  };
+  }>;
 
-  searchParams: {
+  searchParams: Promise<{
     content?: string;
-  };
+  }>;
 }
 
 function ChatPage(props: Props) {
-  const client = getSupabaseServerClient();
+  const client = getSupabaseServerComponentClient();
 
   const teamAccountsApi = createTeamAccountsApi(client);
   const service = createChatMessagesService(client);
+  const params = use(props.params);
 
   const [data, account] = use(
     Promise.all([
       service.getMessages({
-        chatReferenceId: props.params.referenceId,
+        chatReferenceId: params.referenceId,
         page: 0,
       }),
-      teamAccountsApi.getTeamAccount(props.params.account),
+      teamAccountsApi.getTeamAccount(params.account),
     ]),
   );
 
@@ -46,10 +47,12 @@ function ChatPage(props: Props) {
     };
   });
 
+  const content = use(props.searchParams).content;
+
   return (
     <ChatContainer
-      content={props.searchParams.content}
-      referenceId={props.params.referenceId}
+      content={content}
+      referenceId={params.referenceId}
       accountId={account.id}
       messages={messages}
     />
