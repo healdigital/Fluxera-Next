@@ -15,16 +15,21 @@ const iconClasses = 'w-4';
 
 const getRoutes = (account: string) => [
   {
-    label: 'common:routes.dashboard',
-    path: pathsConfig.app.accountHome.replace('[account]', account),
-    Icon: <LayoutDashboard className={iconClasses} />,
-    end: true,
-  },
-  {
-    label: 'common:routes.chat',
-    path: pathsConfig.app.accountHome.replace('[account]', account) + '/chat',
-    Icon: <MessageSquare className={iconClasses} />,
-    end: false,
+    label: 'common:routes.application',
+    children: [
+      {
+        label: 'common:routes.dashboard',
+        path: pathsConfig.app.accountHome.replace('[account]', account),
+        Icon: <LayoutDashboard className={iconClasses} />,
+        end: true,
+      },
+      {
+        label: 'common:routes.chat',
+        path: pathsConfig.app.accountHome.replace('[account]', account) + '/chat',
+        Icon: <MessageSquare className={iconClasses} />,
+        end: false,
+      },
+    ],
   },
   {
     label: 'common:settingsTabLabel',
