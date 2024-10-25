@@ -5,6 +5,8 @@ import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client'
 
 import billingConfig from '~/config/billing.config';
 
+export const runtime = 'edge';
+
 /**
  * @description Handle the webhooks from Stripe related to checkouts
  */

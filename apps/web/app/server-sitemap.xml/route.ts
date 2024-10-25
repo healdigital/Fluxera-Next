@@ -4,6 +4,8 @@ import { createCmsClient } from '@kit/cms';
 
 import appConfig from '~/config/app.config';
 
+export const runtime = 'edge';
+
 export async function GET() {
   const paths = getPaths();
   const contentItems = await getContentItems();
