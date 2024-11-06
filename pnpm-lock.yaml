@@ -11,7 +11,7 @@ overrides:
   '@types/react': npm:types-react@19.0.0-rc.1
   '@types/react-dom': npm:types-react-dom@19.0.0-rc.1
   i18next: 23.16.4
-  react-i18next: 15.1.0
+  react-i18next: ^15.1.0
 
 importers:
 
@@ -42,7 +42,7 @@ importers:
         specifier: ^1.48.2
         version: 1.48.2
       '@types/node':
-        specifier: ^22.8.6
+        specifier: ^22.8.7
         version: 22.9.0
       node-html-parser:
         specifier: ^6.1.13
@@ -165,7 +165,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(react@19.0.0-rc-45804af1-20241021)
       react-i18next:
-        specifier: 15.1.0
+        specifier: ^15.1.0
         version: 15.1.0(i18next@23.16.4)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)
       recharts:
         specifier: 2.13.3
@@ -199,7 +199,7 @@ importers:
         specifier: ^2.0.13
         version: 2.0.13
       '@types/node':
-        specifier: ^22.8.6
+        specifier: ^22.8.7
         version: 22.9.0
       '@types/react':
         specifier: npm:types-react@19.0.0-rc.1
@@ -256,7 +256,7 @@ importers:
         specifier: workspace:*
         version: link:../../tooling/typescript
       '@types/node':
-        specifier: ^22.8.6
+        specifier: ^22.8.7
         version: 22.9.0
 
   packages/billing/core:
@@ -340,7 +340,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(react@19.0.0-rc-45804af1-20241021)
       react-i18next:
-        specifier: 15.1.0
+        specifier: ^15.1.0
         version: 15.1.0(i18next@23.16.4)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)
       zod:
         specifier: ^3.23.8
@@ -462,7 +462,7 @@ importers:
         specifier: workspace:*
         version: link:../wordpress
       '@types/node':
-        specifier: ^22.8.6
+        specifier: ^22.8.7
         version: 22.9.0
 
   packages/cms/keystatic:
@@ -493,7 +493,7 @@ importers:
         specifier: workspace:*
         version: link:../../ui
       '@types/node':
-        specifier: ^22.8.6
+        specifier: ^22.8.7
         version: 22.9.0
       '@types/react':
         specifier: npm:types-react@19.0.0-rc.1
@@ -535,7 +535,7 @@ importers:
         specifier: workspace:*
         version: link:../../ui
       '@types/node':
-        specifier: ^22.8.6
+        specifier: ^22.8.7
         version: 22.9.0
       '@types/react':
         specifier: npm:types-react@19.0.0-rc.1
@@ -684,7 +684,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(react@19.0.0-rc-45804af1-20241021)
       react-i18next:
-        specifier: 15.1.0
+        specifier: ^15.1.0
         version: 15.1.0(i18next@23.16.4)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)
       sonner:
         specifier: ^1.7.0
@@ -810,7 +810,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(react@19.0.0-rc-45804af1-20241021)
       react-i18next:
-        specifier: 15.1.0
+        specifier: ^15.1.0
         version: 15.1.0(i18next@23.16.4)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)
       sonner:
         specifier: ^1.7.0
@@ -858,7 +858,7 @@ importers:
         specifier: 19.0.0-rc-45804af1-20241021
         version: 19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021)
       react-i18next:
-        specifier: 15.1.0
+        specifier: ^15.1.0
         version: 15.1.0(i18next@23.16.4)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)
 
   packages/features/team-accounts:
@@ -946,7 +946,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(react@19.0.0-rc-45804af1-20241021)
       react-i18next:
-        specifier: 15.1.0
+        specifier: ^15.1.0
         version: 15.1.0(i18next@23.16.4)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)
       sonner:
         specifier: ^1.7.0
@@ -995,7 +995,7 @@ importers:
         specifier: 19.0.0-rc-45804af1-20241021
         version: 19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021)
       react-i18next:
-        specifier: 15.1.0
+        specifier: ^15.1.0
         version: 15.1.0(i18next@23.16.4)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)
 
   packages/mailers/core:
@@ -1019,7 +1019,7 @@ importers:
         specifier: workspace:*
         version: link:../../../tooling/typescript
       '@types/node':
-        specifier: ^22.8.6
+        specifier: ^22.8.7
         version: 22.9.0
       zod:
         specifier: ^3.23.8
@@ -1071,7 +1071,7 @@ importers:
         specifier: workspace:*
         version: link:../../../tooling/typescript
       '@types/node':
-        specifier: ^22.8.6
+        specifier: ^22.8.7
         version: 22.9.0
       zod:
         specifier: ^3.23.8
@@ -1438,7 +1438,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(react@19.0.0-rc-45804af1-20241021)
       react-i18next:
-        specifier: 15.1.0
+        specifier: ^15.1.0
         version: 15.1.0(i18next@23.16.4)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)
       sonner:
         specifier: ^1.7.0
