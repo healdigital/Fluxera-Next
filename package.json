@@ -36,10 +36,10 @@
   "prettier": "@kit/prettier-config",
   "dependencies": {
     "@manypkg/cli": "^0.22.0",
-    "@turbo/gen": "^2.2.3",
+    "@turbo/gen": "^2.3.0",
     "cross-env": "^7.0.3",
     "prettier": "^3.3.3",
-    "turbo": "2.2.3",
+    "turbo": "2.3.0",
     "typescript": "^5.6.3"
   },
   "packageManager": "pnpm@9.12.0",
@@ -49,9 +49,7 @@
       "react": "19.0.0-rc-45804af1-20241021",
       "react-dom": "19.0.0-rc-45804af1-20241021",
       "@types/react": "npm:types-react@19.0.0-rc.1",
-      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
-      "i18next": "23.16.4",
-      "react-i18next": "^15.1.0"
+      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
     }
   }
 }
