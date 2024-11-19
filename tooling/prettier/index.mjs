@@ -1,7 +1,6 @@
 /** @typedef  {import("prettier").Config} PrettierConfig */
-/** @typedef  {import("@trivago/prettier-plugin-sort-imports").PluginConfig} SortImportsConfig */
 
-/** @type { PrettierConfig | SortImportsConfig } */
+/** @type { PrettierConfig } */
 const config = {
   tabWidth: 2,
   useTabs: false,
@@ -27,8 +26,8 @@ const config = {
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
   plugins: [
-    import.meta.resolve('@trivago/prettier-plugin-sort-imports'),
-    import.meta.resolve('prettier-plugin-tailwindcss'),
+    '@trivago/prettier-plugin-sort-imports',
+    'prettier-plugin-tailwindcss'
   ],
 };
 
