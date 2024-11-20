@@ -40,6 +40,19 @@ const config = {
     '/*': ['./content/**/*'],
   },
   redirects: getRedirects,
+  headers: () => {
+    return Promise.resolve([
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex',
+          },
+        ],
+      },
+    ]);
+  },
   experimental: {
     mdxRs: true,
     reactCompiler: ENABLE_REACT_COMPILER,
