@@ -10,7 +10,6 @@ import {
   FeatureGrid,
   FeatureShowcase,
   FeatureShowcaseIconContainer,
-  GradientSecondaryText,
   Hero,
   Pill,
   SecondaryHero,
@@ -64,14 +63,14 @@ function Home() {
           <FeatureShowcase
             heading={
               <>
-                <b className="font-semibold dark:text-white">
+                <b className="font-bold dark:text-white">
                   The ultimate SaaS Starter Kit
                 </b>
                 .{' '}
-                <GradientSecondaryText>
+                <span className="text-muted-foreground">
                   Unleash your creativity and build your SaaS faster than ever
                   with Makerkit.
-                </GradientSecondaryText>
+                </span>
               </>
             }
             icon={
@@ -84,7 +83,7 @@ function Home() {
             <FeatureGrid>
               <FeatureCard
                 className={
-                  'relative col-span-2 overflow-hidden bg-violet-500 text-white lg:h-96'
+                  'relative col-span-2 overflow-hidden lg:h-96'
                 }
                 label={'Beautiful Dashboard'}
                 description={`Makerkit provides a beautiful dashboard to manage your SaaS business.`}
@@ -155,7 +154,7 @@ function Home() {
           }
         >
           <SecondaryHero
-            pill={<Pill>Get started for free. No credit card required.</Pill>}
+            pill={<Pill label='Start for free'>No credit card required.</Pill>}
             heading="Fair pricing for all types of businesses"
             subheading="Get started on our free plan and upgrade when you are ready."
           />
