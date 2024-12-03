@@ -6,7 +6,7 @@ const DEFAULT_COLORS_SCALE = {
 
 export function BackgroundHue({
   className,
-  opacity = 0.1,
+  opacity = 0.07,
   colorsScale = DEFAULT_COLORS_SCALE,
 }: {
   className?: string;
@@ -38,9 +38,9 @@ export function BackgroundHue({
         <linearGradient
           id="purpleGradient"
           x1="10%"
-          y1="50%"
-          x2="90%"
-          y2="30%"
+          y1="70%"
+          x2="50%"
+          y2="20%"
           gradientUnits="userSpaceOnUse"
         >
           {colors}
