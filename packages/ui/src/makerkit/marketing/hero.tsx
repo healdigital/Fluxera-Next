@@ -55,7 +55,7 @@ export function Hero({
               <div className="flex max-w-2xl flex-col space-y-1">
                 <Heading
                   level={3}
-                  className="p-0 text-center font-sans text-base font-normal"
+                  className="p-0 text-center font-sans text-base font-normal text-muted-foreground"
                 >
                   {subtitle}
                 </Heading>
@@ -78,8 +78,11 @@ export function Hero({
 
       {image && (
         <div
+          style={{
+            MozAnimationDuration: '100ms',
+          }}
           className={cn('mx-auto flex max-w-[85rem] justify-center py-8', {
-            ['delay-300 duration-1000 animate-in fade-in zoom-in-95 slide-in-from-top-32 fill-mode-both']:
+            ['delay-500 duration-1000 animate-in fade-in zoom-in-95 slide-in-from-top-32 fill-mode-both']:
               animate,
           })}
         >
