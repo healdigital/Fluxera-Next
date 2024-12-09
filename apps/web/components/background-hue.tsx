@@ -1,12 +1,12 @@
 const DEFAULT_COLORS_SCALE = {
-  0: '#7d5aa6',
-  1: '#533a75',
-  2: '#4b3565',
+  0: 'hsl(var(--primary))',
+  1: 'hsl(var(--primary))',
+  2: 'hsl(var(--primary))',
 };
 
 export function BackgroundHue({
   className,
-  opacity = 0.07,
+  opacity = 0.03,
   colorsScale = DEFAULT_COLORS_SCALE,
 }: {
   className?: string;
@@ -14,13 +14,13 @@ export function BackgroundHue({
   colorsScale?: Record<number, string>;
 }) {
   const colors = Object.values(colorsScale).map((color, index, array) => {
-    const offset = `${(index / (array.length - 1)) * 100}%`;
+    const offset = array.length > 1 ? index / (array.length - 1) : 0;
     const stopOpacity = 1 - index / (array.length - 1);
 
     return (
       <stop
-        key={index}
         offset={offset}
+        key={index}
         style={{ stopColor: color, stopOpacity }}
       />
     );
@@ -28,7 +28,7 @@ export function BackgroundHue({
 
   return (
     <svg
-      className={`pointer-events-none fixed left-0 top-0 hidden h-full w-full dark:block !m-0 ${className}`}
+      className={`pointer-events-none fixed left-0 top-0 !m-0 hidden h-full w-full dark:block ${className}`}
       style={{ opacity }}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 100 100"
