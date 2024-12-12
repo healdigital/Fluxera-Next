@@ -74,8 +74,10 @@ async function withCsrfMiddleware(
   });
 
   try {
-    const req = request.clone() as NextRequest;
-    await csrfProtect(req, response);
+    const req = request.clone();
+    /* @ts-expect-error: nextUrl is not a property of Request */
+    req.nextUrl = request.nextUrl;
+    await csrfProtect(req as NextRequest, response);
 
     return response;
   } catch (error) {
