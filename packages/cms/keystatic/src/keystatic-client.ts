@@ -3,7 +3,6 @@ import { Cms, CmsClient } from '@kit/cms-types';
 import { createKeystaticReader } from './create-reader';
 import { DocumentationEntryProps, PostEntryProps } from './keystatic.config';
 import { renderMarkdoc } from './markdoc';
-import './mock-fetch';
 
 export function createKeystaticClient() {
   return new KeystaticClient();

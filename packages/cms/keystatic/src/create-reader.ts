@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 import { KeystaticStorage } from './keystatic-storage';
 import { keyStaticConfig } from './keystatic.config';
-import { mockWorkerdFetch } from './mock-fetch';
 
 /**
  * @name createKeystaticReader
@@ -25,8 +24,6 @@ export async function createKeystaticReader() {
 
     case 'github':
     case 'cloud': {
-      mockWorkerdFetch();
-
       const { createGitHubReader } = await import(
         '@keystatic/core/reader/github'
       );
