@@ -30,7 +30,9 @@ export async function middleware(request: NextRequest) {
   setRequestId(request);
 
   // apply CSRF protection for mutating requests
-  const csrfResponse = await withCsrfMiddleware(request, response);
+  // const csrfResponse = await withCsrfMiddleware(request, response);
+  // TODO: uncomment this when package is fixed
+  const csrfResponse = response;
 
   // handle patterns for specific routes
   const handlePattern = matchUrlPattern(request.url);
@@ -74,10 +76,7 @@ async function withCsrfMiddleware(
   });
 
   try {
-    const req = request.clone();
-    /* @ts-expect-error: nextUrl is not a property of Request */
-    req.nextUrl = request.nextUrl;
-    await csrfProtect(req as NextRequest, response);
+    await csrfProtect(request, response);
 
     return response;
   } catch (error) {
