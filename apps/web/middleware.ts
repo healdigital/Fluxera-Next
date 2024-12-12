@@ -74,7 +74,8 @@ async function withCsrfMiddleware(
   });
 
   try {
-    await csrfProtect(request, response);
+    const req = request.clone() as NextRequest;
+    await csrfProtect(req, response);
 
     return response;
   } catch (error) {
