@@ -37,8 +37,7 @@
   "packageManager": "pnpm@9.12.0",
   "pnpm": {
     "overrides": {
-      "react-is": "rc",
-      "vercel": "39.1.1"
+      "react-is": "rc"
     }
   },
   "devDependencies": {
@@ -47,7 +46,6 @@
     "cross-env": "^7.0.3",
     "prettier": "^3.4.2",
     "turbo": "2.3.3",
-    "typescript": "^5.7.2",
-    "vercel": "39.1.1"
+    "typescript": "^5.7.2"
   }
 }
