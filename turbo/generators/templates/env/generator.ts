@@ -129,10 +129,10 @@ export function createEnvironmentVariablesGenerator(
       },
       {
         type: 'confirm',
-        name: 'values.NEXT_PUBLIC_ENABLE_TEAM_ACCOUNT_DELETION',
-        message: `Do you want to enable team account deletion? \nFor more info: ${getUrlToDocs('NEXT_PUBLIC_ENABLE_TEAM_ACCOUNT_DELETION')}\n`,
+        name: 'values.NEXT_PUBLIC_ENABLE_TEAM_ACCOUNTS_DELETION',
+        message: `Do you want to enable team account deletion? \nFor more info: ${getUrlToDocs('NEXT_PUBLIC_ENABLE_TEAM_ACCOUNTS_DELETION')}\n`,
         default: getBoolean(
-          allVariables.NEXT_PUBLIC_ENABLE_TEAM_ACCOUNT_DELETION,
+          allVariables.NEXT_PUBLIC_ENABLE_TEAM_ACCOUNTS_DELETION,
           true,
         ),
       },
@@ -275,7 +275,6 @@ export function createEnvironmentVariablesGenerator(
         message: `What is the Resend API key?\nFor more info: ${getUrlToDocs('RESEND_API_KEY')}\n`,
       },
       {
-        when: (answers) => answers.values.MAILER_PROVIDER === 'nodemailer',
         type: 'input',
         name: 'values.EMAIL_SENDER',
         message: `What is the email sender? (ex. info@makerkit.dev).\nFor more info: ${getUrlToDocs('EMAIL_SENDER')}\n`,
