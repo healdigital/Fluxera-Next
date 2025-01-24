@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const ENABLE_REACT_COMPILER = process.env.ENABLE_REACT_COMPILER === 'true';
@@ -69,6 +71,12 @@ const config = {
       'date-fns',
       ...INTERNAL_PACKAGES,
     ],
+  },
+  webpack: (config) => {
+    config.resolve.alias['react-dom/server'] = path.join(
+      __dirname,
+      'apps/web/node_modules/react-dom/server.edge.js',
+    );
   },
   modularizeImports: {
     lodash: {
