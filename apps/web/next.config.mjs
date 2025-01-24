@@ -73,7 +73,14 @@ const config = {
     ],
   },
   webpack: (config) => {
-    config.resolve.alias['react-dom/server'] = ['workerd'];
+    config.resolve.alias['react-dom/server'] = {
+      esm: {
+        mainFields: ['workerd'],
+      },
+      commonjs: {
+        aliasFields: ['workerd'],
+      },
+    };
 
     return config;
   },
