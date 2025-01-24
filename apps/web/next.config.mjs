@@ -77,6 +77,8 @@ const config = {
       process.cwd(),
       'apps/web/node_modules/react-dom/server.edge.js',
     );
+
+    return config;
   },
   modularizeImports: {
     lodash: {
