@@ -73,10 +73,7 @@ const config = {
     ],
   },
   webpack: (config) => {
-    config.resolve.alias['react-dom/server'] = path.join(
-      process.cwd(),
-      'apps/web/node_modules/react-dom/server.edge.js',
-    );
+    config.resolve.alias['react-dom/server'] = ['workerd'];
 
     return config;
   },
