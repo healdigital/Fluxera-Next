@@ -107,6 +107,8 @@ class AccountInvitationsWebhookService {
         invitation.email,
       );
 
+      logger.info(ctx, 'Rendering invitation email...');
+
       const { html, subject } = await renderInviteEmail({
         link,
         invitedUserEmail: invitation.email,
@@ -114,6 +116,8 @@ class AccountInvitationsWebhookService {
         productName: env.productName,
         teamName: team.data.name,
       });
+
+      logger.info(ctx, 'Invitation email rendered successfully. Sending email...');
 
       await mailer
         .sendEmail({
