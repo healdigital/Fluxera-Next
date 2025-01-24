@@ -74,7 +74,7 @@ const config = {
   },
   webpack: (config) => {
     config.resolve.alias['react-dom/server'] = path.join(
-      __dirname,
+      process.cwd(),
       'apps/web/node_modules/react-dom/server.edge.js',
     );
   },
