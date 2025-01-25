@@ -584,8 +584,8 @@ importers:
   packages/email-templates:
     dependencies:
       '@react-email/components':
-        specifier: 0.0.32
-        version: 0.0.32(react-dom@19.0.0(react@19.0.0))
+        specifier: 0.0.33-canary.0
+        version: 0.0.33-canary.0(react-dom@19.0.0(react@19.0.0))
     devDependencies:
       '@kit/eslint-config':
         specifier: workspace:*
@@ -3466,8 +3466,8 @@ packages:
     peerDependencies:
       react: 19.0.0
 
-  '@react-email/components@0.0.32':
-    resolution: {integrity: sha512-+1Wv7PyVgWfLoj5W0+CvBsJMIfMI6ibcFcIPXNkb2lhKQQASgxSoAedRL1rH0CCaBo6+63tg8y4baHzJonfZbw==}
+  '@react-email/components@0.0.33-canary.0':
+    resolution: {integrity: sha512-j1oZ2tmn8orLVSf3jdjhrWcwWVQpSNc0CklQVoJaPwp8DG5xQUz19YhvON9fQz8BA34iLkps3aLZI1q8bLya+Q==}
     engines: {node: '>=18.0.0'}
 
   '@react-email/container@0.0.15':
@@ -3529,8 +3529,8 @@ packages:
     peerDependencies:
       react: 19.0.0
 
-  '@react-email/render@1.0.4':
-    resolution: {integrity: sha512-8ZXi89d8igBDE6W3zlHBa3GEDWKEUFDAa7i8MvVxnRViQuvsRbibK3ltuPgixxRI5+HgGNCSreBHQKZCkhUdyw==}
+  '@react-email/render@1.0.5-canary.0':
+    resolution: {integrity: sha512-RumFXDyjvWHG6ESWXNwgwKCf9nC2KfHAdj02f72ElR7czK4iihC7A5YjSKD88TRkqRQKjqej9Yk0kYP2qyFBQA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react-dom: 19.0.0
@@ -4143,6 +4143,9 @@ packages:
 
   '@types/eslint@8.56.12':
     resolution: {integrity: sha512-03ruubjWyOHlmljCVoxSuNDdmfZDzsrrz0P2LeJsOXr+ZwFQ+0yQIwNCwt/GYhV7Z31fgtXJTAEs+FYlEL851g==}
+
+  '@types/eslint@9.6.1':
+    resolution: {integrity: sha512-FXx2pKgId/WyYo2jXw63kk7/+TY7u7AziEJxJAnSFzHlqTAS3Ync6SvgYAN/k4/PQpnnVuzoMuVnByKK2qp0ag==}
 
   '@types/estree-jsx@1.0.5':
     resolution: {integrity: sha512-52CcUVNFyfb1A2ALocQw/Dd1BQFNmSdkuC3BkZ6iqhdMfQz7JWOFRuJFloOzjk+6WijU56m9oKXFAXc7o3Towg==}
@@ -10769,7 +10772,7 @@ snapshots:
     dependencies:
       react: 19.0.0
 
-  '@react-email/components@0.0.32(react-dom@19.0.0(react@19.0.0))':
+  '@react-email/components@0.0.33-canary.0(react-dom@19.0.0(react@19.0.0))':
     dependencies:
       '@react-email/body': 0.0.11(react@19.0.0)
       '@react-email/button': 0.0.19(react@19.0.0)
@@ -10786,7 +10789,7 @@ snapshots:
       '@react-email/link': 0.0.12(react@19.0.0)
       '@react-email/markdown': 0.0.14(react@19.0.0)
       '@react-email/preview': 0.0.12(react@19.0.0)
-      '@react-email/render': 1.0.4(react-dom@19.0.0(react@19.0.0))
+      '@react-email/render': 1.0.5-canary.0(react-dom@19.0.0(react@19.0.0))
       '@react-email/row': 0.0.12(react@19.0.0)
       '@react-email/section': 0.0.16(react@19.0.0)
       '@react-email/tailwind': 1.0.4
@@ -10836,7 +10839,7 @@ snapshots:
     dependencies:
       react: 19.0.0
 
-  '@react-email/render@1.0.4(react-dom@19.0.0(react@19.0.0))':
+  '@react-email/render@1.0.5-canary.0(react-dom@19.0.0(react@19.0.0))':
     dependencies:
       html-to-text: 9.0.5
       prettier: 3.4.2
@@ -11662,10 +11665,15 @@ snapshots:
 
   '@types/eslint-scope@3.7.7':
     dependencies:
-      '@types/eslint': 8.56.12
+      '@types/eslint': 9.6.1
       '@types/estree': 1.0.6
 
   '@types/eslint@8.56.12':
+    dependencies:
+      '@types/estree': 1.0.6
+      '@types/json-schema': 7.0.15
+
+  '@types/eslint@9.6.1':
     dependencies:
       '@types/estree': 1.0.6
       '@types/json-schema': 7.0.15

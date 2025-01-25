@@ -13,7 +13,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@react-email/components": "0.0.32"
+    "@react-email/components": "0.0.33-canary.0"
   },
   "devDependencies": {
     "@kit/eslint-config": "workspace:*",
@@ -22,7 +22,7 @@
     "@kit/tailwind-config": "workspace:*",
     "@kit/tsconfig": "workspace:*"
   },
-  "eslintConfig": {
+  "eslintConfig": {Bump
     "root": true,
     "extends": [
       "@kit/eslint-config/base",
