@@ -99,9 +99,7 @@ class AccountInvitationsWebhookService {
 
     try {
       const { renderInviteEmail } = await import('@kit/email-templates');
-      const { getMailer } = await import('@kit/mailers');
 
-      const mailer = await getMailer();
       const link = this.getInvitationLink(
         invitation.invite_token,
         invitation.email,
@@ -118,6 +116,10 @@ class AccountInvitationsWebhookService {
       });
 
       logger.info(ctx, 'Invitation email rendered successfully. Sending email...');
+
+      const { getMailer } = await import('@kit/mailers');
+
+      const mailer = await getMailer();
 
       await mailer
         .sendEmail({

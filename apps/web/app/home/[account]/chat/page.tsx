@@ -8,9 +8,9 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 import { ChatContainer } from './_components/chat-container';
 
 interface Props {
-  params: {
+  params: Promise<{
     account: string;
-  };
+  }>;
 }
 
 function ChatPage(props: Props) {
@@ -18,7 +18,8 @@ function ChatPage(props: Props) {
     getSupabaseServerClient(),
   );
 
-  const account = use(teamAccountsApi.getTeamAccount(props.params.account));
+  const accountParam = use(props.params).account;
+  const account = use(teamAccountsApi.getTeamAccount(accountParam));
 
   return (
     <ChatContainer referenceId={''} accountId={account.id} messages={[]} />

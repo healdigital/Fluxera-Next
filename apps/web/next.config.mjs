@@ -72,6 +72,19 @@ const config = {
       ...INTERNAL_PACKAGES,
     ],
   },
+  webpack: (config) => {
+    config.resolve.alias['react-dom/server'] = path.join(
+      process.cwd(),
+      'node_modules/react-dom/server.edge.js',
+    );
+
+    config.resolve.alias['react'] = path.join(
+      process.cwd(),
+      'node_modules/react/index.js',
+    );
+
+    return config;
+  },
   modularizeImports: {
     lodash: {
       transform: 'lodash/{{member}}',
