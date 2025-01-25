@@ -9,6 +9,8 @@ overrides:
   react-dom: 19.0.0
   react: 19.0.0
 
+pnpmfileChecksum: m24nt5tgh44zz5hvxcb7yqvrha
+
 importers:
 
   .:
@@ -583,7 +585,7 @@ importers:
     dependencies:
       '@react-email/components':
         specifier: 0.0.32
-        version: 0.0.32(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        version: 0.0.32(react-dom@19.0.0(react@19.0.0))
     devDependencies:
       '@kit/eslint-config':
         specifier: workspace:*
@@ -3467,8 +3469,6 @@ packages:
   '@react-email/components@0.0.32':
     resolution: {integrity: sha512-+1Wv7PyVgWfLoj5W0+CvBsJMIfMI6ibcFcIPXNkb2lhKQQASgxSoAedRL1rH0CCaBo6+63tg8y4baHzJonfZbw==}
     engines: {node: '>=18.0.0'}
-    peerDependencies:
-      react: 19.0.0
 
   '@react-email/container@0.0.15':
     resolution: {integrity: sha512-Qo2IQo0ru2kZq47REmHW3iXjAQaKu4tpeq/M8m1zHIVwKduL2vYOBQWbC2oDnMtWPmkBjej6XxgtZByxM6cCFg==}
@@ -10772,7 +10772,7 @@ snapshots:
     dependencies:
       react: 19.0.0
 
-  '@react-email/components@0.0.32(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@react-email/components@0.0.32(react-dom@19.0.0(react@19.0.0))':
     dependencies:
       '@react-email/body': 0.0.11(react@19.0.0)
       '@react-email/button': 0.0.19(react@19.0.0)
