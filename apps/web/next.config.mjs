@@ -73,14 +73,10 @@ const config = {
     ],
   },
   webpack: (config) => {
-    config.resolve.alias['react-dom/server'] = {
-      esm: {
-        mainFields: ['workerd'],
-      },
-      commonjs: {
-        aliasFields: ['workerd'],
-      },
-    };
+    config.resolve.alias['react-dom/server'] = path.join(
+      process.cwd(),
+      'node_modules/react-dom/server.edge.js',
+    );
 
     return config;
   },
