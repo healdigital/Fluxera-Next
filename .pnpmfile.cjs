@@ -11,6 +11,18 @@ const remapPeerDependencies = [
     peerDependency: 'react',
     newVersion: '19.0.0',
   },
+  {
+    package: '@react-email/render',
+    packageVersion: '1.',
+    peerDependency: 'react',
+    newVersion: '19.0.0',
+  },
+  {
+    package: '@react-email/tailwind',
+    packageVersion: '1.',
+    peerDependency: 'react',
+    newVersion: '19.0.0',
+  }
 ];
 
 function overridesPeerDependencies(pkg) {

@@ -9,7 +9,7 @@ overrides:
   react-dom: 19.0.0
   react: 19.0.0
 
-pnpmfileChecksum: m24nt5tgh44zz5hvxcb7yqvrha
+pnpmfileChecksum: 2cxbuckcyy5uj2btteokckji5e
 
 importers:
 
@@ -3533,7 +3533,6 @@ packages:
     resolution: {integrity: sha512-8ZXi89d8igBDE6W3zlHBa3GEDWKEUFDAa7i8MvVxnRViQuvsRbibK3ltuPgixxRI5+HgGNCSreBHQKZCkhUdyw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      react: 19.0.0
       react-dom: 19.0.0
 
   '@react-email/row@0.0.12':
@@ -3551,8 +3550,6 @@ packages:
   '@react-email/tailwind@1.0.4':
     resolution: {integrity: sha512-tJdcusncdqgvTUYZIuhNC6LYTfL9vNTSQpwWdTCQhQ1lsrNCEE4OKCSdzSV3S9F32pi0i0xQ+YPJHKIzGjdTSA==}
     engines: {node: '>=18.0.0'}
-    peerDependencies:
-      react: 19.0.0
 
   '@react-email/text@0.0.11':
     resolution: {integrity: sha512-a7nl/2KLpRHOYx75YbYZpWspUbX1DFY7JIZbOv5x0QU8SvwDbJt+Hm01vG34PffFyYvHEXrc6Qnip2RTjljNjg==}
@@ -10789,10 +10786,10 @@ snapshots:
       '@react-email/link': 0.0.12(react@19.0.0)
       '@react-email/markdown': 0.0.14(react@19.0.0)
       '@react-email/preview': 0.0.12(react@19.0.0)
-      '@react-email/render': 1.0.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@react-email/render': 1.0.4(react-dom@19.0.0(react@19.0.0))
       '@react-email/row': 0.0.12(react@19.0.0)
       '@react-email/section': 0.0.16(react@19.0.0)
-      '@react-email/tailwind': 1.0.4(react@19.0.0)
+      '@react-email/tailwind': 1.0.4
       '@react-email/text': 0.0.11(react@19.0.0)
       react: 19.0.0
     transitivePeerDependencies:
@@ -10839,7 +10836,7 @@ snapshots:
     dependencies:
       react: 19.0.0
 
-  '@react-email/render@1.0.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@react-email/render@1.0.4(react-dom@19.0.0(react@19.0.0))':
     dependencies:
       html-to-text: 9.0.5
       prettier: 3.4.2
@@ -10855,7 +10852,7 @@ snapshots:
     dependencies:
       react: 19.0.0
 
-  '@react-email/tailwind@1.0.4(react@19.0.0)':
+  '@react-email/tailwind@1.0.4':
     dependencies:
       react: 19.0.0
 
