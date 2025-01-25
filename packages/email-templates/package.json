@@ -22,7 +22,7 @@
     "@kit/tailwind-config": "workspace:*",
     "@kit/tsconfig": "workspace:*"
   },
-  "eslintConfig": {Bump
+  "eslintConfig": {
     "root": true,
     "extends": [
       "@kit/eslint-config/base",
