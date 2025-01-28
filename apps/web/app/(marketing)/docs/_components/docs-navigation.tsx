@@ -27,7 +27,7 @@ function Node({
   prefix: string;
 }) {
   const url = `${prefix}/${node.slug}`;
-  const label = node.label ? node.label : node.title;
+  const label = node.label ?? node.title;
 
   const Container = (props: React.PropsWithChildren) => {
     if (node.collapsible) {
@@ -116,7 +116,7 @@ export function DocsNavigation({
     <>
       <Sidebar
         variant={'ghost'}
-        className={'z-1 sticky max-h-full overflow-y-auto'}
+        className={'sticky z-1 mt-4 max-h-full overflow-y-auto'}
       >
         <SidebarGroup>
           <SidebarGroupContent>
