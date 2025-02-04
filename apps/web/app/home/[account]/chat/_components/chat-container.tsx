@@ -196,7 +196,7 @@ export function ChatMessagesContainer({
     <div
       ref={scrollingDiv}
       className={
-        'mx-auto flex w-full max-w-3xl flex-1 flex-col overflow-y-auto px-4 pb-16 pt-6'
+        'mx-auto flex w-full max-w-3xl flex-1 flex-col overflow-y-auto px-4 pt-6 pb-16'
       }
     >
       <If condition={!messages.length && !isLoading}>
@@ -209,7 +209,7 @@ export function ChatMessagesContainer({
             <div
               key={message.id}
               className={cn(
-                `flex flex-col space-y-2 animate-in fade-in zoom-in-95`,
+                `animate-in fade-in zoom-in-95 flex flex-col space-y-2`,
                 {
                   'items-end': message.role === 'user',
                   'items-start': message.role === 'assistant',
@@ -224,7 +224,7 @@ export function ChatMessagesContainer({
 
               <div
                 className={cn(
-                  'flex w-auto flex-col space-y-6 whitespace-pre-line rounded-3xl border border-transparent px-6 py-6 text-sm',
+                  'flex w-auto flex-col space-y-6 rounded-3xl border border-transparent px-6 py-6 text-sm whitespace-pre-line',
                   {
                     'bg-muted dark:bg-primary dark:text-primary-foreground':
                       message.role === 'user',
@@ -276,12 +276,12 @@ export function ChatInput(props: {
     <form
       onSubmit={props.handleSubmit}
       className={
-        'relative bottom-8 mx-auto mt-auto w-full max-w-3xl shadow-[0px_-58px_80px_4px_#fff] animate-in slide-in-from-bottom-8 dark:shadow-[0px_-58px_80px_4px_#000]'
+        'animate-in slide-in-from-bottom-8 relative bottom-8 mx-auto mt-auto w-full max-w-3xl'
       }
     >
       <If condition={props.loading}>
         <Button
-          className="absolute right-4 top-2 z-[1]"
+          className="absolute top-2 right-4 z-[1]"
           variant="outline"
           size="sm"
           onClick={props.onStop}
@@ -298,20 +298,20 @@ export function ChatInput(props: {
         onChange={props.handleInputChange}
         placeholder={t('askAiPlaceholder')}
         className={
-          'w-full rounded-3xl bg-background px-4 py-6 pl-12 pr-12 transition-all focus-visible:shadow-xl'
+          'bg-background w-full rounded-3xl px-4 py-6 pr-12 pl-12 transition-all focus-visible:shadow-xl'
         }
       />
 
-      <Bot className="absolute left-4 top-3.5 h-5 text-muted-foreground" />
+      <Bot className="text-muted-foreground absolute top-3.5 left-4 h-5" />
 
       <If condition={!props.loading}>
         <Button
           disabled={props.disabled}
           variant={'ghost'}
           size={'icon'}
-          className={'absolute right-4 top-1.5 rounded-full'}
+          className={'absolute top-1.5 right-4 rounded-full'}
         >
-          <SendIcon className={'h-5 text-muted-foreground'} />
+          <SendIcon className={'text-muted-foreground h-5'} />
         </Button>
       </If>
     </form>
@@ -322,7 +322,7 @@ function ChatSettings(props: { referenceId: string; accountId: string }) {
   return (
     <div
       className={
-        'z-[1] flex w-full items-center justify-between border-b px-4 py-2 shadow-[0px_-20px_180px_30px_#fff] animate-in slide-in-from-top-8 dark:shadow-[0px_-20px_180px_30px_#000]'
+        'animate-in slide-in-from-top-8 z-[1] flex w-full items-center justify-between border-b px-4 py-2 shadow-[0px_-20px_180px_30px_#fff] dark:shadow-[0px_-20px_180px_30px_#111]'
       }
     >
       <div>
@@ -378,7 +378,7 @@ function EmptyState() {
   return (
     <div
       className={
-        'flex h-full flex-1 flex-col justify-center space-y-8 py-8 text-center text-sm text-muted-foreground animate-in fade-in zoom-in'
+        'text-muted-foreground animate-in fade-in zoom-in flex h-full flex-1 flex-col justify-center space-y-8 py-8 text-center text-sm'
       }
     >
       <div className={'flex justify-center'}>
