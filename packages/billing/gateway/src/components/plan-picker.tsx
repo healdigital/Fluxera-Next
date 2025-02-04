@@ -15,7 +15,6 @@ import {
   getPrimaryLineItem,
   getProductPlanPair,
 } from '@kit/billing';
-import { formatCurrency } from '@kit/shared/utils';
 import { Badge } from '@kit/ui/badge';
 import { Button } from '@kit/ui/button';
 import {
@@ -38,6 +37,7 @@ import { Trans } from '@kit/ui/trans';
 import { cn } from '@kit/ui/utils';
 
 import { LineItemDetails } from './line-item-details';
+import { PlanCostDisplay } from './plan-cost-display';
 
 export function PlanPicker(
   props: React.PropsWithChildren<{
@@ -108,7 +108,10 @@ export function PlanPicker(
   const isRecurringPlan =
     selectedPlan?.paymentType === 'recurring' || !selectedPlan;
 
-  const locale = useTranslation().i18n.language;
+  // Always filter out hidden products
+  const visibleProducts = props.config.products.filter(
+    (product) => !product.hidden,
+  );
 
   return (
     <Form {...form}>
@@ -213,7 +216,7 @@ export function PlanPicker(
 
                 <FormControl>
                   <RadioGroup value={field.value} name={field.name}>
-                    {props.config.products.map((product) => {
+                    {visibleProducts.map((product) => {
                       const plan = product.plans.find((item) => {
                         if (item.paymentType === 'one-time') {
                           return true;
@@ -237,30 +240,6 @@ export function PlanPicker(
                       if (!primaryLineItem) {
                         throw new Error(`Base line item was not found`);
                       }
-
-                      const shouldDisplayTier =
-                        primaryLineItem.type === 'metered' &&
-                        Array.isArray(primaryLineItem.tiers) &&
-                        primaryLineItem.tiers.length > 0;
-
-                      const isMultiTier =
-                        Array.isArray(primaryLineItem.tiers) &&
-                        primaryLineItem.tiers.length > 1;
-
-                      const lowestTier = primaryLineItem.tiers?.reduce(
-                        (acc, curr) => {
-                          if (acc && acc.cost < curr.cost) {
-                            return acc;
-                          }
-
-                          return curr;
-                        },
-                        primaryLineItem.tiers[0],
-                      );
-
-                      const tierTranslationKey = isMultiTier
-                        ? 'billing:startingAtPriceUnit'
-                        : 'billing:priceUnit';
 
                       return (
                         <RadioGroupItemLabel
@@ -341,34 +320,14 @@ export function PlanPicker(
                               }
                             >
                               <div>
-                                <If
-                                  condition={shouldDisplayTier}
-                                  fallback={
-                                    <Price key={plan.id}>
-                                      <span>
-                                        {formatCurrency({
-                                          currencyCode:
-                                            product.currency.toLowerCase(),
-                                          value: primaryLineItem.cost,
-                                          locale,
-                                        })}
-                                      </span>
-                                    </Price>
-                                  }
-                                >
-                                  <Trans
-                                    i18nKey={tierTranslationKey}
-                                    values={{
-                                      price: formatCurrency({
-                                        currencyCode:
-                                          product.currency.toLowerCase(),
-                                        value: lowestTier?.cost ?? 0,
-                                        locale,
-                                      }),
-                                      unit: primaryLineItem.unit,
-                                    }}
+                                <Price key={plan.id}>
+                                  <PlanCostDisplay
+                                    primaryLineItem={primaryLineItem}
+                                    currencyCode={product.currency}
+                                    interval={selectedInterval}
+                                    alwaysDisplayMonthlyPrice={true}
                                   />
-                                </If>
+                                </Price>
 
                                 <div>
                                   <span className={'text-muted-foreground'}>
