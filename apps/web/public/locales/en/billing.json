@@ -120,7 +120,8 @@
   "plans": {
     "features": {
       "maxTasks": "Up to 10 tasks",
-      "chatSupport": "Chat support"
+      "chatSupport": "Chat support",
+      "fileStorage": "File storage"
     },
     "starter": {
       "name": "Starter",

@@ -114,6 +114,7 @@
   },
   "plans": {
     "features": {
+      "fileStorage": "文件存储",
       "maxTasks": "最多 10 个任务",
       "chatSupport": "聊天支持"
     },

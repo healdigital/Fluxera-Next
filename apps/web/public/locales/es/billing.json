@@ -114,6 +114,7 @@
   },
   "plans": {
     "features": {
+      "fileStorage": "Almacenamiento de archivos",
       "maxTasks": "Hasta 10 tareas",
       "chatSupport": "Soporte por chat"
     },

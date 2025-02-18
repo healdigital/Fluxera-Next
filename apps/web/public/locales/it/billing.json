@@ -114,6 +114,7 @@
   },
   "plans": {
     "features": {
+      "fileStorage": "Archiviazione dei file",
       "maxTokens": "Fino a 500k tokens",
       "chatSupport": "Supporto via chat"
     },

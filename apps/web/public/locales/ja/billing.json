@@ -114,6 +114,7 @@
   },
   "plans": {
     "features": {
+      "fileStorage": "ファイルストレージ",
       "maxTasks": "最大10個のタスク",
       "chatSupport": "チャットサポート"
     },
