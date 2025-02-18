@@ -222,7 +222,12 @@ function PricingItem(
 
         <div className={'flex flex-col space-y-2'}>
           <Price isMonthlyPrice={props.alwaysDisplayMonthlyPrice}>
-            <If condition={!isCustom} fallback={props.plan.label}>
+            <If
+              condition={!isCustom}
+              fallback={
+                <Trans i18nKey={props.plan.label} defaults={props.plan.label} />
+              }
+            >
               <PlanCostDisplay
                 primaryLineItem={lineItem}
                 currencyCode={props.product.currency}
