@@ -1,4 +1,4 @@
-import path from 'node:path';
+import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -72,14 +72,6 @@ const config = {
       ...INTERNAL_PACKAGES,
     ],
   },
-  webpack: (config) => {
-    config.resolve.alias['react-dom/server'] = path.join(
-      process.cwd(),
-      'node_modules/react-dom/server.edge.js',
-    );
-
-    return config;
-  },
   modularizeImports: {
     lodash: {
       transform: 'lodash/{{member}}',
@@ -90,7 +82,9 @@ const config = {
   typescript: { ignoreBuildErrors: true },
 };
 
-export default config;
+export default withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})(config);
 
 function getRemotePatterns() {
   /** @type {import('next').NextConfig['remotePatterns']} */
