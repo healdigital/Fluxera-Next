@@ -200,11 +200,4 @@ export function installMessageChannelPolyfill() {
   root.MessageEvent = MessageEvent;
 
   console.log("MessageChannel Polyfill: Successfully installed");
-
-  // Return the implementation for immediate use
-  return {
-    MessageChannel,
-    MessagePort,
-    MessageEvent
-  };
 }
