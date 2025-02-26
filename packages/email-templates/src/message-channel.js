@@ -1,5 +1,5 @@
 // MessageChannel polyfill for Cloudflare Workers
-(function installMessageChannelPolyfill() {
+export function installMessageChannelPolyfill() {
   // Ensure we're running in the correct global context
   const root =
     (typeof globalThis !== "undefined" && globalThis) ||
@@ -207,10 +207,4 @@
     MessagePort,
     MessageEvent
   };
-})();
-
-const messageChannelExists = !!MessageChannel;
-
-console.log(`MessageChannel Polyfill: Successfully installed: ${!!messageChannelExists}`);
-
-export {};
+}

@@ -36,7 +36,12 @@ interface Props {
 export async function renderInviteEmail(props: Props) {
   const namespace = 'invite-email';
 
-  await import('../message-channel');
+  const { installMessageChannelPolyfill } = await import('../message-channel');
+  installMessageChannelPolyfill();
+
+  const messageChannelExists = !!MessageChannel;
+
+  console.log(`MessageChannel Polyfill: Successfully installed: ${messageChannelExists}`);
 
   const { t } = await initializeEmailI18n({
     language: props.language,
