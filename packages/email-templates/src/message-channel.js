@@ -209,8 +209,8 @@
   };
 })();
 
-console.log("MessageChannel Polyfill: Successfully installed", {
-  MessageChannel,
-  MessagePort,
-  MessageEvent
-});
+const messageChannelExists = !!MessageChannel;
+
+console.log(`MessageChannel Polyfill: Successfully installed: ${!!messageChannelExists}`);
+
+export {};

@@ -1,0 +1,4 @@
+compatibility_flags = [ "nodejs_compat" ]
+
+[define]
+"global" = "globalThis"

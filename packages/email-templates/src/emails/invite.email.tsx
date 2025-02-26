@@ -36,6 +36,8 @@ interface Props {
 export async function renderInviteEmail(props: Props) {
   const namespace = 'invite-email';
 
+  await import('../message-channel');
+
   const { t } = await initializeEmailI18n({
     language: props.language,
     namespace,
