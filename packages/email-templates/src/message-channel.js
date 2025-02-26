@@ -1,17 +1,19 @@
 // MessageChannel polyfill for Cloudflare Workers
 (function installMessageChannelPolyfill() {
   // Ensure we're running in the correct global context
-  const global = typeof globalThis !== 'undefined' ? globalThis :
-    typeof self !== 'undefined' ? self :
-      typeof window !== 'undefined' ? window :
-        typeof global !== 'undefined' ? global : this;
+  const root =
+    (typeof globalThis !== "undefined" && globalThis) ||
+    (typeof self !== "undefined" && self) ||
+    (typeof global !== "undefined" && global);
 
   console.log("MessageChannel Polyfill: Starting installation");
 
   // If MessageChannel is already defined, don't override it
-  if (global.MessageChannel) {
+  if (root.MessageChannel) {
     console.log("MessageChannel Polyfill: Native implementation already exists");
     return;
+  } else {
+    console.log("MessageChannel Polyfill: Native implementation does not exist. Installing...");
   }
 
   // UUID generator for port identification
@@ -193,9 +195,9 @@
   MessageChannel.prototype.constructor = MessageChannel;
 
   // Export to global scope
-  global.MessagePort = MessagePort;
-  global.MessageChannel = MessageChannel;
-  global.MessageEvent = MessageEvent;
+  root.MessagePort = MessagePort;
+  root.MessageChannel = MessageChannel;
+  root.MessageEvent = MessageEvent;
 
   console.log("MessageChannel Polyfill: Successfully installed");
 
@@ -206,3 +208,9 @@
     MessageEvent
   };
 })();
+
+console.log("MessageChannel Polyfill: Successfully installed", {
+  MessageChannel,
+  MessagePort,
+  MessageEvent
+});
