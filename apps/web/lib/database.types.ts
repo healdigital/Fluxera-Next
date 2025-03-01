@@ -77,29 +77,7 @@ export type Database = {
           updated_at?: string | null;
           updated_by?: string | null;
         };
-        Relationships: [
-          {
-            foreignKeyName: 'accounts_created_by_fkey';
-            columns: ['created_by'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'accounts_primary_owner_user_id_fkey';
-            columns: ['primary_owner_user_id'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'accounts_updated_by_fkey';
-            columns: ['updated_by'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-        ];
+        Relationships: [];
       };
       accounts_memberships: {
         Row: {
@@ -157,27 +135,6 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'roles';
             referencedColumns: ['name'];
-          },
-          {
-            foreignKeyName: 'accounts_memberships_created_by_fkey';
-            columns: ['created_by'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'accounts_memberships_updated_by_fkey';
-            columns: ['updated_by'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'accounts_memberships_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
           },
         ];
       };
@@ -450,13 +407,6 @@ export type Database = {
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'invitations_invited_by_fkey';
-            columns: ['invited_by'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
-          {
             foreignKeyName: 'invitations_role_fkey';
             columns: ['role'];
             isOneToOne: false;
@@ -464,6 +414,69 @@ export type Database = {
             referencedColumns: ['name'];
           },
         ];
+      };
+      nonces: {
+        Row: {
+          client_token: string;
+          created_at: string;
+          description: string | null;
+          expires_at: string;
+          id: string;
+          last_verification_at: string | null;
+          last_verification_ip: unknown | null;
+          last_verification_user_agent: string | null;
+          metadata: Json | null;
+          nonce: string;
+          purpose: string;
+          revoked: boolean;
+          revoked_reason: string | null;
+          scopes: string[] | null;
+          tags: string[] | null;
+          used_at: string | null;
+          user_id: string | null;
+          verification_attempts: number;
+        };
+        Insert: {
+          client_token: string;
+          created_at?: string;
+          description?: string | null;
+          expires_at: string;
+          id?: string;
+          last_verification_at?: string | null;
+          last_verification_ip?: unknown | null;
+          last_verification_user_agent?: string | null;
+          metadata?: Json | null;
+          nonce: string;
+          purpose: string;
+          revoked?: boolean;
+          revoked_reason?: string | null;
+          scopes?: string[] | null;
+          tags?: string[] | null;
+          used_at?: string | null;
+          user_id?: string | null;
+          verification_attempts?: number;
+        };
+        Update: {
+          client_token?: string;
+          created_at?: string;
+          description?: string | null;
+          expires_at?: string;
+          id?: string;
+          last_verification_at?: string | null;
+          last_verification_ip?: unknown | null;
+          last_verification_user_agent?: string | null;
+          metadata?: Json | null;
+          nonce?: string;
+          purpose?: string;
+          revoked?: boolean;
+          revoked_reason?: string | null;
+          scopes?: string[] | null;
+          tags?: string[] | null;
+          used_at?: string | null;
+          user_id?: string | null;
+          verification_attempts?: number;
+        };
+        Relationships: [];
       };
       notifications: {
         Row: {
@@ -942,6 +955,19 @@ export type Database = {
           updated_at: string;
         };
       };
+      create_nonce: {
+        Args: {
+          p_user_id?: string;
+          p_purpose?: string;
+          p_expires_in_seconds?: number;
+          p_metadata?: Json;
+          p_description?: string;
+          p_tags?: string[];
+          p_scopes?: string[];
+          p_revoke_previous?: boolean;
+        };
+        Returns: Json;
+      };
       create_team_account: {
         Args: {
           account_name: string;
@@ -1005,6 +1031,12 @@ export type Database = {
       };
       get_config: {
         Args: Record<PropertyKey, never>;
+        Returns: Json;
+      };
+      get_nonce_status: {
+        Args: {
+          p_id: string;
+        };
         Returns: Json;
       };
       get_upper_system_role: {
@@ -1076,6 +1108,13 @@ export type Database = {
         Args: {
           account_id: string;
           user_id: string;
+        };
+        Returns: boolean;
+      };
+      revoke_nonce: {
+        Args: {
+          p_id: string;
+          p_reason?: string;
         };
         Returns: boolean;
       };
@@ -1157,6 +1196,18 @@ export type Database = {
           trial_starts_at: string | null;
           updated_at: string;
         };
+      };
+      verify_nonce: {
+        Args: {
+          p_token: string;
+          p_purpose: string;
+          p_user_id?: string;
+          p_required_scopes?: string[];
+          p_max_verification_attempts?: number;
+          p_ip?: unknown;
+          p_user_agent?: string;
+        };
+        Returns: Json;
       };
     };
     Enums: {
@@ -1265,6 +1316,7 @@ export type Database = {
           owner_id: string | null;
           path_tokens: string[] | null;
           updated_at: string | null;
+          user_metadata: Json | null;
           version: string | null;
         };
         Insert: {
@@ -1278,6 +1330,7 @@ export type Database = {
           owner_id?: string | null;
           path_tokens?: string[] | null;
           updated_at?: string | null;
+          user_metadata?: Json | null;
           version?: string | null;
         };
         Update: {
@@ -1291,6 +1344,7 @@ export type Database = {
           owner_id?: string | null;
           path_tokens?: string[] | null;
           updated_at?: string | null;
+          user_metadata?: Json | null;
           version?: string | null;
         };
         Relationships: [
@@ -1312,6 +1366,7 @@ export type Database = {
           key: string;
           owner_id: string | null;
           upload_signature: string;
+          user_metadata: Json | null;
           version: string;
         };
         Insert: {
@@ -1322,6 +1377,7 @@ export type Database = {
           key: string;
           owner_id?: string | null;
           upload_signature: string;
+          user_metadata?: Json | null;
           version: string;
         };
         Update: {
@@ -1332,6 +1388,7 @@ export type Database = {
           key?: string;
           owner_id?: string | null;
           upload_signature?: string;
+          user_metadata?: Json | null;
           version?: string;
         };
         Relationships: [
@@ -1468,6 +1525,10 @@ export type Database = {
           updated_at: string;
         }[];
       };
+      operation: {
+        Args: Record<PropertyKey, never>;
+        Returns: string;
+      };
       search: {
         Args: {
           prefix: string;
@@ -1578,4 +1639,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions['schema']]['Enums'][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema['Enums']
     ? PublicSchema['Enums'][PublicEnumNameOrOptions]
+    : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema['CompositeTypes']
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema['CompositeTypes']
+    ? PublicSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
     : never;
