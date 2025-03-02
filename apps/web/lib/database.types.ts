@@ -1086,6 +1086,14 @@ export type Database = {
         };
         Returns: boolean;
       };
+      install_extensions: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
+      is_aal2: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
       is_account_owner: {
         Args: {
           account_id: string;
@@ -1098,10 +1106,18 @@ export type Database = {
         };
         Returns: boolean;
       };
+      is_mfa_compliant: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
       is_set: {
         Args: {
           field_name: string;
         };
+        Returns: boolean;
+      };
+      is_super_admin: {
+        Args: Record<PropertyKey, never>;
         Returns: boolean;
       };
       is_team_member: {
