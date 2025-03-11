@@ -5,8 +5,6 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
 
-export const runtime = 'edge';
-
 export async function GET(request: NextRequest) {
   const service = createAuthCallbackService(getSupabaseServerClient());
 

@@ -2,8 +2,6 @@ import { getDatabaseWebhookHandlerService } from '@kit/database-webhooks';
 import { getServerMonitoringService } from '@kit/monitoring/server';
 import { enhanceRouteHandler } from '@kit/next/routes';
 
-export const runtime = 'edge';
-
 /**
  * @name POST
  * @description POST handler for the webhook route that handles the webhook event

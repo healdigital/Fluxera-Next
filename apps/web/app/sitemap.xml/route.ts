@@ -13,8 +13,6 @@ import appConfig from '~/config/app.config';
 const MAX_AGE = 60;
 const S_MAX_AGE = 3600;
 
-export const runtime = 'edge';
-
 export async function GET() {
   const paths = getPaths();
   const contentItems = await getContentItems();

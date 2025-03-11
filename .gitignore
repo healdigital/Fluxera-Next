@@ -43,5 +43,6 @@ yarn-error.log*
 .vscode/
 .zed
 
-# contentlayer
-.contentlayer/
+# cloudflare
+**/.open-next
+**/.dev.vars
