@@ -8,6 +8,7 @@
     "analyze": "ANALYZE=true pnpm run build",
     "build": "pnpm with-env next build",
     "build:test": "NODE_ENV=test pnpm with-env:test next build",
+    "build:prod": "pnpm run opennext:build && wrangler deploy --dry-run --outdir=dist",
     "clean": "git clean -xdf .next .turbo node_modules",
     "dev": "pnpm with-env next dev --turbo | pino-pretty -c",
     "lint": "eslint .",
@@ -18,6 +19,10 @@
     "typecheck": "tsc --noEmit",
     "with-env": "dotenv -e ./.env.local --",
     "with-env:test": "dotenv -e ./.env.test --",
+    "deploy": "pnpm run opennext:build && wrangler deploy",
+    "preview": "pnpm run opennext:build && wrangler dev",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "opennext:build": "opennextjs-cloudflare",
     "supabase": "supabase",
     "supabase:start": "supabase status || supabase start",
     "supabase:stop": "supabase stop",
@@ -81,6 +86,7 @@
     "@kit/prettier-config": "workspace:*",
     "@kit/tsconfig": "workspace:*",
     "@next/bundle-analyzer": "15.2.1",
+    "@opennextjs/cloudflare": "^0.5.10",
     "@tailwindcss/postcss": "^4.0.9",
     "@types/node": "^22.13.4",
     "@types/react": "19.0.10",
@@ -93,7 +99,8 @@
     "supabase": "^2.15.8",
     "tailwindcss": "4.0.9",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "wrangler": "latest"
   },
   "prettier": "@kit/prettier-config",
   "browserslist": [
