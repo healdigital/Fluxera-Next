@@ -22,7 +22,6 @@ import { EmailHeader } from '../components/header';
 import { EmailHeading } from '../components/heading';
 import { EmailWrapper } from '../components/wrapper';
 import { initializeEmailI18n } from '../lib/i18n';
-import { installMessageChannelPolyfill } from '../message-channel';
 
 interface Props {
   teamName: string;
@@ -34,14 +33,9 @@ interface Props {
   language?: string;
 }
 
-installMessageChannelPolyfill();
 
 export async function renderInviteEmail(props: Props) {
   const namespace = 'invite-email';
-
-  installMessageChannelPolyfill();
-
-  console.log(`MessageChannel: ${!!MessageChannel}`);
 
   const { t } = await initializeEmailI18n({
     language: props.language,
