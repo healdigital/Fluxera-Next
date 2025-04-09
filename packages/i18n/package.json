@@ -21,7 +21,7 @@
     "@kit/shared": "workspace:*",
     "@kit/tsconfig": "workspace:*",
     "@tanstack/react-query": "5.67.1",
-    "next": "15.2.1",
+    "next": "15.1.7",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-i18next": "^15.4.1"

@@ -46,3 +46,5 @@ yarn-error.log*
 # cloudflare
 **/.open-next
 **/.dev.vars
+**/.wrangler
+.open-next

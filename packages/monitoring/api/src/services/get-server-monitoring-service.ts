@@ -48,5 +48,7 @@ export async function getServerMonitoringService() {
     return new ConsoleMonitoringService();
   }
 
+  console.log(provider);
+
   return serverMonitoringRegistry.get(provider);
 }
