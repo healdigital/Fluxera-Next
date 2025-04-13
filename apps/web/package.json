@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "analyze": "ANALYZE=true pnpm run build",
-    "build": "next build",
+    "build": "opennextjs-cloudflare build",
     "build:test": "NODE_ENV=test next build",
     "build:prod": "pnpm run opennext:build && wrangler deploy --dry-run --outdir=dist",
     "clean": "git clean -xdf .next .turbo node_modules",
@@ -20,7 +20,6 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "opennext:build": "opennextjs-cloudflare",
     "supabase": "supabase",
     "supabase:start": "supabase status || supabase start",
     "supabase:stop": "supabase stop",
