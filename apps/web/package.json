@@ -84,7 +84,7 @@
     "@kit/prettier-config": "workspace:*",
     "@kit/tsconfig": "workspace:*",
     "@next/bundle-analyzer": "15.3.0",
-    "@opennextjs/cloudflare": "^1.0.0-beta.2",
+    "@opennextjs/cloudflare": "^1.0.0-beta.3",
     "@tailwindcss/postcss": "^4.1.3",
     "@types/node": "^22.14.0",
     "@types/react": "19.1.0",

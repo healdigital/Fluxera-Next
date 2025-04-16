@@ -6,7 +6,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "next-supabase-saas-kit-turbo-demo",
   "main": ".open-next/worker.js",
-  "compatibility_date": "2024-12-30",
+  "keep_vars": true,
+  "compatibility_date": "2025-04-02",
   "compatibility_flags": [
     "nodejs_compat"
   ],
@@ -50,10 +51,5 @@
 
   "d1_databases": [],
   "kv_namespaces": [],
-  "r2_buckets": [],
-
-  "define": {
-    "process.version": "\"v22.14.0\"",
-    "process.versions": "{ \"node\": \"22.14.0\" }"
-  }
+  "r2_buckets": []
 }
