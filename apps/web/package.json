@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "analyze": "ANALYZE=true pnpm run build",
-    "build": "opennextjs-cloudflare build",
+    "build": "next build",
     "build:test": "NODE_ENV=test next build",
     "build:prod": "pnpm run opennext:build && wrangler deploy --dry-run --outdir=dist",
     "clean": "git clean -xdf .next .turbo node_modules",
@@ -98,7 +98,7 @@
     "tailwindcss": "4.1.4",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.8.3",
-    "wrangler": "4.11.1"
+    "wrangler": "4.13.1"
   },
   "prettier": "@kit/prettier-config",
   "browserslist": [
