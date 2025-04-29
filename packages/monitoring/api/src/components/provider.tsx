@@ -16,8 +16,6 @@ type ProviderComponent = {
 
 const provider = getMonitoringProvider();
 
-console.log({provider});
-
 const Provider = provider
   ? lazy(() => monitoringProviderRegistry.get(provider))
   : null;
