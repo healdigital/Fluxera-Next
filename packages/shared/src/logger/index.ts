@@ -4,7 +4,8 @@ import { Logger as LoggerInstance } from './logger';
 // Define the type for the logger provider.  Currently supporting 'pino'.
 type LoggerProvider = 'pino' | 'console';
 
-const LOGGER = (process.env.LOGGER ?? 'console') as LoggerProvider;
+// Use pino as the default logger provider
+const LOGGER = (process.env.LOGGER ?? 'pino') as LoggerProvider;
 
 // Create a registry for logger implementations
 const loggerRegistry = createRegistry<LoggerInstance, LoggerProvider>();
@@ -16,7 +17,7 @@ loggerRegistry.register('pino', async () => {
   return PinoLogger;
 });
 
-// Register the 'pino' logger implementation
+// Register the 'console' logger implementation
 loggerRegistry.register('console', async () => {
   const { Logger: ConsoleLogger } = await import('./impl/console');
 
