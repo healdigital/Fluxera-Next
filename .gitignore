@@ -48,3 +48,6 @@ yarn-error.log*
 **/.dev.vars
 **/.wrangler
 .open-next
+
+# ts-node cache
+node-compile-cache/
