@@ -11,6 +11,7 @@ import { If } from '@kit/ui/if';
 import { Separator } from '@kit/ui/separator';
 import { Trans } from '@kit/ui/trans';
 
+import { DemoAccountContainer } from './demo-account-container';
 import { LastAuthMethodHint } from './last-auth-method-hint';
 import { MagicLinkAuthContainer } from './magic-link-auth-container';
 import { OauthProviders } from './oauth-providers';
@@ -103,6 +104,8 @@ export function SignInMethodsContainer(props: {
           }}
         />
       </If>
+
+      <DemoAccountContainer onSignIn={onSignIn} />
     </>
   );
 }

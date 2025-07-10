@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import type { Provider } from '@supabase/supabase-js';
 
 import { isBrowser } from '@kit/shared/utils';
@@ -8,6 +10,7 @@ import { If } from '@kit/ui/if';
 import { Separator } from '@kit/ui/separator';
 import { Trans } from '@kit/ui/trans';
 
+import { DemoAccountContainer } from './demo-account-container';
 import { ExistingAccountHint } from './existing-account-hint';
 import { MagicLinkAuthContainer } from './magic-link-auth-container';
 import { OauthProviders } from './oauth-providers';
@@ -32,6 +35,7 @@ export function SignUpMethodsContainer(props: {
 }) {
   const redirectUrl = getCallbackUrl(props);
   const defaultValues = getDefaultValues();
+  const router = useRouter();
 
   return (
     <>
@@ -90,6 +94,12 @@ export function SignUpMethodsContainer(props: {
           }}
         />
       </If>
+
+      <DemoAccountContainer
+        onSignIn={() => {
+          router.push(props.paths.appHome);
+        }}
+      />
     </>
   );
 }

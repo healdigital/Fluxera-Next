@@ -17,11 +17,14 @@
     "./captcha/client": "./src/captcha/client/index.ts",
     "./captcha/server": "./src/captcha/server/index.ts",
     "./resend-email-link": "./src/components/resend-auth-link-form.tsx",
-    "./oauth-provider-logo-image": "./src/components/oauth-provider-logo-image.tsx"
+    "./oauth-provider-logo-image": "./src/components/oauth-provider-logo-image.tsx",
+    "./demo-user-actions": "./src/server/demo-user-server-actions.ts",
+    "./demo-account-button": "./src/components/demo-account-button.tsx"
   },
   "devDependencies": {
     "@hookform/resolvers": "^5.1.1",
     "@kit/eslint-config": "workspace:*",
+    "@kit/next": "workspace:*",
     "@kit/prettier-config": "workspace:*",
     "@kit/shared": "workspace:*",
     "@kit/supabase": "workspace:*",
