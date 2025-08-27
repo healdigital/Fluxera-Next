@@ -1,12 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useTransition } from 'react';
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 
 import { useRouter } from 'next/navigation';
 
+import { useChat } from '@ai-sdk/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Message, generateId } from 'ai';
-import { useChat } from 'ai/react';
+import { DefaultChatTransport, UIMessage, generateId } from 'ai';
 import {
   Bot,
   CircleStop,
@@ -16,7 +16,6 @@ import {
   Trash,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 
 import { useCsrfToken } from '@kit/shared/hooks';
 import { useSupabase } from '@kit/supabase/hooks/use-supabase';
@@ -24,6 +23,7 @@ import { Badge } from '@kit/ui/badge';
 import { Button } from '@kit/ui/button';
 import { If } from '@kit/ui/if';
 import { Input } from '@kit/ui/input';
+import { toast } from '@kit/ui/sonner';
 import {
   Tooltip,
   TooltipContent,
@@ -44,7 +44,7 @@ export function ChatContainer(
   props: React.PropsWithChildren<{
     referenceId: string;
     accountId: string;
-    messages: Message[];
+    messages: UIMessage[];
     content?: string;
   }>,
 ) {
@@ -55,6 +55,7 @@ export function ChatContainer(
   const { t } = useTranslation('chats');
 
   const [isCreatingChat, startTransition] = useTransition();
+  const [input, setInput] = useState('');
 
   const onError = (error: unknown) => {
     if (error instanceof Error && error.message === 'No credits available') {
@@ -68,23 +69,17 @@ export function ChatContainer(
     }
   };
 
-  const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    isLoading,
-    append,
-    stop,
-  } = useChat({
-    api: `${props.referenceId}/respond`,
-    headers: {
-      'X-CSRF-Token': csrfToken,
-    },
-    body: {
-      accountId: props.accountId,
-    },
-    initialMessages: props.messages,
+  const { messages, status, sendMessage, stop } = useChat({
+    transport: new DefaultChatTransport({
+      api: `${props.referenceId}/respond`,
+      headers: {
+        'X-CSRF-Token': csrfToken,
+      },
+      body: {
+        accountId: props.accountId,
+      },
+    }),
+    messages: props.messages,
     onError,
     onFinish: () => {
       void queryClient.invalidateQueries({
@@ -93,33 +88,27 @@ export function ChatContainer(
     },
   });
 
+  const isLoading = status === 'submitted' || status === 'streaming';
+
   const onContinue = useCallback(() => {
-    void append(
-      {
-        role: 'user',
-        content: 'Continue',
-      },
-      {},
-    );
-  }, [append]);
+    void sendMessage({
+      parts: [{ type: 'text', text: 'Continue' }],
+    });
+  }, [sendMessage]);
 
   // append the user's message if it exists
   useEffect(() => {
     if (props.content && !loadInitialContentRef.current) {
       loadInitialContentRef.current = true;
 
-      void append(
-        {
-          role: 'user',
-          content: props.content,
-        },
-        {},
-      );
+      void sendMessage({
+        parts: [{ type: 'text', text: props.content }],
+      });
 
       // clear the query string
       window.history.replaceState(null, '', window.location.pathname);
     }
-  }, []);
+  }, [props.content, sendMessage]);
 
   return (
     <div className={'flex flex-1 flex-col items-center'}>
@@ -137,29 +126,34 @@ export function ChatContainer(
       <ChatInput
         loading={isLoading}
         disabled={isCreatingChat}
-        handleInputChange={handleInputChange}
         value={input}
+        onChange={setInput}
         onStop={stop}
-        handleSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault();
+
+          if (!input.trim()) return;
 
           // if we already have a chat ID
           // we can submit the user's message
           if (props.referenceId) {
-            return handleSubmit(event);
+            await sendMessage({
+              parts: [{ type: 'text', text: input }],
+            });
+
+            setInput('');
           } else {
             // otherwise, we create a chat first
             // and navigate to the chat
             startTransition(async () => {
               // assign an ID
-              const referenceId = generateId(8);
+              const referenceId = generateId().substring(0, 8);
 
-              const response = // create a chat
-                await createChatAction({
-                  accountId: props.accountId,
-                  referenceId,
-                  content: input,
-                });
+              const response = await createChatAction({
+                accountId: props.accountId,
+                referenceId,
+                content: input,
+              });
 
               if (response.success) {
                 // navigate to the chat
@@ -180,7 +174,7 @@ export function ChatMessagesContainer({
   isLoading,
   onContinue,
 }: {
-  messages: Message[];
+  messages: UIMessage[];
   isLoading: boolean;
   onContinue: () => void;
 }) {
@@ -232,7 +226,14 @@ export function ChatMessagesContainer({
                   },
                 )}
               >
-                <div>{message.content}</div>
+                <div>
+                  {Array.isArray(message.parts)
+                    ? message.parts
+                        .filter((part) => part.type === 'text')
+                        .map((part) => part.text)
+                        .join('')
+                    : ''}
+                </div>
 
                 <If
                   condition={
@@ -266,15 +267,15 @@ export function ChatInput(props: {
   loading: boolean;
   disabled: boolean;
   onStop: () => void;
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (value: string) => void;
   value: string;
-  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }) {
   const { t } = useTranslation('chats');
 
   return (
     <form
-      onSubmit={props.handleSubmit}
+      onSubmit={props.onSubmit}
       className={
         'animate-in slide-in-from-bottom-8 relative bottom-8 mx-auto mt-auto w-full max-w-3xl'
       }
@@ -295,7 +296,7 @@ export function ChatInput(props: {
         required
         disabled={props.disabled || props.loading}
         value={props.value}
-        onChange={props.handleInputChange}
+        onChange={(e) => props.onChange(e.target.value)}
         placeholder={t('askAiPlaceholder')}
         className={
           'bg-background w-full rounded-3xl px-4 py-6 pr-12 pl-12 transition-all focus-visible:shadow-xl'

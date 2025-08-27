@@ -41,8 +41,16 @@ function ChatPage(props: Props) {
       ? new Date(message.createdAt)
       : undefined;
 
+    const parts = [
+      {
+        type: 'text' as const,
+        text: message.content,
+      },
+    ];
+
     return {
       ...message,
+      parts,
       createdAt,
     };
   });

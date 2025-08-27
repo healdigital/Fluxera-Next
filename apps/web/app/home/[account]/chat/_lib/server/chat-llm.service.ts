@@ -3,7 +3,7 @@ import 'server-only';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 import { openai } from '@ai-sdk/openai';
-import { generateText, streamText } from 'ai';
+import { UIMessage, generateText, streamText } from 'ai';
 import { encodeChat } from 'gpt-tokenizer';
 import { z } from 'zod';
 
@@ -14,12 +14,7 @@ import { Database } from '~/lib/database.types';
 import { createChatMessagesService } from '../../_lib/server/chat-messages.service';
 
 export const ChatMessagesSchema = z.object({
-  messages: z.array(
-    z.object({
-      content: z.string(),
-      role: z.enum(['user', 'assistant']),
-    }),
-  ),
+  messages: z.custom<UIMessage[]>(),
 });
 
 export const StreamResponseSchema = ChatMessagesSchema.extend({
@@ -78,7 +73,7 @@ class ChatLLMService {
 
     await this.adminClient.rpc('deduct_credits', {
       account_id: params.accountId,
-      amount: usage.totalTokens,
+      amount: usage.totalTokens ?? 0,
     });
 
     return text;
@@ -119,22 +114,48 @@ class ChatLLMService {
     const maxModelTokens = 4096;
 
     const maxHistoryLength = maxModelTokens - systemMessage.length - maxTokens;
-    let decodedHistory = encodeChat(messages, 'gpt-3.5-turbo');
 
-    if (decodedHistory.length > maxHistoryLength) {
-      while (decodedHistory.length > maxHistoryLength) {
-        messages.shift();
-        decodedHistory = encodeChat(messages, 'gpt-3.5-turbo');
+    const history = messages.reduce<
+      {
+        content: string;
+        role: 'user' | 'assistant';
+      }[]
+    >((acc, message) => {
+      const content = message.parts.reduce((acc, part) => {
+        if (part.type === 'text') {
+          return acc + part.text + '\n';
+        }
+
+        return acc;
+      }, '');
+
+      const newMessage = {
+        content,
+        role: message.role as 'user' | 'assistant',
+      };
+
+      // Always add the new message first (preserving most recent)
+      acc.push(newMessage);
+
+      // Check if the current history exceeds the token limit
+      let encodedLength = encodeChat(acc, settings.model).length;
+
+      // Remove oldest messages until we're under the limit, but keep at least the newest message
+      while (acc.length > 1 && encodedLength > maxHistoryLength) {
+        acc.shift(); // Remove the oldest message
+        encodedLength = encodeChat(acc, settings.model).length;
       }
-    }
+
+      return acc;
+    }, []);
 
     // we use the openai model to generate a response
-    const result = await streamText({
+    const result = streamText({
       model: openai(settings.model),
       system: settings.systemMessage,
-      maxTokens: settings.maxTokens,
+      maxOutputTokens: settings.maxTokens,
       temperature: settings.temperature,
-      messages,
+      messages: history,
       onFinish: async ({ text }) => {
         // get the chat ID using the reference ID
         const chatId =
@@ -152,7 +173,10 @@ class ChatLLMService {
           accountId,
           chatId,
           messages: [
-            lastMessage,
+            {
+              role: 'user',
+              content: (lastMessage.parts[0]! as { text: string }).text,
+            },
             {
               content: text,
               role: 'assistant',
@@ -180,12 +204,12 @@ class ChatLLMService {
 
         await this.adminClient.rpc('deduct_credits', {
           account_id: accountId,
-          amount: tokensUsage.totalTokens,
+          amount: tokensUsage.totalTokens ?? 0,
         });
       },
     });
 
-    return result.toDataStreamResponse();
+    return result.toUIMessageStreamResponse();
   }
 
   /**
