@@ -62,9 +62,12 @@ const config = {
     resolveExtensions: ['.ts', '.tsx', '.js', '.jsx'],
     resolveAlias: getModulesAliases(),
   },
-  devIndicators: {
-    position: 'bottom-right',
-  },
+  devIndicators:
+    process.env.NEXT_PUBLIC_CI === 'true'
+      ? false
+      : {
+          position: 'bottom-right',
+        },
   experimental: {
     mdxRs: true,
     reactCompiler: ENABLE_REACT_COMPILER,
@@ -147,7 +150,6 @@ function getModulesAliases() {
 
   // exclude the modules that are not needed
   const excludeSentry = monitoringProvider !== 'sentry';
-  const excludeBaselime = monitoringProvider !== 'baselime';
   const excludeStripe = billingProvider !== 'stripe';
   const excludeNodemailer = mailerProvider !== 'nodemailer';
   const excludeTurnstile = !captchaProvider;
@@ -160,10 +162,6 @@ function getModulesAliases() {
 
   if (excludeSentry) {
     aliases['@sentry/nextjs'] = noopPath;
-  }
-
-  if (excludeBaselime) {
-    aliases['@baselime/react-rum'] = noopPath;
   }
 
   if (excludeStripe) {
