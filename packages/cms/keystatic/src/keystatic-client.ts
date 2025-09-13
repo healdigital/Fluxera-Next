@@ -26,6 +26,8 @@ class KeystaticClient implements CmsClient {
 
     const docs = await reader.collections[collection].all();
 
+    console.log(`Keystatic`, docs);
+
     const filtered = docs
       .filter((item) => {
         const status = options?.status ?? 'published';

@@ -7,7 +7,7 @@
   "name": "next-supabase-saas-kit-turbo-demo",
   "main": ".open-next/worker.js",
   "keep_vars": true,
-  "compatibility_date": "2025-04-02",
+  "compatibility_date": "2025-09-01",
   "compatibility_flags": [
     "nodejs_compat"
   ],
