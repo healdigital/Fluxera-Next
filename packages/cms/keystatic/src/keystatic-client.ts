@@ -8,6 +8,21 @@ export function createKeystaticClient() {
   return new KeystaticClient();
 }
 
+const self = global || globalThis || this;
+const originalFetch = self.fetch;
+
+self.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+  const requestInit: RequestInit = {
+    ...(init ?? {}),
+    headers: {
+      ...(init?.headers ?? {}),
+      'User-Agent': 'Cloudflare-Workers',
+    }
+  };
+
+  return originalFetch(input, requestInit);
+}
+
 class KeystaticClient implements CmsClient {
   async getContentItems(options: Cms.GetContentItemsOptions) {
     const reader = await createKeystaticReader();

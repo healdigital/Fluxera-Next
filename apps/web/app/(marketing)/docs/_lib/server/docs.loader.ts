@@ -24,7 +24,8 @@ async function docsLoader(language: string | undefined) {
 
     return data.items;
   } catch (error) {
-    logger.error({ error }, 'Failed to load documentation pages');
+    const message = error instanceof Error ? error.message : String(error);
+    logger.error({ error }, `Failed to load documentation pages: ${message}`);
 
     return [];
   }

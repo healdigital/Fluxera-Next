@@ -59,7 +59,8 @@ const getContentItems = cache(
         sortDirection: 'desc',
       });
     } catch (error) {
-      logger.error({ error }, 'Failed to load blog posts');
+      const message = error instanceof Error ? error.message : String(error);
+      logger.error({ error }, `Failed to load blog posts: ${message}`);
 
       return { total: 0, items: [] };
     }
