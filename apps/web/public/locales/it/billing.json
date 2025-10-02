@@ -69,7 +69,7 @@
     "past_due": {
       "badge": "Scaduto",
       "heading": "La tua fattura è scaduta",
-      "description": "La tua fattura è scaduta. "
+      "description": "La tua fattura è scaduta."
     },
     "canceled": {
       "badge": "Annullato",
@@ -114,6 +114,7 @@
   },
   "plans": {
     "features": {
+      "promptsBank": "Banco di prompts",
       "fileStorage": "Archiviazione dei file",
       "maxTokens": "Fino a 500k tokens",
       "chatSupport": "Supporto via chat"
@@ -133,7 +134,8 @@
       "badge": "Popolare",
       "base": "Base",
       "features": {
-        "maxTokens": "Fino a 3M tokens"
+        "maxTokens": "Fino a 3M tokens",
+        "agents": "Fino a 10 agenti"
       }
     },
     "enterprise": {
@@ -143,7 +145,8 @@
       "base": "Base",
       "features": {
         "maxTokens": "Tokens illimitati",
-        "chatSupport": "Supporto prioritario"
+        "chatSupport": "Supporto prioritario",
+        "agents": "Agenti illimitati"
       }
     }
   }

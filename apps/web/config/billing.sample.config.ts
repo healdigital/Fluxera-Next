@@ -53,6 +53,7 @@ export default createBillingSchema({
         },
       ],
       features: [
+        'billing:plans.features.promptsBank',
         'billing:plans.starter.features.maxTokens',
         'billing:plans.features.chatSupport',
       ],
@@ -95,8 +96,10 @@ export default createBillingSchema({
         },
       ],
       features: [
+        'billing:plans.features.promptsBank',
         'billing:plans.features.fileStorage',
         'billing:plans.pro.features.maxTokens',
+        'billing:plans.pro.features.agents',
         'billing:plans.features.chatSupport',
       ],
     },
@@ -128,9 +131,11 @@ export default createBillingSchema({
         },
       ],
       features: [
+        'billing:plans.features.promptsBank',
         'billing:plans.features.fileStorage',
         'billing:plans.enterprise.features.maxTokens',
         'billing:plans.enterprise.features.chatSupport',
+        'billing:plans.enterprise.features.agents',
       ],
     },
   ],

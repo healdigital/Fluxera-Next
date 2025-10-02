@@ -121,6 +121,7 @@
   },
   "plans": {
     "features": {
+      "promptsBank": "Prompts Bank",
       "maxTasks": "Up to 10 tasks",
       "chatSupport": "Chat support",
       "fileStorage": "File storage"
@@ -140,7 +141,8 @@
       "badge": "Popular",
       "base": "Base",
       "features": {
-        "maxTokens": "Up to 3 million tokens"
+        "maxTokens": "Up to 3 million tokens",
+        "agents": "Up to 10 agents"
       }
     },
     "enterprise": {
@@ -150,7 +152,8 @@
       "base": "Base",
       "features": {
         "maxTokens": "Unlimited tokens",
-        "chatSupport": "Priority support"
+        "chatSupport": "Priority support",
+        "agents": "Unlimited agents"
       }
     }
   }

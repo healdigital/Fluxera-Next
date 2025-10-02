@@ -114,6 +114,7 @@
   },
   "plans": {
     "features": {
+      "promptsBank": "提示银行",
       "fileStorage": "文件存储",
       "maxTasks": "最多 10 个任务",
       "chatSupport": "聊天支持"
@@ -133,7 +134,8 @@
       "badge": "受欢迎的",
       "base": "根据",
       "features": {
-        "maxTokens": "最多 3M 代币"
+        "maxTokens": "最多 3M 代币",
+        "agents": "最多 10 个代理"
       }
     },
     "enterprise": {
@@ -143,7 +145,8 @@
       "base": "根据",
       "features": {
         "maxTokens": "无限代币",
-        "chatSupport": "优先支持"
+        "chatSupport": "优先支持",
+        "agents": "无限代理"
       }
     }
   }

@@ -114,6 +114,7 @@
   },
   "plans": {
     "features": {
+      "promptsBank": "Banque de prompts",
       "fileStorage": "Stockage de fichiers",
       "maxTasks": "Jusqu'à 10 tâches",
       "chatSupport": "Assistance par chat"
@@ -133,7 +134,8 @@
       "badge": "Populaire",
       "base": "Base",
       "features": {
-        "maxTokens": "Jusqu'à 3M jetons"
+        "maxTokens": "Jusqu'à 3M jetons",
+        "agents": "Jusqu'à 10 agents"
       }
     },
     "enterprise": {
@@ -143,7 +145,8 @@
       "base": "Base",
       "features": {
         "maxTokens": "Jetons illimitées",
-        "chatSupport": "Assistance prioritaire"
+        "chatSupport": "Assistance prioritaire",
+        "agents": "Agents illimités"
       }
     }
   }

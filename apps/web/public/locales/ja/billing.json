@@ -114,6 +114,7 @@
   },
   "plans": {
     "features": {
+      "promptsBank": "プロンプトバンク",
       "fileStorage": "ファイルストレージ",
       "maxTasks": "最大10個のタスク",
       "chatSupport": "チャットサポート"
@@ -133,7 +134,8 @@
       "badge": "人気のある",
       "base": "ベース",
       "features": {
-        "maxTokens": "最大 300 万トークン"
+        "maxTokens": "最大 300 万トークン",
+        "agents": "最大 10 個のエージェント"
       }
     },
     "enterprise": {
@@ -143,7 +145,8 @@
       "base": "ベース",
       "features": {
         "maxTokens": "無制限のトークン",
-        "chatSupport": "優先サポート"
+        "chatSupport": "優先サポート",
+        "agents": "無制限のエージェント"
       }
     }
   }
