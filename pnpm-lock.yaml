@@ -298,6 +298,9 @@ importers:
       '@next/bundle-analyzer':
         specifier: 15.5.4
         version: 15.5.4
+      '@tailwindcss/oxide-linux-arm64-musl':
+        specifier: latest
+        version: 4.1.14
       '@tailwindcss/postcss':
         specifier: ^4.1.14
         version: 4.1.14
@@ -316,6 +319,9 @@ importers:
       cssnano:
         specifier: ^7.1.1
         version: 7.1.1(postcss@8.5.6)
+      lightningcss-linux-arm64-musl:
+        specifier: latest
+        version: 1.30.2
       pino-pretty:
         specifier: 13.0.0
         version: 13.0.0
@@ -652,9 +658,6 @@ importers:
       '@kit/supabase':
         specifier: workspace:*
         version: link:../supabase
-      '@kit/team-accounts':
-        specifier: workspace:*
-        version: link:../features/team-accounts
       '@kit/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/typescript
@@ -7591,6 +7594,12 @@ packages:
 
   lightningcss-linux-arm64-musl@1.30.1:
     resolution: {integrity: sha512-jmUQVx4331m6LIX+0wUhBbmMX7TCfjF5FoOH6SD1CttzuYlGNVpA7QnrmLxrsub43ClTINfGSYyHe2HWeLl5CQ==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [linux]
+
+  lightningcss-linux-arm64-musl@1.30.2:
+    resolution: {integrity: sha512-5Vh9dGeblpTxWHpOx8iauV02popZDsCYMPIgiuw97OJ5uaDsL86cnqSFs5LZkG3ghHoX5isLgWzMs+eD1YzrnA==}
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
@@ -15108,8 +15117,7 @@ snapshots:
   '@tailwindcss/oxide-linux-arm64-gnu@4.1.14':
     optional: true
 
-  '@tailwindcss/oxide-linux-arm64-musl@4.1.14':
-    optional: true
+  '@tailwindcss/oxide-linux-arm64-musl@4.1.14': {}
 
   '@tailwindcss/oxide-linux-x64-gnu@4.1.14':
     optional: true
@@ -17818,6 +17826,8 @@ snapshots:
 
   lightningcss-linux-arm64-musl@1.30.1:
     optional: true
+
+  lightningcss-linux-arm64-musl@1.30.2: {}
 
   lightningcss-linux-x64-gnu@1.30.1:
     optional: true
