@@ -31,6 +31,8 @@ export function SignInMethodsContainer(props: {
     otp: boolean;
     oAuth: Provider[];
   };
+
+  captchaSiteKey?: string;
 }) {
   const router = useRouter();
 
@@ -49,18 +51,25 @@ export function SignInMethodsContainer(props: {
       <LastAuthMethodHint />
 
       <If condition={props.providers.password}>
-        <PasswordSignInContainer onSignIn={onSignIn} />
+        <PasswordSignInContainer
+          onSignIn={onSignIn}
+          captchaSiteKey={props.captchaSiteKey}
+        />
       </If>
 
       <If condition={props.providers.magicLink}>
         <MagicLinkAuthContainer
           redirectUrl={redirectUrl}
           shouldCreateUser={false}
+          captchaSiteKey={props.captchaSiteKey}
         />
       </If>
 
       <If condition={props.providers.otp}>
-        <OtpSignInContainer shouldCreateUser={false} />
+        <OtpSignInContainer
+          shouldCreateUser={false}
+          captchaSiteKey={props.captchaSiteKey}
+        />
       </If>
 
       <If condition={props.providers.oAuth.length}>

@@ -30,6 +30,7 @@ export function SignUpMethodsContainer(props: {
   };
 
   displayTermsCheckbox?: boolean;
+  captchaSiteKey?: string;
 }) {
   const redirectUrl = getCallbackUrl(props);
   const defaultValues = getDefaultValues();
@@ -45,11 +46,15 @@ export function SignUpMethodsContainer(props: {
           emailRedirectTo={redirectUrl}
           defaultValues={defaultValues}
           displayTermsCheckbox={props.displayTermsCheckbox}
+          captchaSiteKey={props.captchaSiteKey}
         />
       </If>
 
       <If condition={props.providers.otp}>
-        <OtpSignInContainer shouldCreateUser={true} />
+        <OtpSignInContainer
+          shouldCreateUser={true}
+          captchaSiteKey={props.captchaSiteKey}
+        />
       </If>
 
       <If condition={props.providers.magicLink}>
@@ -58,6 +63,7 @@ export function SignUpMethodsContainer(props: {
           shouldCreateUser={true}
           defaultValues={defaultValues}
           displayTermsCheckbox={props.displayTermsCheckbox}
+          captchaSiteKey={props.captchaSiteKey}
         />
       </If>
 
