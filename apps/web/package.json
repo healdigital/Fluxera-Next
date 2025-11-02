@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "analyze": "ANALYZE=true pnpm run build",
-    "build": "next build",
+    "build": "next build --webpack",
     "build:test": "NODE_ENV=test next build",
     "build:prod": "opennextjs-cloudflare build && wrangler deploy --dry-run --outdir=dist",
     "clean": "git clean -xdf .next .turbo node_modules",
