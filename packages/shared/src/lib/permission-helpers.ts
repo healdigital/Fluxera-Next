@@ -10,12 +10,12 @@ type Permission = Database['public']['Enums']['app_permissions'];
 
 /**
  * Wraps an async function with account membership and permission verification.
- * 
+ *
  * This helper ensures that:
  * 1. The user is authenticated
  * 2. The user is a member of the specified account
  * 3. The user has the required permission for the account
- * 
+ *
  * @template T - The return type of the wrapped function
  * @param fn - The async function to wrap
  * @param options - Configuration options
@@ -23,11 +23,11 @@ type Permission = Database['public']['Enums']['app_permissions'];
  * @param options.permission - The required permission (e.g., 'licenses.view', 'assets.create')
  * @param options.client - The Supabase client instance
  * @param options.resourceName - Optional resource name for better error messages
- * 
+ *
  * @returns The result of the wrapped function
  * @throws {UnauthorizedError} If user is not authenticated or not a member
  * @throws {ForbiddenError} If user lacks the required permission
- * 
+ *
  * @example
  * ```typescript
  * const result = await withAccountPermission(
@@ -74,13 +74,10 @@ export async function withAccountPermission<T>(
     .single();
 
   if (membershipError || !membership) {
-    throw new UnauthorizedError(
-      'You are not a member of this account',
-      {
-        accountId,
-        userId: user.id,
-      },
-    );
+    throw new UnauthorizedError('You are not a member of this account', {
+      accountId,
+      userId: user.id,
+    });
   }
 
   // Check if user has the required permission
@@ -115,18 +112,18 @@ export async function withAccountPermission<T>(
 
 /**
  * Verifies that the current user has a specific permission for an account.
- * 
+ *
  * This is a simpler alternative to `withAccountPermission` when you just need
  * to check permissions without wrapping a function.
- * 
+ *
  * @param options - Configuration options
  * @param options.accountId - The account ID to verify permissions for
  * @param options.permission - The required permission
  * @param options.client - The Supabase client instance
- * 
+ *
  * @returns True if user has permission, false otherwise
  * @throws {UnauthorizedError} If user is not authenticated
- * 
+ *
  * @example
  * ```typescript
  * const canCreate = await verifyPermission({
@@ -134,7 +131,7 @@ export async function withAccountPermission<T>(
  *   permission: 'licenses.create',
  *   client: supabaseClient,
  * });
- * 
+ *
  * if (!canCreate) {
  *   // Show disabled UI or error message
  * }
@@ -188,14 +185,14 @@ export async function verifyPermission(options: {
 
 /**
  * Checks if the current user is a member of the specified account.
- * 
+ *
  * @param options - Configuration options
  * @param options.accountId - The account ID to check membership for
  * @param options.client - The Supabase client instance
- * 
+ *
  * @returns True if user is a member, false otherwise
  * @throws {UnauthorizedError} If user is not authenticated
- * 
+ *
  * @example
  * ```typescript
  * const isMember = await verifyMembership({

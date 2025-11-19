@@ -1,3 +1,12 @@
+import {
+  isAppError,
+  isValidationError as isAppValidationError,
+  isBusinessRuleError,
+  isConflictError,
+  isForbiddenError,
+  isNotFoundError,
+  isUnauthorizedError,
+} from './app-errors';
 import type { ErrorMessage } from './error-messages';
 import {
   AssetErrors,
@@ -6,15 +15,6 @@ import {
   LicenseErrors,
   UserErrors,
 } from './error-messages';
-import {
-  isAppError,
-  isNotFoundError,
-  isUnauthorizedError,
-  isForbiddenError,
-  isValidationError as isAppValidationError,
-  isBusinessRuleError,
-  isConflictError,
-} from './app-errors';
 
 /**
  * Error handler utility for consistent error handling across the application

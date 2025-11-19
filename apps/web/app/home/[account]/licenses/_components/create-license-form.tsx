@@ -197,6 +197,10 @@ export function CreateLicenseForm({ accountSlug }: CreateLicenseFormProps) {
               <FormItem>
                 <FormLabel>
                   <Trans i18nKey="licenses:licenseType" />
+                  <FormFieldHelp
+                    title="License Type"
+                    content="Perpetual licenses are one-time purchases with indefinite usage. Subscription licenses require recurring payments and expire if not renewed. Choose the type that matches your agreement."
+                  />
                 </FormLabel>
                 <FormControl>
                   <Select
@@ -261,6 +265,10 @@ export function CreateLicenseForm({ accountSlug }: CreateLicenseFormProps) {
                 <FormItem>
                   <FormLabel>
                     <Trans i18nKey="licenses:expirationDate" />
+                    <FormFieldHelp
+                      title="Expiration Date"
+                      content="The date when this license expires. You'll receive alerts 30 and 7 days before expiration to ensure timely renewal and avoid service interruption."
+                    />
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -284,6 +292,10 @@ export function CreateLicenseForm({ accountSlug }: CreateLicenseFormProps) {
               <FormItem>
                 <FormLabel>
                   <Trans i18nKey="licenses:cost" />
+                  <FormFieldHelp
+                    title="License Cost"
+                    content="Enter the total cost of the license. For subscriptions, enter the annual or recurring cost. This helps track software spending and budget planning."
+                  />
                 </FormLabel>
                 <FormControl>
                   <Input

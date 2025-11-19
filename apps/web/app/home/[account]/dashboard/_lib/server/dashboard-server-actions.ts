@@ -16,16 +16,16 @@ import type { TeamDashboardMetrics } from '../types/dashboard.types';
 
 /**
  * Dismisses a dashboard alert.
- * 
+ *
  * Updates the alert to mark it as dismissed with timestamp and user info.
  * Requires `dashboard.manage` permission for the account.
- * 
+ *
  * @param data - Alert dismissal data including alert ID and account slug
  * @returns Success status with dismissed alert ID
  * @throws {NotFoundError} If account or alert doesn't exist
  * @throws {UnauthorizedError} If user is not authenticated or not a member
  * @throws {ForbiddenError} If user lacks dashboard.manage permission
- * 
+ *
  * @permission dashboard.manage - Required to dismiss alerts
  */
 export const dismissAlert = enhanceAction(
@@ -139,16 +139,16 @@ export const dismissAlert = enhanceAction(
 
 /**
  * Updates widget layout configuration.
- * 
+ *
  * Saves user's widget visibility and ordering preferences.
  * Requires `dashboard.manage` permission for the account.
- * 
+ *
  * @param data - Widget layout data including account slug and widget configurations
  * @returns Success status with number of widgets updated
  * @throws {NotFoundError} If account doesn't exist
  * @throws {UnauthorizedError} If user is not authenticated or not a member
  * @throws {ForbiddenError} If user lacks dashboard.manage permission
- * 
+ *
  * @permission dashboard.manage - Required to update widget layout
  */
 export const updateWidgetLayout = enhanceAction(
@@ -271,18 +271,18 @@ export const updateWidgetLayout = enhanceAction(
 
 /**
  * Refreshes dashboard metrics.
- * 
+ *
  * Fetches the latest metrics for real-time updates.
  * Requires `dashboard.view` permission for the account.
- * 
+ *
  * @param accountSlug - The account slug to fetch metrics for
  * @returns Dashboard metrics including assets, users, licenses, and growth data
  * @throws {NotFoundError} If account doesn't exist
  * @throws {UnauthorizedError} If user is not authenticated or not a member
  * @throws {ForbiddenError} If user lacks dashboard.view permission
- * 
+ *
  * @permission dashboard.view - Required to view dashboard metrics
- * 
+ *
  * Note: RLS policies on the underlying tables ensure users can only see
  * metrics for accounts they are members of with proper permissions.
  */

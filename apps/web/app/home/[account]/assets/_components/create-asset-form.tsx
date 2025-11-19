@@ -218,6 +218,10 @@ export function CreateAssetForm({ accountSlug }: CreateAssetFormProps) {
           <FormItem>
             <FormLabel>
               <Trans i18nKey="assets:assetImage" defaults="Asset Image" />
+              <FormFieldHelp
+                title="Asset Image"
+                content="Upload a clear photo of the asset for easy identification. Supported formats: JPG, PNG, WebP. Maximum size: 10MB. Images are automatically optimized and resized."
+              />
             </FormLabel>
             <FormControl>
               <div className="space-y-4">

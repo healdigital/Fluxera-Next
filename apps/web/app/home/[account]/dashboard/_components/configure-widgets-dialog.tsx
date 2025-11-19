@@ -197,7 +197,10 @@ export function ConfigureWidgetsDialog({
       } catch (error) {
         console.error('Error saving widget configuration:', error);
         toast.error('Failed to save widget configuration', {
-          description: error instanceof Error ? error.message : 'An unexpected error occurred',
+          description:
+            error instanceof Error
+              ? error.message
+              : 'An unexpected error occurred',
         });
       }
     });

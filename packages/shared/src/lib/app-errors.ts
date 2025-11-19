@@ -48,7 +48,10 @@ export class NotFoundError extends AppError {
  * HTTP Status: 401
  */
 export class UnauthorizedError extends AppError {
-  constructor(message = 'Authentication required', details?: Record<string, unknown>) {
+  constructor(
+    message = 'Authentication required',
+    details?: Record<string, unknown>,
+  ) {
     super(message, 'UNAUTHORIZED', 401, details);
   }
 }
@@ -87,7 +90,9 @@ export class ValidationError extends AppError {
     });
   }
 
-  static fromZodError(error: { errors: Array<{ path: (string | number)[]; message: string }> }) {
+  static fromZodError(error: {
+    errors: Array<{ path: (string | number)[]; message: string }>;
+  }) {
     const fieldErrors: Record<string, string[]> = {};
 
     for (const err of error.errors) {
@@ -139,7 +144,9 @@ export function isNotFoundError(error: unknown): error is NotFoundError {
 /**
  * Type guard to check if an error is an UnauthorizedError
  */
-export function isUnauthorizedError(error: unknown): error is UnauthorizedError {
+export function isUnauthorizedError(
+  error: unknown,
+): error is UnauthorizedError {
   return error instanceof UnauthorizedError;
 }
 
@@ -160,7 +167,9 @@ export function isValidationError(error: unknown): error is ValidationError {
 /**
  * Type guard to check if an error is a BusinessRuleError
  */
-export function isBusinessRuleError(error: unknown): error is BusinessRuleError {
+export function isBusinessRuleError(
+  error: unknown,
+): error is BusinessRuleError {
   return error instanceof BusinessRuleError;
 }
 

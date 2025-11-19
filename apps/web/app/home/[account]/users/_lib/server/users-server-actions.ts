@@ -9,16 +9,15 @@ import { z } from 'zod';
 import { renderInviteEmail } from '@kit/email-templates';
 import { getMailer } from '@kit/mailers';
 import { enhanceAction } from '@kit/next/actions';
-import { getLogger } from '@kit/shared/logger';
-import { getSupabaseServerClient } from '@kit/supabase/server-client';
-
 // Import error classes and permission helpers
 import {
-  NotFoundError,
-  ConflictError,
   BusinessRuleError,
+  ConflictError,
+  NotFoundError,
 } from '@kit/shared/app-errors';
+import { getLogger } from '@kit/shared/logger';
 import { withAccountPermission } from '@kit/shared/permission-helpers';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import type { Database } from '~/lib/database.types';
 
@@ -47,7 +46,10 @@ export const inviteUser = enhanceAction(
     const logger = await getLogger();
     const client = getSupabaseServerClient();
 
-    logger.info({ name: 'users.invite', email: data.email }, 'Inviting new user...');
+    logger.info(
+      { name: 'users.invite', email: data.email },
+      'Inviting new user...',
+    );
 
     // Get account
     const { data: account, error: accountError } = await client
@@ -57,13 +59,18 @@ export const inviteUser = enhanceAction(
       .single();
 
     if (accountError || !account) {
-      logger.error({ error: accountError, name: 'users.invite' }, 'Failed to find account');
+      logger.error(
+        { error: accountError, name: 'users.invite' },
+        'Failed to find account',
+      );
       throw new NotFoundError('Account', data.accountSlug);
     }
 
     return withAccountPermission(
       async () => {
-        const { data: { user: currentUser } } = await client.auth.getUser();
+        const {
+          data: { user: currentUser },
+        } = await client.auth.getUser();
 
         // Check existing invitation
         const { data: existingInvitation } = await client
@@ -74,15 +81,20 @@ export const inviteUser = enhanceAction(
           .single();
 
         if (existingInvitation) {
-          throw new ConflictError('This user already has a pending invitation', {
-            email: data.email,
-            accountId: account.id,
-          });
+          throw new ConflictError(
+            'This user already has a pending invitation',
+            {
+              email: data.email,
+              accountId: account.id,
+            },
+          );
         }
 
         // Check if user is already a member
         const { data: existingUser } = await client.auth.admin.listUsers();
-        const userWithEmail = existingUser?.users.find((u) => u.email === data.email);
+        const userWithEmail = existingUser?.users.find(
+          (u) => u.email === data.email,
+        );
 
         if (userWithEmail) {
           const { data: existingMember } = await client
@@ -93,10 +105,13 @@ export const inviteUser = enhanceAction(
             .single();
 
           if (existingMember) {
-            throw new ConflictError('This user is already a member of your team', {
-              email: data.email,
-              accountId: account.id,
-            });
+            throw new ConflictError(
+              'This user is already a member of your team',
+              {
+                email: data.email,
+                accountId: account.id,
+              },
+            );
           }
         }
 
@@ -117,7 +132,10 @@ export const inviteUser = enhanceAction(
           .single();
 
         if (inviteError) {
-          logger.error({ error: inviteError, name: 'users.invite' }, 'Failed to create invitation');
+          logger.error(
+            { error: inviteError, name: 'users.invite' },
+            'Failed to create invitation',
+          );
           throw inviteError;
         }
 
@@ -131,7 +149,10 @@ export const inviteUser = enhanceAction(
               .eq('id', currentUser!.id)
               .single();
 
-            const inviterName = inviterProfile?.display_name || currentUser!.email || 'A team member';
+            const inviterName =
+              inviterProfile?.display_name ||
+              currentUser!.email ||
+              'A team member';
             const inviteLink = `${process.env.NEXT_PUBLIC_SITE_URL}/join?token=${inviteToken}`;
 
             const { html, subject } = await renderInviteEmail({
@@ -150,9 +171,15 @@ export const inviteUser = enhanceAction(
               html,
             });
 
-            logger.info({ email: data.email, name: 'users.invite' }, 'Invitation email sent successfully');
+            logger.info(
+              { email: data.email, name: 'users.invite' },
+              'Invitation email sent successfully',
+            );
           } catch (emailError) {
-            logger.error({ error: emailError, name: 'users.invite' }, 'Failed to send invitation email');
+            logger.error(
+              { error: emailError, name: 'users.invite' },
+              'Failed to send invitation email',
+            );
             // Don't fail the entire operation if email fails
           }
         }
@@ -173,10 +200,20 @@ export const inviteUser = enhanceAction(
             p_result_status: 'success',
           });
         } catch (logError) {
-          logger.error({ error: logError, name: 'users.invite' }, 'Failed to log activity');
+          logger.error(
+            { error: logError, name: 'users.invite' },
+            'Failed to log activity',
+          );
         }
 
-        logger.info({ invitationId: invitation.id, email: data.email, name: 'users.invite' }, 'User invitation created successfully');
+        logger.info(
+          {
+            invitationId: invitation.id,
+            email: data.email,
+            name: 'users.invite',
+          },
+          'User invitation created successfully',
+        );
 
         revalidatePath(`/home/${data.accountSlug}/users`);
 
@@ -187,14 +224,14 @@ export const inviteUser = enhanceAction(
         permission: 'members.manage',
         client,
         resourceName: 'user invitation',
-      }
+      },
     );
   },
   {
     schema: InviteUserSchema.extend({
       accountSlug: z.string().min(1, 'Account slug is required'),
     }),
-  }
+  },
 );
 
 /**
@@ -213,7 +250,10 @@ export const updateUserProfile = enhanceAction(
     const logger = await getLogger();
     const client = getSupabaseServerClient();
 
-    logger.info({ name: 'users.updateProfile', userId: data.userId }, 'Updating user profile...');
+    logger.info(
+      { name: 'users.updateProfile', userId: data.userId },
+      'Updating user profile...',
+    );
 
     // Get account
     const { data: account, error: accountError } = await client
@@ -223,20 +263,29 @@ export const updateUserProfile = enhanceAction(
       .single();
 
     if (accountError || !account) {
-      logger.error({ error: accountError, name: 'users.updateProfile' }, 'Failed to find account');
+      logger.error(
+        { error: accountError, name: 'users.updateProfile' },
+        'Failed to find account',
+      );
       throw new NotFoundError('Account', data.accountSlug);
     }
 
     return withAccountPermission(
       async () => {
-        const { data: { user: currentUser } } = await client.auth.getUser();
+        const {
+          data: { user: currentUser },
+        } = await client.auth.getUser();
 
         // Prepare profile data (remove undefined values)
         const profileData: Record<string, string> = {};
-        if (data.display_name !== undefined) profileData.display_name = data.display_name;
-        if (data.phone_number !== undefined) profileData.phone_number = data.phone_number;
-        if (data.job_title !== undefined) profileData.job_title = data.job_title;
-        if (data.department !== undefined) profileData.department = data.department;
+        if (data.display_name !== undefined)
+          profileData.display_name = data.display_name;
+        if (data.phone_number !== undefined)
+          profileData.phone_number = data.phone_number;
+        if (data.job_title !== undefined)
+          profileData.job_title = data.job_title;
+        if (data.department !== undefined)
+          profileData.department = data.department;
         if (data.location !== undefined) profileData.location = data.location;
         if (data.bio !== undefined) profileData.bio = data.bio;
 
@@ -255,7 +304,10 @@ export const updateUserProfile = enhanceAction(
             .eq('id', data.userId);
 
           if (updateError) {
-            logger.error({ error: updateError, name: 'users.updateProfile' }, 'Failed to update user profile');
+            logger.error(
+              { error: updateError, name: 'users.updateProfile' },
+              'Failed to update user profile',
+            );
             throw updateError;
           }
         } else {
@@ -268,7 +320,10 @@ export const updateUserProfile = enhanceAction(
             });
 
           if (insertError) {
-            logger.error({ error: insertError, name: 'users.updateProfile' }, 'Failed to create user profile');
+            logger.error(
+              { error: insertError, name: 'users.updateProfile' },
+              'Failed to create user profile',
+            );
             throw insertError;
           }
         }
@@ -287,10 +342,16 @@ export const updateUserProfile = enhanceAction(
             p_result_status: 'success',
           });
         } catch (logError) {
-          logger.error({ error: logError, name: 'users.updateProfile' }, 'Failed to log activity');
+          logger.error(
+            { error: logError, name: 'users.updateProfile' },
+            'Failed to log activity',
+          );
         }
 
-        logger.info({ userId: data.userId, name: 'users.updateProfile' }, 'User profile updated successfully');
+        logger.info(
+          { userId: data.userId, name: 'users.updateProfile' },
+          'User profile updated successfully',
+        );
 
         revalidatePath(`/home/${data.accountSlug}/users/${data.userId}`);
         revalidatePath(`/home/${data.accountSlug}/users`);
@@ -302,7 +363,7 @@ export const updateUserProfile = enhanceAction(
         permission: 'members.manage',
         client,
         resourceName: 'user profile',
-      }
+      },
     );
   },
   {
@@ -310,7 +371,7 @@ export const updateUserProfile = enhanceAction(
       userId: z.string().uuid('Invalid user ID'),
       accountSlug: z.string().min(1, 'Account slug is required'),
     }),
-  }
+  },
 );
 
 /**
@@ -330,7 +391,10 @@ export const updateUserRole = enhanceAction(
     const logger = await getLogger();
     const client = getSupabaseServerClient();
 
-    logger.info({ name: 'users.updateRole', userId: data.user_id, newRole: data.role }, 'Updating user role...');
+    logger.info(
+      { name: 'users.updateRole', userId: data.user_id, newRole: data.role },
+      'Updating user role...',
+    );
 
     // Get account
     const { data: account, error: accountError } = await client
@@ -340,22 +404,37 @@ export const updateUserRole = enhanceAction(
       .single();
 
     if (accountError || !account) {
-      logger.error({ error: accountError, name: 'users.updateRole' }, 'Failed to find account');
+      logger.error(
+        { error: accountError, name: 'users.updateRole' },
+        'Failed to find account',
+      );
       throw new NotFoundError('Account', data.accountSlug);
     }
 
     // Verify account_id matches
     if (account.id !== data.account_id) {
-      logger.error({ name: 'users.updateRole', providedAccountId: data.account_id, actualAccountId: account.id }, 'Account ID mismatch');
-      throw new BusinessRuleError('Account ID does not match the provided slug', {
-        providedAccountId: data.account_id,
-        actualAccountId: account.id,
-      });
+      logger.error(
+        {
+          name: 'users.updateRole',
+          providedAccountId: data.account_id,
+          actualAccountId: account.id,
+        },
+        'Account ID mismatch',
+      );
+      throw new BusinessRuleError(
+        'Account ID does not match the provided slug',
+        {
+          providedAccountId: data.account_id,
+          actualAccountId: account.id,
+        },
+      );
     }
 
     return withAccountPermission(
       async () => {
-        const { data: { user: currentUser } } = await client.auth.getUser();
+        const {
+          data: { user: currentUser },
+        } = await client.auth.getUser();
 
         // Get the current role for logging
         const { data: currentMembership } = await client
@@ -377,7 +456,10 @@ export const updateUserRole = enhanceAction(
           .eq('account_id', account.id);
 
         if (updateError) {
-          logger.error({ error: updateError, name: 'users.updateRole' }, 'Failed to update user role');
+          logger.error(
+            { error: updateError, name: 'users.updateRole' },
+            'Failed to update user role',
+          );
           throw updateError;
         }
 
@@ -397,10 +479,21 @@ export const updateUserRole = enhanceAction(
             p_result_status: 'success',
           });
         } catch (logError) {
-          logger.error({ error: logError, name: 'users.updateRole' }, 'Failed to log activity');
+          logger.error(
+            { error: logError, name: 'users.updateRole' },
+            'Failed to log activity',
+          );
         }
 
-        logger.info({ userId: data.user_id, oldRole, newRole: data.role, name: 'users.updateRole' }, 'User role updated successfully');
+        logger.info(
+          {
+            userId: data.user_id,
+            oldRole,
+            newRole: data.role,
+            name: 'users.updateRole',
+          },
+          'User role updated successfully',
+        );
 
         revalidatePath(`/home/${data.accountSlug}/users/${data.user_id}`);
         revalidatePath(`/home/${data.accountSlug}/users`);
@@ -412,14 +505,14 @@ export const updateUserRole = enhanceAction(
         permission: 'members.manage',
         client,
         resourceName: 'user role',
-      }
+      },
     );
   },
   {
     schema: UpdateUserRoleSchema.extend({
       accountSlug: z.string().min(1, 'Account slug is required'),
     }),
-  }
+  },
 );
 
 /**
@@ -440,7 +533,14 @@ export const updateUserStatus = enhanceAction(
     const logger = await getLogger();
     const client = getSupabaseServerClient();
 
-    logger.info({ name: 'users.updateStatus', userId: data.user_id, newStatus: data.status }, 'Updating user status...');
+    logger.info(
+      {
+        name: 'users.updateStatus',
+        userId: data.user_id,
+        newStatus: data.status,
+      },
+      'Updating user status...',
+    );
 
     // Get account
     const { data: account, error: accountError } = await client
@@ -450,17 +550,30 @@ export const updateUserStatus = enhanceAction(
       .single();
 
     if (accountError || !account) {
-      logger.error({ error: accountError, name: 'users.updateStatus' }, 'Failed to find account');
+      logger.error(
+        { error: accountError, name: 'users.updateStatus' },
+        'Failed to find account',
+      );
       throw new NotFoundError('Account', data.accountSlug);
     }
 
     // Verify account_id matches
     if (account.id !== data.account_id) {
-      logger.error({ name: 'users.updateStatus', providedAccountId: data.account_id, actualAccountId: account.id }, 'Account ID mismatch');
-      throw new BusinessRuleError('Account ID does not match the provided slug', {
-        providedAccountId: data.account_id,
-        actualAccountId: account.id,
-      });
+      logger.error(
+        {
+          name: 'users.updateStatus',
+          providedAccountId: data.account_id,
+          actualAccountId: account.id,
+        },
+        'Account ID mismatch',
+      );
+      throw new BusinessRuleError(
+        'Account ID does not match the provided slug',
+        {
+          providedAccountId: data.account_id,
+          actualAccountId: account.id,
+        },
+      );
     }
 
     return withAccountPermission(
@@ -475,13 +588,19 @@ export const updateUserStatus = enhanceAction(
         });
 
         if (updateError) {
-          logger.error({ error: updateError, name: 'users.updateStatus' }, 'Failed to update user status');
+          logger.error(
+            { error: updateError, name: 'users.updateStatus' },
+            'Failed to update user status',
+          );
 
           // Check for specific error messages from the database function
           if (updateError.message.includes('cannot deactivate your own')) {
-            throw new BusinessRuleError('You cannot deactivate your own account', {
-              userId: data.user_id,
-            });
+            throw new BusinessRuleError(
+              'You cannot deactivate your own account',
+              {
+                userId: data.user_id,
+              },
+            );
           }
 
           if (updateError.message.includes('Access denied')) {
@@ -493,7 +612,14 @@ export const updateUserStatus = enhanceAction(
           throw updateError;
         }
 
-        logger.info({ userId: data.user_id, newStatus: data.status, name: 'users.updateStatus' }, 'User status updated successfully');
+        logger.info(
+          {
+            userId: data.user_id,
+            newStatus: data.status,
+            name: 'users.updateStatus',
+          },
+          'User status updated successfully',
+        );
 
         revalidatePath(`/home/${data.accountSlug}/users/${data.user_id}`);
         revalidatePath(`/home/${data.accountSlug}/users`);
@@ -505,14 +631,14 @@ export const updateUserStatus = enhanceAction(
         permission: 'members.manage',
         client,
         resourceName: 'user status',
-      }
+      },
     );
   },
   {
     schema: UpdateUserStatusSchema.extend({
       accountSlug: z.string().min(1, 'Account slug is required'),
     }),
-  }
+  },
 );
 
 /**
@@ -534,7 +660,14 @@ export const assignAssetsToUser = enhanceAction(
     const logger = await getLogger();
     const client = getSupabaseServerClient();
 
-    logger.info({ name: 'users.assignAssets', userId: data.user_id, assetCount: data.asset_ids.length }, 'Assigning assets to user...');
+    logger.info(
+      {
+        name: 'users.assignAssets',
+        userId: data.user_id,
+        assetCount: data.asset_ids.length,
+      },
+      'Assigning assets to user...',
+    );
 
     // Get account
     const { data: account, error: accountError } = await client
@@ -544,13 +677,18 @@ export const assignAssetsToUser = enhanceAction(
       .single();
 
     if (accountError || !account) {
-      logger.error({ error: accountError, name: 'users.assignAssets' }, 'Failed to find account');
+      logger.error(
+        { error: accountError, name: 'users.assignAssets' },
+        'Failed to find account',
+      );
       throw new NotFoundError('Account', data.accountSlug);
     }
 
     return withAccountPermission(
       async () => {
-        const { data: { user: currentUser } } = await client.auth.getUser();
+        const {
+          data: { user: currentUser },
+        } = await client.auth.getUser();
 
         // Verify the user is a member of the account
         const { data: membership, error: membershipError } = await client
@@ -561,7 +699,15 @@ export const assignAssetsToUser = enhanceAction(
           .single();
 
         if (membershipError || !membership) {
-          logger.error({ error: membershipError, userId: data.user_id, accountId: account.id, name: 'users.assignAssets' }, 'User is not a member of this account');
+          logger.error(
+            {
+              error: membershipError,
+              userId: data.user_id,
+              accountId: account.id,
+              name: 'users.assignAssets',
+            },
+            'User is not a member of this account',
+          );
           throw new BusinessRuleError('User is not a member of this account', {
             userId: data.user_id,
             accountId: account.id,
@@ -576,19 +722,39 @@ export const assignAssetsToUser = enhanceAction(
           .in('id', data.asset_ids);
 
         if (assetsError) {
-          logger.error({ error: assetsError, name: 'users.assignAssets' }, 'Failed to fetch assets');
+          logger.error(
+            { error: assetsError, name: 'users.assignAssets' },
+            'Failed to fetch assets',
+          );
           throw assetsError;
         }
 
         if (!assets || assets.length !== data.asset_ids.length) {
-          logger.error({ name: 'users.assignAssets', requestedCount: data.asset_ids.length, foundCount: assets?.length || 0 }, 'Some assets not found');
-          throw new NotFoundError('Some assets', `${data.asset_ids.length - (assets?.length || 0)} asset(s)`);
+          logger.error(
+            {
+              name: 'users.assignAssets',
+              requestedCount: data.asset_ids.length,
+              foundCount: assets?.length || 0,
+            },
+            'Some assets not found',
+          );
+          throw new NotFoundError(
+            'Some assets',
+            `${data.asset_ids.length - (assets?.length || 0)} asset(s)`,
+          );
         }
 
         // Check if any assets are already assigned
         const alreadyAssigned = assets.filter((asset) => asset.assigned_to);
         if (alreadyAssigned.length > 0) {
-          logger.warn({ name: 'users.assignAssets', alreadyAssignedCount: alreadyAssigned.length, assetNames: alreadyAssigned.map((a) => a.name) }, 'Some assets are already assigned');
+          logger.warn(
+            {
+              name: 'users.assignAssets',
+              alreadyAssignedCount: alreadyAssigned.length,
+              assetNames: alreadyAssigned.map((a) => a.name),
+            },
+            'Some assets are already assigned',
+          );
           throw new ConflictError('Some assets are already assigned', {
             assetNames: alreadyAssigned.map((a) => a.name),
           });
@@ -606,7 +772,10 @@ export const assignAssetsToUser = enhanceAction(
           .in('id', data.asset_ids);
 
         if (updateError) {
-          logger.error({ error: updateError, name: 'users.assignAssets' }, 'Failed to assign assets');
+          logger.error(
+            { error: updateError, name: 'users.assignAssets' },
+            'Failed to assign assets',
+          );
           throw updateError;
         }
 
@@ -626,11 +795,25 @@ export const assignAssetsToUser = enhanceAction(
               p_result_status: 'success',
             });
           } catch (logError) {
-            logger.error({ error: logError, assetId: asset.id, name: 'users.assignAssets' }, 'Failed to log activity for asset');
+            logger.error(
+              {
+                error: logError,
+                assetId: asset.id,
+                name: 'users.assignAssets',
+              },
+              'Failed to log activity for asset',
+            );
           }
         }
 
-        logger.info({ userId: data.user_id, assetCount: data.asset_ids.length, name: 'users.assignAssets' }, 'Assets assigned successfully');
+        logger.info(
+          {
+            userId: data.user_id,
+            assetCount: data.asset_ids.length,
+            name: 'users.assignAssets',
+          },
+          'Assets assigned successfully',
+        );
 
         // Revalidate relevant pages
         revalidatePath(`/home/${data.accountSlug}/users/${data.user_id}`);
@@ -647,16 +830,18 @@ export const assignAssetsToUser = enhanceAction(
         permission: 'assets.manage',
         client,
         resourceName: 'asset assignment',
-      }
+      },
     );
   },
   {
     schema: z.object({
       user_id: z.string().uuid('Invalid user ID'),
-      asset_ids: z.array(z.string().uuid('Invalid asset ID')).min(1, 'At least one asset must be selected'),
+      asset_ids: z
+        .array(z.string().uuid('Invalid asset ID'))
+        .min(1, 'At least one asset must be selected'),
       accountSlug: z.string().min(1, 'Account slug is required'),
     }),
-  }
+  },
 );
 
 /**
@@ -677,7 +862,10 @@ export const unassignAssetFromUser = enhanceAction(
     const logger = await getLogger();
     const client = getSupabaseServerClient();
 
-    logger.info({ name: 'users.unassignAsset', assetId: data.asset_id }, 'Unassigning asset from user...');
+    logger.info(
+      { name: 'users.unassignAsset', assetId: data.asset_id },
+      'Unassigning asset from user...',
+    );
 
     // Get account
     const { data: account, error: accountError } = await client
@@ -687,13 +875,18 @@ export const unassignAssetFromUser = enhanceAction(
       .single();
 
     if (accountError || !account) {
-      logger.error({ error: accountError, name: 'users.unassignAsset' }, 'Failed to find account');
+      logger.error(
+        { error: accountError, name: 'users.unassignAsset' },
+        'Failed to find account',
+      );
       throw new NotFoundError('Account', data.accountSlug);
     }
 
     return withAccountPermission(
       async () => {
-        const { data: { user: currentUser } } = await client.auth.getUser();
+        const {
+          data: { user: currentUser },
+        } = await client.auth.getUser();
 
         // Get the asset to verify it exists and is assigned
         const { data: asset, error: assetError } = await client
@@ -703,13 +896,27 @@ export const unassignAssetFromUser = enhanceAction(
           .single();
 
         if (assetError || !asset) {
-          logger.error({ error: assetError, assetId: data.asset_id, name: 'users.unassignAsset' }, 'Failed to find asset');
+          logger.error(
+            {
+              error: assetError,
+              assetId: data.asset_id,
+              name: 'users.unassignAsset',
+            },
+            'Failed to find asset',
+          );
           throw new NotFoundError('Asset', data.asset_id);
         }
 
         // Verify asset belongs to the account
         if (asset.account_id !== account.id) {
-          logger.error({ name: 'users.unassignAsset', assetAccountId: asset.account_id, requestAccountId: account.id }, 'Asset does not belong to this account');
+          logger.error(
+            {
+              name: 'users.unassignAsset',
+              assetAccountId: asset.account_id,
+              requestAccountId: account.id,
+            },
+            'Asset does not belong to this account',
+          );
           throw new BusinessRuleError('Asset does not belong to this account', {
             assetId: data.asset_id,
             assetAccountId: asset.account_id,
@@ -719,7 +926,10 @@ export const unassignAssetFromUser = enhanceAction(
 
         // Check if asset is currently assigned
         if (!asset.assigned_to) {
-          logger.warn({ assetId: data.asset_id, name: 'users.unassignAsset' }, 'Asset is not currently assigned');
+          logger.warn(
+            { assetId: data.asset_id, name: 'users.unassignAsset' },
+            'Asset is not currently assigned',
+          );
           throw new BusinessRuleError('Asset is not currently assigned', {
             assetId: data.asset_id,
           });
@@ -738,7 +948,10 @@ export const unassignAssetFromUser = enhanceAction(
           .eq('id', data.asset_id);
 
         if (updateError) {
-          logger.error({ error: updateError, name: 'users.unassignAsset' }, 'Failed to unassign asset');
+          logger.error(
+            { error: updateError, name: 'users.unassignAsset' },
+            'Failed to unassign asset',
+          );
           throw updateError;
         }
 
@@ -757,10 +970,16 @@ export const unassignAssetFromUser = enhanceAction(
             p_result_status: 'success',
           });
         } catch (logError) {
-          logger.error({ error: logError, name: 'users.unassignAsset' }, 'Failed to log activity');
+          logger.error(
+            { error: logError, name: 'users.unassignAsset' },
+            'Failed to log activity',
+          );
         }
 
-        logger.info({ assetId: data.asset_id, name: 'users.unassignAsset' }, 'Asset unassigned successfully');
+        logger.info(
+          { assetId: data.asset_id, name: 'users.unassignAsset' },
+          'Asset unassigned successfully',
+        );
 
         // Revalidate relevant pages
         revalidatePath(`/home/${data.accountSlug}/users/${previousUserId}`);
@@ -775,7 +994,7 @@ export const unassignAssetFromUser = enhanceAction(
         permission: 'assets.manage',
         client,
         resourceName: 'asset unassignment',
-      }
+      },
     );
   },
   {
@@ -783,7 +1002,7 @@ export const unassignAssetFromUser = enhanceAction(
       asset_id: z.string().uuid('Invalid asset ID'),
       accountSlug: z.string().min(1, 'Account slug is required'),
     }),
-  }
+  },
 );
 
 /**
@@ -802,7 +1021,14 @@ export const exportUserActivity = enhanceAction(
     const logger = await getLogger();
     const client = getSupabaseServerClient();
 
-    logger.info({ name: 'users.exportActivity', userId: data.user_id, format: data.format }, 'Exporting user activity...');
+    logger.info(
+      {
+        name: 'users.exportActivity',
+        userId: data.user_id,
+        format: data.format,
+      },
+      'Exporting user activity...',
+    );
 
     // Get account
     const { data: account, error: accountError } = await client
@@ -812,12 +1038,17 @@ export const exportUserActivity = enhanceAction(
       .single();
 
     if (accountError || !account) {
-      logger.error({ error: accountError, name: 'users.exportActivity' }, 'Failed to find account');
+      logger.error(
+        { error: accountError, name: 'users.exportActivity' },
+        'Failed to find account',
+      );
       throw new NotFoundError('Account', data.accountSlug);
     }
 
     // Get the current user (for logging purposes)
-    const { data: { user: currentUser } } = await client.auth.getUser();
+    const {
+      data: { user: currentUser },
+    } = await client.auth.getUser();
 
     // Build the query to fetch all matching activities (no pagination for export)
     let query = client
@@ -843,7 +1074,10 @@ export const exportUserActivity = enhanceAction(
 
     // Apply filters
     if (data.action_type) {
-      query = query.eq('action_type', data.action_type as Database['public']['Enums']['user_action_type']);
+      query = query.eq(
+        'action_type',
+        data.action_type as Database['public']['Enums']['user_action_type'],
+      );
     }
 
     if (data.start_date) {
@@ -857,12 +1091,18 @@ export const exportUserActivity = enhanceAction(
     const { data: activities, error } = await query;
 
     if (error) {
-      logger.error({ error, name: 'users.exportActivity' }, 'Failed to fetch activities');
+      logger.error(
+        { error, name: 'users.exportActivity' },
+        'Failed to fetch activities',
+      );
       throw error;
     }
 
     if (!activities || activities.length === 0) {
-      logger.warn({ name: 'users.exportActivity', userId: data.user_id }, 'No activities found to export');
+      logger.warn(
+        { name: 'users.exportActivity', userId: data.user_id },
+        'No activities found to export',
+      );
       throw new NotFoundError('Activity logs', 'matching the filters');
     }
 
@@ -873,10 +1113,13 @@ export const exportUserActivity = enhanceAction(
       .eq('id', data.user_id)
       .single();
 
-    const { data: authUser } = await client.auth.admin.getUserById(data.user_id);
+    const { data: authUser } = await client.auth.admin.getUserById(
+      data.user_id,
+    );
 
     const userDetails = {
-      display_name: userProfile?.display_name || authUser?.user?.email || 'Unknown User',
+      display_name:
+        userProfile?.display_name || authUser?.user?.email || 'Unknown User',
       email: authUser?.user?.email || '',
     };
 
@@ -900,7 +1143,9 @@ export const exportUserActivity = enhanceAction(
       ];
 
       const rows = activities.map((activity) => {
-        const details = activity.action_details ? JSON.stringify(activity.action_details) : '';
+        const details = activity.action_details
+          ? JSON.stringify(activity.action_details)
+          : '';
 
         return [
           activity.created_at || '',
@@ -916,7 +1161,10 @@ export const exportUserActivity = enhanceAction(
       });
 
       // Build CSV content
-      const csvRows = [headers.join(','), ...rows.map((row) => row.map((cell) => `"${cell}"`).join(','))];
+      const csvRows = [
+        headers.join(','),
+        ...rows.map((row) => row.map((cell) => `"${cell}"`).join(',')),
+      ];
 
       exportContent = csvRows.join('\n');
       contentType = 'text/csv';
@@ -982,11 +1230,22 @@ export const exportUserActivity = enhanceAction(
           p_result_status: 'success',
         });
       } catch (logError) {
-        logger.error({ error: logError, name: 'users.exportActivity' }, 'Failed to log export activity');
+        logger.error(
+          { error: logError, name: 'users.exportActivity' },
+          'Failed to log export activity',
+        );
       }
     }
 
-    logger.info({ userId: data.user_id, format: data.format, recordCount: activities.length, name: 'users.exportActivity' }, 'Activity logs exported successfully');
+    logger.info(
+      {
+        userId: data.user_id,
+        format: data.format,
+        recordCount: activities.length,
+        name: 'users.exportActivity',
+      },
+      'Activity logs exported successfully',
+    );
 
     return {
       success: true,
@@ -1001,5 +1260,5 @@ export const exportUserActivity = enhanceAction(
     schema: ExportUserActivitySchema.extend({
       accountSlug: z.string().min(1, 'Account slug is required'),
     }),
-  }
+  },
 );

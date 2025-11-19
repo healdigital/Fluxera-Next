@@ -536,13 +536,10 @@ export const assignLicenseToUser = enhanceAction(
             },
             'User is not a member of this account',
           );
-          throw new BusinessRuleError(
-            'User is not a member of this account',
-            {
-              userId: data.user_id,
-              accountId: account.id,
-            },
-          );
+          throw new BusinessRuleError('User is not a member of this account', {
+            userId: data.user_id,
+            accountId: account.id,
+          });
         }
 
         // Check for duplicate assignment

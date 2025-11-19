@@ -182,7 +182,7 @@ export function DashboardGrid({
     });
 
     try {
-      await dismissAlert({ 
+      await dismissAlert({
         alert_id: alertId,
         accountSlug,
       });
@@ -191,7 +191,10 @@ export function DashboardGrid({
     } catch (error) {
       console.error('Error dismissing alert:', error);
       toast.error('Failed to dismiss alert', {
-        description: error instanceof Error ? error.message : 'An unexpected error occurred',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'An unexpected error occurred',
       });
     }
   };

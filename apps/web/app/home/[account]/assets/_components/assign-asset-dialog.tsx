@@ -26,6 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@kit/ui/form';
+import { FormFieldHelp } from '@kit/ui/inline-help';
 import { LoadingOverlay } from '@kit/ui/loading-overlay';
 import {
   Select,
@@ -199,6 +200,10 @@ function AssignAssetForm({
             <FormItem>
               <FormLabel>
                 <Trans i18nKey="assets:selectMember" defaults="Team Member" />
+                <FormFieldHelp
+                  title="Asset Assignment"
+                  content="Assigning an asset to a team member tracks who is responsible for it. The asset status will automatically change to 'assigned' and the assignment will be logged in the asset history."
+                />
               </FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>

@@ -2,11 +2,12 @@
  * Test script for RLS helper functions
  * Verifies that the helper functions were created successfully
  */
-
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:54321';
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '';
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:54321';
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '';
 
 async function testHelperFunctions() {
   const supabase = createClient(supabaseUrl, supabaseKey);
@@ -16,11 +17,15 @@ async function testHelperFunctions() {
   try {
     // Test 1: Check if functions exist
     console.log('1. Checking if functions exist...');
-    const { data: functions, error: functionsError } = await supabase
-      .rpc('pg_get_functiondef', { funcid: 'supamode.has_permission_by_name'::regprocedure });
-    
+    const { error: functionsError } = await supabase.rpc('pg_get_functiondef', {
+      funcid: 'supamode.has_permission_by_name',
+    });
+
     if (functionsError) {
-      console.log('   ❌ Functions not found or error:', functionsError.message);
+      console.log(
+        '   ❌ Functions not found or error:',
+        functionsError.message,
+      );
     } else {
       console.log('   ✅ Functions exist');
     }
@@ -30,14 +35,19 @@ async function testHelperFunctions() {
     const { data: routines, error: routinesError } = await supabase
       .from('information_schema.routines')
       .select('routine_name, routine_schema')
-      .in('routine_name', ['has_permission_by_name', 'current_user_has_permission'])
+      .in('routine_name', [
+        'has_permission_by_name',
+        'current_user_has_permission',
+      ])
       .eq('routine_schema', 'supamode');
 
     if (routinesError) {
       console.log('   ❌ Error querying routines:', routinesError.message);
     } else if (routines && routines.length > 0) {
       console.log('   ✅ Found functions:');
-      routines.forEach(r => console.log(`      - ${r.routine_schema}.${r.routine_name}`));
+      routines.forEach((r) =>
+        console.log(`      - ${r.routine_schema}.${r.routine_name}`),
+      );
     } else {
       console.log('   ⚠️  No functions found');
     }
@@ -54,7 +64,9 @@ async function testHelperFunctions() {
       console.log('   ❌ Error querying indexes:', indexesError.message);
     } else if (indexes && indexes.length > 0) {
       console.log('   ✅ Found indexes:');
-      indexes.forEach(i => console.log(`      - ${i.indexname} on ${i.tablename}`));
+      indexes.forEach((i) =>
+        console.log(`      - ${i.indexname} on ${i.tablename}`),
+      );
     } else {
       console.log('   ⚠️  No indexes found');
     }

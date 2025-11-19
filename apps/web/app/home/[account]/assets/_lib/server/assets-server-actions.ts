@@ -3,10 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { enhanceAction } from '@kit/next/actions';
-import {
-  BusinessRuleError,
-  NotFoundError,
-} from '@kit/shared/app-errors';
+import { BusinessRuleError, NotFoundError } from '@kit/shared/app-errors';
 import { getLogger } from '@kit/shared/logger';
 import { withAccountPermission } from '@kit/shared/permission-helpers';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
@@ -374,14 +371,22 @@ export const assignAsset = enhanceAction(
 
         if (updateError) {
           logger.error(
-            { error: updateError, assetId: data.asset_id, name: 'assets.assign' },
+            {
+              error: updateError,
+              assetId: data.asset_id,
+              name: 'assets.assign',
+            },
             'Failed to assign asset',
           );
           throw updateError;
         }
 
         logger.info(
-          { assetId: data.asset_id, userId: data.user_id, name: 'assets.assign' },
+          {
+            assetId: data.asset_id,
+            userId: data.user_id,
+            name: 'assets.assign',
+          },
           'Asset successfully assigned',
         );
 
@@ -479,7 +484,11 @@ export const unassignAsset = enhanceAction(
 
         if (updateError) {
           logger.error(
-            { error: updateError, assetId: data.asset_id, name: 'assets.unassign' },
+            {
+              error: updateError,
+              assetId: data.asset_id,
+              name: 'assets.unassign',
+            },
             'Failed to unassign asset',
           );
           throw updateError;
