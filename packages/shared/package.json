@@ -14,7 +14,11 @@
     "./utils": "./src/utils.ts",
     "./hooks": "./src/hooks/index.ts",
     "./events": "./src/events/index.tsx",
-    "./registry": "./src/registry/index.ts"
+    "./registry": "./src/registry/index.ts",
+    "./image-optimization": "./src/image-optimization/index.ts",
+    "./error-messages": "./src/lib/error-messages.ts",
+    "./error-handler": "./src/lib/error-handler.ts",
+    "./performance": "./src/lib/performance.ts"
   },
   "devDependencies": {
     "@kit/eslint-config": "workspace:*",
@@ -23,7 +27,8 @@
     "@types/react": "catalog:"
   },
   "dependencies": {
-    "pino": "^10.1.0"
+    "pino": "^10.1.0",
+    "sharp": "^0.34.5"
   },
   "typesVersions": {
     "*": {

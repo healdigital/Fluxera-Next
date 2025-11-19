@@ -1,0 +1,24 @@
+{
+  "previewText": "License {{licenseName}} expires in {{daysUntilExpiry}} days",
+  "subject": {
+    "warning": "License Renewal Reminder: {{licenseName}} expires in {{daysUntilExpiry}} days",
+    "urgent": "⚠️ Urgent: License {{licenseName}} expires in {{daysUntilExpiry}} days"
+  },
+  "heading": {
+    "warning": "License Renewal Reminder",
+    "urgent": "Urgent: License Expiring Soon"
+  },
+  "urgentNotice": "This license will expire in less than 7 days. Immediate action required!",
+  "mainText": "Your software license <strong>{{licenseName}}</strong> from <strong>{{vendor}}</strong> will expire in <strong>{{daysUntilExpiry}} days</strong> on <strong>{{expirationDate}}</strong>.",
+  "licenseDetails": "License Details",
+  "license": "License",
+  "vendor": "Vendor",
+  "expiresOn": "Expires On",
+  "daysRemaining": "Days Remaining",
+  "actionText": "To ensure uninterrupted service, please review this license and take action to renew it before the expiration date.",
+  "viewLicense": "View License Details",
+  "renewalReminder": "💡 Tip: Contact your vendor early to avoid any service disruptions. Renewal processes can take time.",
+  "contactVendor": "Please contact {{vendor}} to renew this license or update the expiration date in your dashboard if you've already renewed it.",
+  "automatedMessage": "This is an automated reminder.",
+  "viewInDashboard": "View in dashboard"
+}

@@ -111,11 +111,23 @@ export function PageBody(
 ) {
   const className = cn('flex w-full flex-1 flex-col lg:px-4', props.className);
 
-  return <div className={className}>{props.children}</div>;
+  return (
+    <main id="main-content" className={className} tabIndex={-1}>
+      {props.children}
+    </main>
+  );
 }
 
 export function PageNavigation(props: React.PropsWithChildren) {
-  return <div className={'flex-1 bg-inherit'}>{props.children}</div>;
+  return (
+    <nav
+      className={'flex-1 bg-inherit'}
+      role="navigation"
+      aria-label="Page navigation"
+    >
+      {props.children}
+    </nav>
+  );
 }
 
 export function PageDescription(props: React.PropsWithChildren) {
@@ -157,16 +169,20 @@ export function PageHeader({
   displaySidebarTrigger?: boolean;
 }>) {
   return (
-    <div
+    <header
       className={cn(
         'flex items-center justify-between py-5 lg:px-4',
         className,
       )}
+      role="banner"
     >
       <div className={'flex flex-col gap-y-2'}>
         <div className="flex items-center gap-x-2.5">
           {displaySidebarTrigger ? (
-            <SidebarTrigger className="text-muted-foreground hover:text-secondary-foreground hidden h-4.5 w-4.5 cursor-pointer lg:inline-flex" />
+            <SidebarTrigger
+              className="text-muted-foreground hover:text-secondary-foreground hidden h-4.5 w-4.5 cursor-pointer lg:inline-flex"
+              aria-label="Toggle sidebar"
+            />
           ) : null}
 
           <If condition={description}>
@@ -174,6 +190,7 @@ export function PageHeader({
               <Separator
                 orientation="vertical"
                 className="hidden h-4 w-px lg:group-data-[minimized]:block"
+                aria-hidden="true"
               />
             </If>
 
@@ -187,7 +204,7 @@ export function PageHeader({
       </div>
 
       {children}
-    </div>
+    </header>
   );
 }
 

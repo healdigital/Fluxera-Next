@@ -57,7 +57,10 @@
     "dashboard": "仪表板",
     "settings": "设置",
     "profile": "轮廓",
-    "chat": "聊天"
+    "chat": "聊天",
+    "assets": "资产",
+    "users": "用户",
+    "licenses": "许可证"
   },
   "roles": {
     "owner": {

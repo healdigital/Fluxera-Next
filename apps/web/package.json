@@ -32,7 +32,9 @@
     "supabase:typegen": "pnpm run supabase:typegen:packages && pnpm run supabase:typegen:app",
     "supabase:typegen:packages": "supabase gen types typescript --local > ../../packages/supabase/src/database.types.ts",
     "supabase:typegen:app": "supabase gen types typescript --local > ./lib/database.types.ts",
-    "supabase:db:dump:local": "supabase db dump --local --data-only"
+    "supabase:db:dump:local": "supabase db dump --local --data-only",
+    "check-license-expirations": "tsx scripts/check-license-expirations.ts",
+    "lighthouse:accessibility": "tsx scripts/lighthouse-accessibility-audit.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.64",
@@ -94,7 +96,9 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "babel-plugin-react-compiler": "1.0.0",
+    "chrome-launcher": "^1.2.1",
     "cssnano": "^7.1.2",
+    "lighthouse": "^13.0.1",
     "lightningcss-linux-arm64-musl": "latest",
     "pino-pretty": "13.0.0",
     "prettier": "^3.6.2",

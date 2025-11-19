@@ -55,7 +55,15 @@ export default defineConfig({
   /* Limit parallel tests on CI. */
   workers: process.env.CI ? CI_WORKERS : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: process.env.CI
+    ? [
+        ['html', { open: 'never' }],
+        ['json', { outputFile: 'test-results.json' }],
+        ['junit', { outputFile: 'test-results.xml' }],
+        ['github'],
+        ['list'],
+      ]
+    : 'html',
   /* Ignore billing tests if the environment variable is not set. */
   testIgnore,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -65,6 +73,9 @@ export default defineConfig({
 
     // take a screenshot when a test fails
     screenshot: 'only-on-failure',
+
+    // record video on failure in CI
+    video: process.env.CI ? 'retain-on-failure' : 'off',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

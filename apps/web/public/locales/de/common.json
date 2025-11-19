@@ -47,7 +47,10 @@
     "dashboard": "Instrumententafel",
     "settings": "Einstellungen",
     "profile": "Profil",
-    "chat": "AI Chat"
+    "chat": "AI Chat",
+    "assets": "Vermögenswerte",
+    "users": "Benutzer",
+    "licenses": "Lizenzen"
   },
   "roles": {
     "owner": {

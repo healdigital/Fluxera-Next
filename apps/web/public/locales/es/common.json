@@ -50,7 +50,10 @@
     "dashboard": "Tablero",
     "settings": "Configuraciones",
     "profile": "Perfil",
-    "chat": "AI Chat"
+    "chat": "AI Chat",
+    "assets": "Activos",
+    "users": "Usuarios",
+    "licenses": "Licencias"
   },
   "roles": {
     "owner": {

@@ -6,7 +6,19 @@ import { Tooltip as TooltipPrimitive } from 'radix-ui';
 
 import { cn } from '../lib/utils';
 
-const TooltipProvider = TooltipPrimitive.Provider;
+/**
+ * TooltipProvider with 500ms delay as per accessibility requirements
+ * Wraps the application to provide tooltip context
+ */
+const TooltipProvider: React.FC<
+  React.ComponentPropsWithRef<typeof TooltipPrimitive.Provider>
+> = ({ delayDuration = 500, skipDelayDuration = 300, ...props }) => (
+  <TooltipPrimitive.Provider
+    delayDuration={delayDuration}
+    skipDelayDuration={skipDelayDuration}
+    {...props}
+  />
+);
 
 const Tooltip = TooltipPrimitive.Root;
 
@@ -26,4 +38,35 @@ const TooltipContent: React.FC<
 );
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };
+/**
+ * Simple tooltip wrapper component for easy usage
+ * Automatically includes trigger and content
+ */
+interface SimpleTooltipProps {
+  content: React.ReactNode;
+  children: React.ReactNode;
+  side?: 'top' | 'right' | 'bottom' | 'left';
+  delayDuration?: number;
+}
+
+const SimpleTooltip: React.FC<SimpleTooltipProps> = ({
+  content,
+  children,
+  side = 'top',
+  delayDuration = 500,
+}) => (
+  <TooltipProvider delayDuration={delayDuration}>
+    <Tooltip>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent side={side}>{content}</TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+);
+
+export {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+  SimpleTooltip,
+};

@@ -1,0 +1,35 @@
+{
+  "pageTitle": "Assets",
+  "createAssetPageTitle": "Create Asset",
+  "createAssetTitle": "Create Asset",
+  "createAsset": "Create Asset",
+  "creatingAsset": "Creating...",
+  "createAssetError": "Error Creating Asset",
+  "assetName": "Asset Name",
+  "assetNamePlaceholder": "Enter asset name",
+  "category": "Category",
+  "status": "Status",
+  "statusDescription": "Default status is 'Available'",
+  "description": "Description",
+  "descriptionPlaceholder": "Enter asset description (optional)",
+  "serialNumber": "Serial Number",
+  "serialNumberPlaceholder": "Enter serial number (optional)",
+  "purchaseDate": "Purchase Date",
+  "warrantyExpiryDate": "Warranty Expiry Date",
+  "categories": {
+    "laptop": "Laptop",
+    "desktop": "Desktop",
+    "mobile_phone": "Mobile Phone",
+    "tablet": "Tablet",
+    "monitor": "Monitor",
+    "printer": "Printer",
+    "other_equipment": "Other Equipment"
+  },
+  "statuses": {
+    "available": "Available",
+    "assigned": "Assigned",
+    "in_maintenance": "In Maintenance",
+    "retired": "Retired",
+    "lost": "Lost"
+  }
+}

@@ -20,33 +20,54 @@ export const generateMetadata = async () => {
 async function FAQPage() {
   const { t } = await createI18nServerInstance();
 
-  // replace this content with translations
   const faqItems = [
     {
-      // or: t('marketing:faq.question1')
-      question: `Do you offer a free trial?`,
-      // or: t('marketing:faq.answer1')
-      answer: `Yes, we offer a 14-day free trial. You can cancel at any time during the trial period and you won't be charged.`,
+      question: `Qu'est-ce que Fluxera ?`,
+      answer: `Fluxera est une plateforme complète de gestion IT qui vous permet de gérer vos actifs informatiques, licences logicielles et utilisateurs depuis une interface unique et intuitive.`,
     },
     {
-      question: `Can I cancel my subscription?`,
-      answer: `You can cancel your subscription at any time. You can do this from your account settings.`,
+      question: `Proposez-vous un essai gratuit ?`,
+      answer: `Oui, nous offrons un essai gratuit de 14 jours sans engagement. Aucune carte bancaire n'est requise pour commencer.`,
     },
     {
-      question: `Where can I find my invoices?`,
-      answer: `You can find your invoices in your account settings.`,
+      question: `Comment importer mes données existantes ?`,
+      answer: `Vous pouvez importer vos données via fichier CSV ou connecter vos outils existants. Notre équipe peut également vous accompagner dans la migration de vos données.`,
     },
     {
-      question: `What payment methods do you accept?`,
-      answer: `We accept all major credit cards and PayPal.`,
+      question: `Mes données sont-elles sécurisées ?`,
+      answer: `Absolument. Nous utilisons un chiffrement de niveau bancaire, des sauvegardes quotidiennes et sommes conformes RGPD. Vos données sont hébergées en Europe.`,
     },
     {
-      question: `Can I upgrade or downgrade my plan?`,
-      answer: `Yes, you can upgrade or downgrade your plan at any time. You can do this from your account settings.`,
+      question: `Puis-je personnaliser les tableaux de bord ?`,
+      answer: `Oui, tous les tableaux de bord sont entièrement personnalisables. Vous pouvez choisir les widgets à afficher et leur disposition selon vos besoins.`,
     },
     {
-      question: `Do you offer discounts for non-profits?`,
-      answer: `Yes, we offer a 50% discount for non-profits. Please contact us to learn more.`,
+      question: `Quel support proposez-vous ?`,
+      answer: `Nous offrons un support par email, chat et téléphone. Les plans Pro et Enterprise bénéficient d'un support prioritaire 24/7.`,
+    },
+    {
+      question: `Puis-je changer de plan à tout moment ?`,
+      answer: `Oui, vous pouvez upgrader ou downgrader votre plan à tout moment depuis vos paramètres de compte. Les changements sont effectifs immédiatement.`,
+    },
+    {
+      question: `Combien d'utilisateurs puis-je ajouter ?`,
+      answer: `Le nombre d'utilisateurs dépend de votre plan. Le plan Starter permet jusqu'à 10 utilisateurs, Pro jusqu'à 50, et Enterprise est illimité.`,
+    },
+    {
+      question: `Proposez-vous des intégrations ?`,
+      answer: `Oui, Fluxera s'intègre avec de nombreux outils : Active Directory, Google Workspace, Slack, Microsoft Teams, et bien d'autres via notre API.`,
+    },
+    {
+      question: `Comment fonctionne la facturation ?`,
+      answer: `La facturation est mensuelle ou annuelle (avec 20% de réduction). Vous pouvez consulter et télécharger vos factures depuis votre espace client.`,
+    },
+    {
+      question: `Puis-je exporter mes données ?`,
+      answer: `Oui, vous pouvez exporter toutes vos données à tout moment au format CSV ou Excel. Vous gardez le contrôle total de vos informations.`,
+    },
+    {
+      question: `Offrez-vous des réductions pour les associations ?`,
+      answer: `Oui, nous offrons une réduction de 50% pour les associations et organisations à but non lucratif. Contactez-nous pour en savoir plus.`,
     },
   ];
 

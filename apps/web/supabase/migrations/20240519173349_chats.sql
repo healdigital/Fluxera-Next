@@ -38,7 +38,40 @@ or replace trigger prevent_chats_update before
 update on public.chats for each row
 execute function kit.prevent_chats_update ();
 
--- public.has_credits
+-- public.chat_messages
+create table if not exists public.chat_messages (
+    id uuid primary key default gen_random_uuid(),
+    chat_id serial not null references public.chats(id) on delete cascade,
+    account_id uuid not null references public.accounts(id),
+    content text not null,
+    role chat_role not null,
+    created_at timestamp with time zone default now()
+);
+
+-- public.chat_messages row level security
+alter table public.chat_messages enable row level security;
+
+create index ix_chat_messages_chat_id on public.chat_messages(chat_id);
+
+-- public.credits_usage (moved before has_credits function)
+create table if not exists public.credits_usage (
+    id serial primary key,
+    account_id uuid not null references public.accounts(id) on delete cascade,
+    remaining_credits integer not null default 0
+);
+
+-- RLS
+alter table public.credits_usage enable row level security;
+
+-- SELECT(public.credits_usage)
+create policy select_credits_usage on public.credits_usage
+ for select
+  to authenticated
+  using (
+    public.has_role_on_account(account_id)
+ );
+
+-- public.has_credits (moved after credits_usage table creation)
 create or replace function public.has_credits(account_id uuid) returns boolean as $$
    select remaining_credits > 0 from public.credits_usage where public.credits_usage.account_id = $1;
 $$ language sql stable;
@@ -78,21 +111,6 @@ create policy delete_chats on public.chats
     public.has_role_on_account(account_id)
  );
 
--- public.chat_messages
-create table if not exists public.chat_messages (
-    id uuid primary key default gen_random_uuid(),
-    chat_id serial not null references public.chats(id) on delete cascade,
-    account_id uuid not null references public.accounts(id),
-    content text not null,
-    role chat_role not null,
-    created_at timestamp with time zone default now()
-);
-
--- public.chat_messages row level security
-alter table public.chat_messages enable row level security;
-
-create index ix_chat_messages_chat_id on public.chat_messages(chat_id);
-
 -- SELECT(public.chat_messages)
 create policy select_chat_messages on public.chat_messages
  for select
@@ -106,24 +124,6 @@ create policy delete_chat_messages on public.chat_messages
  for delete
    to authenticated
    using (
-    public.has_role_on_account(account_id)
- );
-
--- public.credits_usage
-create table if not exists public.credits_usage (
-    id serial primary key,
-    account_id uuid not null references public.accounts(id) on delete cascade,
-    remaining_credits integer not null default 0
-);
-
--- RLS
-alter table public.credits_usage enable row level security;
-
--- SELECT(public.credits_usage)
-create policy select_credits_usage on public.credits_usage
- for select
-  to authenticated
-  using (
     public.has_role_on_account(account_id)
  );
 

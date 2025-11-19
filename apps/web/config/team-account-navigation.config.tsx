@@ -1,8 +1,11 @@
 import {
   CreditCard,
+  FileKey,
+  HardDrive,
   LayoutDashboard,
   MessageSquare,
   Settings,
+  UserCog,
   Users,
 } from 'lucide-react';
 
@@ -25,8 +28,30 @@ const getRoutes = (account: string) => [
       },
       {
         label: 'common:routes.chat',
-        path: pathsConfig.app.accountHome.replace('[account]', account) + '/chat',
+        path:
+          pathsConfig.app.accountHome.replace('[account]', account) + '/chat',
         Icon: <MessageSquare className={iconClasses} />,
+        end: false,
+      },
+      {
+        label: 'common:routes.assets',
+        path:
+          pathsConfig.app.accountHome.replace('[account]', account) + '/assets',
+        Icon: <HardDrive className={iconClasses} />,
+        end: false,
+      },
+      {
+        label: 'common:routes.licenses',
+        path:
+          pathsConfig.app.accountHome.replace('[account]', account) +
+          '/licenses',
+        Icon: <FileKey className={iconClasses} />,
+        end: false,
+      },
+      {
+        label: 'common:routes.users',
+        path: createPath(pathsConfig.app.accountUsers, account),
+        Icon: <UserCog className={iconClasses} />,
         end: false,
       },
     ],

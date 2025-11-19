@@ -76,9 +76,22 @@ const config = {
       '@radix-ui/react-icons',
       '@radix-ui/react-avatar',
       '@radix-ui/react-select',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-popover',
+      '@radix-ui/react-tooltip',
       'date-fns',
+      'react-hook-form',
+      '@hookform/resolvers',
       ...INTERNAL_PACKAGES,
     ],
+  },
+  compiler: {
+    removeConsole: IS_PRODUCTION
+      ? {
+          exclude: ['error', 'warn'],
+        }
+      : false,
   },
   modularizeImports: {
     lodash: {

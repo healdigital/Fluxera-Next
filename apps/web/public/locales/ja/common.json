@@ -57,7 +57,10 @@
     "dashboard": "ダッシュボード",
     "settings": "設定",
     "profile": "プロフィール",
-    "chat": "チャット"
+    "chat": "チャット",
+    "assets": "資産",
+    "users": "ユーザー",
+    "licenses": "ライセンス"
   },
   "roles": {
     "owner": {

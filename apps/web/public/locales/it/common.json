@@ -57,7 +57,10 @@
     "dashboard": "Pannello di controllo",
     "settings": "Impostazioni",
     "profile": "Profilo",
-    "chat": "AI Chat"
+    "chat": "AI Chat",
+    "assets": "Risorse",
+    "users": "Utenti",
+    "licenses": "Licenze"
   },
   "roles": {
     "owner": {

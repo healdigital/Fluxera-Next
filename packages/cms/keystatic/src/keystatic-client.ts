@@ -17,11 +17,11 @@ self.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
     headers: {
       ...(init?.headers ?? {}),
       'User-Agent': 'Cloudflare-Workers',
-    }
+    },
   };
 
   return originalFetch(input, requestInit);
-}
+};
 
 class KeystaticClient implements CmsClient {
   async getContentItems(options: Cms.GetContentItemsOptions) {

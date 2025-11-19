@@ -1,0 +1,27 @@
+{
+  "dashboard": {
+    "pageTitle": "Admin Dashboard",
+    "pageDescription": "Monitor platform-wide metrics and manage team accounts",
+    "title": "Admin Dashboard",
+    "description": "Platform-wide metrics and account management",
+    "platformMetrics": "Platform Metrics",
+    "totalAccounts": "Total Accounts",
+    "totalUsers": "Total Users",
+    "totalAssets": "Total Assets",
+    "totalLicenses": "Total Licenses",
+    "last30Days": "in last 30 days",
+    "lastUpdated": "Last updated",
+    "accountActivity": "Account Activity",
+    "accountActivityDescription": "View and manage team accounts sorted by activity level",
+    "accountName": "Account Name",
+    "users": "Users",
+    "assets": "Assets",
+    "lastActivity": "Last Activity",
+    "created": "Created",
+    "noAccounts": "No team accounts found",
+    "rowsPerPage": "Rows per page",
+    "systemHealth": "System Health",
+    "subscriptionOverview": "Subscription Overview",
+    "usageStatistics": "Usage Statistics"
+  }
+}

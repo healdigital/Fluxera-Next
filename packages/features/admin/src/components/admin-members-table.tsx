@@ -37,7 +37,7 @@ function getColumns(): ColumnDef<Memberships>[] {
 
             <Link
               className={'hover:underline'}
-              href={`/admin/accounts/${row.original.id}`}
+              href={`/admin/accounts/${row.original.user_id}`}
             >
               <span>{name}</span>
             </Link>
@@ -48,20 +48,6 @@ function getColumns(): ColumnDef<Memberships>[] {
     {
       header: 'Email',
       accessorKey: 'email',
-    },
-    {
-      header: 'Role',
-      cell: ({ row }) => {
-        return row.original.role;
-      },
-    },
-    {
-      header: 'Created At',
-      accessorKey: 'created_at',
-    },
-    {
-      header: 'Updated At',
-      accessorKey: 'updated_at',
     },
   ];
 }

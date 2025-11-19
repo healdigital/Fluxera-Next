@@ -24,6 +24,8 @@
     "lint:fix": "turbo lint --cache-dir=.turbo --affected --continue -- --fix --cache --cache-location \"node_modules/.cache/.eslintcache\" && manypkg fix",
     "typecheck": "turbo typecheck --affected --cache-dir=.turbo",
     "test": "turbo test --cache-dir=.turbo",
+    "verify": "tsx scripts/verify-code-quality.ts",
+    "verify:fix": "tsx scripts/verify-code-quality.ts --fix",
     "update": "pnpm update -r",
     "syncpack:list": "pnpm dlx syncpack list-mismatches",
     "syncpack:fix": "pnpm dlx syncpack fix-mismatches",
@@ -43,6 +45,7 @@
     "@turbo/gen": "^2.6.0",
     "cross-env": "^10.0.0",
     "prettier": "^3.6.2",
+    "tsx": "^4.20.6",
     "turbo": "2.6.0",
     "typescript": "^5.9.3"
   }

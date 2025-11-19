@@ -1,0 +1,20 @@
+{
+  "pageTitle": "Dashboard",
+  "pageDescription": "Monitor your organization's key metrics and activities",
+  "title": "Dashboard",
+  "subtitle": "Monitor your organization's key metrics and activities",
+  "configure": "Configure",
+  "loading": "Loading dashboard...",
+  "error": "Failed to load dashboard",
+  "noData": "No data available",
+  "widgets": {
+    "metricsSummary": "Metrics Summary",
+    "assetStatus": "Asset Status",
+    "trendChart": "Trends",
+    "alerts": "Alerts",
+    "quickActions": "Quick Actions",
+    "recentActivity": "Recent Activity",
+    "licenseExpiry": "License Expiration",
+    "maintenanceSchedule": "Maintenance Schedule"
+  }
+}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, MessageCircle } from 'lucide-react';
 
 import { useCaptureException } from '@kit/monitoring/hooks';
+import { GeneralErrors } from '@kit/shared/error-messages';
 import { useUser } from '@kit/supabase/hooks/use-user';
 import { Button } from '@kit/ui/button';
 import { Heading } from '@kit/ui/heading';
@@ -60,13 +61,28 @@ function GlobalErrorContent({ reset }: { reset: () => void }) {
             >
               <div>
                 <Heading level={2}>
-                  <Trans i18nKey={'common:genericError'} />
+                  <Trans
+                    i18nKey={'common:genericError'}
+                    defaults={GeneralErrors.SERVER_ERROR.title}
+                  />
                 </Heading>
               </div>
 
               <p className={'text-muted-foreground text-lg'}>
-                <Trans i18nKey={'common:genericErrorSubHeading'} />
+                <Trans
+                  i18nKey={'common:genericErrorSubHeading'}
+                  defaults={GeneralErrors.SERVER_ERROR.description}
+                />
               </p>
+
+              {GeneralErrors.SERVER_ERROR.action && (
+                <p className={'text-muted-foreground text-sm font-medium'}>
+                  <Trans
+                    i18nKey={'common:genericErrorAction'}
+                    defaults={GeneralErrors.SERVER_ERROR.action}
+                  />
+                </p>
+              )}
             </div>
 
             <div className={'flex space-x-4'}>

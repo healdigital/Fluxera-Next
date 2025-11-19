@@ -1,5 +1,6 @@
 import { headers } from 'next/headers';
 
+import { SkipNav } from '@kit/ui/skip-nav';
 import { Toaster } from '@kit/ui/sonner';
 import { cn } from '@kit/ui/utils';
 
@@ -10,6 +11,7 @@ import { generateRootMetadata } from '~/lib/root-metadata';
 import { getRootTheme } from '~/lib/root-theme';
 
 import '../styles/globals.css';
+import { WebVitals } from './web-vitals';
 
 export const generateMetadata = () => {
   return generateRootMetadata();
@@ -32,11 +34,13 @@ export default async function RootLayout({
   return (
     <html lang={language} className={className}>
       <body>
+        <SkipNav />
         <RootProviders theme={theme} lang={language} nonce={nonce}>
           {children}
         </RootProviders>
 
         <Toaster richColors={true} theme={theme} position="top-center" />
+        <WebVitals />
       </body>
     </html>
   );

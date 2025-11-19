@@ -14,9 +14,7 @@ interface Props {
 }
 
 function ChatPage(props: Props) {
-  const teamAccountsApi = createTeamAccountsApi(
-    getSupabaseServerClient(),
-  );
+  const teamAccountsApi = createTeamAccountsApi(getSupabaseServerClient());
 
   const accountParam = use(props.params).account;
   const account = use(teamAccountsApi.getTeamAccount(accountParam));

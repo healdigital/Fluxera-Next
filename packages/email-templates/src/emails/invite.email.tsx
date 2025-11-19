@@ -33,7 +33,6 @@ interface Props {
   language?: string;
 }
 
-
 export async function renderInviteEmail(props: Props) {
   const namespace = 'invite-email';
 

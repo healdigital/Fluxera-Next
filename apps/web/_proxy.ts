@@ -32,9 +32,7 @@ export async function _proxy(request: NextRequest) {
   setRequestId(request);
 
   // apply CSRF protection for mutating requests
-  // const csrfResponse = await withCsrfMiddleware(request, response);
-  // TODO: uncomment this when package is fixed
-  const csrfResponse = response;
+  const csrfResponse = await _withCsrfMiddleware(request, response);
 
   // handle patterns for specific routes
   const handlePattern = await matchUrlPattern(request.url);
@@ -60,7 +58,7 @@ export async function _proxy(request: NextRequest) {
   return csrfResponse;
 }
 
-async function withCsrfMiddleware(
+async function _withCsrfMiddleware(
   request: NextRequest,
   response: NextResponse,
 ) {

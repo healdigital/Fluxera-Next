@@ -51,7 +51,7 @@ export function SidebarItems({
               <DropdownMenuTrigger asChild>
                 <Button
                   className={
-                    'absolute right-0 top-0 w-10 justify-center opacity-0 group-hover:opacity-100'
+                    'absolute top-0 right-0 w-10 justify-center opacity-0 group-hover:opacity-100'
                   }
                   variant={'ghost'}
                   size={'sm'}
