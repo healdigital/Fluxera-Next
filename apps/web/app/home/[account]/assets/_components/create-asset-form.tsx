@@ -144,18 +144,15 @@ export function CreateAssetForm({ accountSlug }: CreateAssetFormProps) {
 
         const result = await createAsset(data);
 
-        if (!result.success) {
-          setError(result.message || 'Failed to create asset');
-          return;
-        }
+        if (result.success) {
+          // Clean up image preview
+          if (imagePreview) {
+            URL.revokeObjectURL(imagePreview);
+          }
 
-        // Clean up image preview
-        if (imagePreview) {
-          URL.revokeObjectURL(imagePreview);
+          // Redirect to assets list
+          router.push(`/home/${accountSlug}/assets`);
         }
-
-        // Redirect to assets list
-        router.push(`/home/${accountSlug}/assets`);
       } catch (err) {
         // Handle redirect errors from Next.js
         if (isRedirectError(err)) {
@@ -293,6 +290,10 @@ export function CreateAssetForm({ accountSlug }: CreateAssetFormProps) {
               <FormItem>
                 <FormLabel>
                   <Trans i18nKey="assets:category" />
+                  <FormFieldHelp
+                    title="Asset Category"
+                    content="Select the category that best describes this asset. This helps with organization, reporting, and applying category-specific policies."
+                  />
                 </FormLabel>
                 <FormControl>
                   <Select
@@ -395,6 +396,10 @@ export function CreateAssetForm({ accountSlug }: CreateAssetFormProps) {
               <FormItem>
                 <FormLabel>
                   <Trans i18nKey="assets:serialNumber" />
+                  <FormFieldHelp
+                    title="Serial Number"
+                    content="The serial number can be found on the device label, usually on the bottom or back. It's typically a unique alphanumeric code used for warranty and support."
+                  />
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -437,6 +442,10 @@ export function CreateAssetForm({ accountSlug }: CreateAssetFormProps) {
               <FormItem>
                 <FormLabel>
                   <Trans i18nKey="assets:warrantyExpiryDate" />
+                  <FormFieldHelp
+                    title="Warranty Expiry"
+                    content="Enter the date when the manufacturer's warranty expires. The system will alert you before expiration so you can plan for extended coverage or replacement."
+                  />
                 </FormLabel>
                 <FormControl>
                   <Input

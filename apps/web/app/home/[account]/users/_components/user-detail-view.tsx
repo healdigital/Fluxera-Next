@@ -88,7 +88,7 @@ export function UserDetailView({
         if (result.success) {
           toast.success('Asset unassigned successfully');
         } else {
-          toast.error(result.message || 'Failed to unassign asset');
+          toast.error('Failed to unassign asset');
         }
       } catch (error) {
         console.error('Error unassigning asset:', error);

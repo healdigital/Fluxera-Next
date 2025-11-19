@@ -80,6 +80,7 @@ export type UpdateWidgetConfigData = z.infer<typeof UpdateWidgetConfigSchema>;
  */
 export const DismissAlertSchema = z.object({
   alert_id: z.string().uuid('Invalid alert ID'),
+  accountSlug: z.string().min(1, 'Account slug is required'),
 });
 
 export type DismissAlertData = z.infer<typeof DismissAlertSchema>;

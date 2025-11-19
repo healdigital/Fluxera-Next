@@ -94,9 +94,9 @@ export function AssignRoleDialog({
         });
 
         if (!result.success) {
-          setError(result.message || 'Failed to update user role');
+          setError('Failed to update user role');
           toast.error(_t('assignRoleError'), {
-            description: result.message || 'Failed to update user role',
+            description: 'Failed to update user role',
           });
           return;
         }

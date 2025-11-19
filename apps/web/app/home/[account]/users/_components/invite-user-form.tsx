@@ -73,9 +73,9 @@ export function InviteUserForm({
         });
 
         if (!result.success) {
-          setError(result.message || 'Failed to invite user');
+          setError('Failed to invite user');
           toast.error(t('inviteUserError'), {
-            description: result.message || 'Failed to invite user',
+            description: 'Failed to invite user',
           });
           return;
         }

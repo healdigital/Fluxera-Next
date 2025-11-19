@@ -74,13 +74,10 @@ export function EditAssetForm({ asset, accountSlug }: EditAssetFormProps) {
 
         const result = await updateAsset(data);
 
-        if (!result.success) {
-          setError(result.message || 'Failed to update asset');
-          return;
+        if (result.success) {
+          // Redirect to asset detail page
+          router.push(`/home/${accountSlug}/assets/${asset.id}`);
         }
-
-        // Redirect to asset detail page
-        router.push(`/home/${accountSlug}/assets/${asset.id}`);
       } catch (err) {
         // Handle redirect errors from Next.js
         if (isRedirectError(err)) {

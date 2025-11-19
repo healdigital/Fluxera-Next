@@ -18,12 +18,16 @@
     "./image-optimization": "./src/image-optimization/index.ts",
     "./error-messages": "./src/lib/error-messages.ts",
     "./error-handler": "./src/lib/error-handler.ts",
+    "./app-errors": "./src/lib/app-errors.ts",
+    "./permission-helpers": "./src/lib/permission-helpers.ts",
     "./performance": "./src/lib/performance.ts"
   },
   "devDependencies": {
     "@kit/eslint-config": "workspace:*",
     "@kit/prettier-config": "workspace:*",
+    "@kit/supabase": "workspace:*",
     "@kit/tsconfig": "workspace:*",
+    "@supabase/supabase-js": "2.80.0",
     "@types/react": "catalog:"
   },
   "dependencies": {

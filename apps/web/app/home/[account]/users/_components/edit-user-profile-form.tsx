@@ -72,9 +72,9 @@ export function EditUserProfileForm({
         });
 
         if (!result.success) {
-          setError(result.message || 'Failed to update user profile');
+          setError('Failed to update user profile');
           toast.error(t('updateProfileError'), {
-            description: result.message || 'Failed to update user profile',
+            description: 'Failed to update user profile',
           });
           return;
         }

@@ -49,8 +49,6 @@ export function UnassignAssetDialog({
         toast.success('Asset unassigned successfully');
         setOpen(false);
         router.refresh();
-      } else {
-        toast.error(result.message || 'Failed to unassign asset');
       }
     } catch (error) {
       if (isRedirectError(error)) {

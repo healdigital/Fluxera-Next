@@ -124,9 +124,9 @@ export function ChangeStatusDialog({
         });
 
         if (!result.success) {
-          setError(result.message || 'Failed to update user status');
+          setError('Failed to update user status');
           toast.error(t('changeStatusError'), {
-            description: result.message || 'Failed to update user status',
+            description: 'Failed to update user status',
           });
           return;
         }

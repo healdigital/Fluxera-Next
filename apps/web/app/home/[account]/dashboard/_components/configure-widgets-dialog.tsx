@@ -180,7 +180,7 @@ export function ConfigureWidgetsDialog({
   const handleSave = async () => {
     startTransition(async () => {
       try {
-        const result = await updateWidgetLayout({
+        await updateWidgetLayout({
           accountSlug,
           widgets: widgetConfigs.map((config) => ({
             widget_type: config.widget_type,
@@ -188,13 +188,6 @@ export function ConfigureWidgetsDialog({
             is_visible: config.is_visible,
           })),
         });
-
-        if (!result.success) {
-          toast.error('Failed to save widget configuration', {
-            description: result.error || 'Please try again',
-          });
-          return;
-        }
 
         toast.success('Widget configuration saved', {
           description: 'Your dashboard layout has been updated',
@@ -204,7 +197,7 @@ export function ConfigureWidgetsDialog({
       } catch (error) {
         console.error('Error saving widget configuration:', error);
         toast.error('Failed to save widget configuration', {
-          description: 'An unexpected error occurred',
+          description: error instanceof Error ? error.message : 'An unexpected error occurred',
         });
       }
     });

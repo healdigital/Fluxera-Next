@@ -172,15 +172,6 @@ function AssignAssetForm({
             />,
           );
           onSuccess();
-        } else {
-          toast.error(
-            result.message || (
-              <Trans
-                i18nKey="assets:assignAssetError"
-                defaults="Failed to assign asset"
-              />
-            ),
-          );
         }
       } catch (error) {
         console.error('Error assigning asset:', error);

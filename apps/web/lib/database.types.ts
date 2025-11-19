@@ -2075,6 +2075,18 @@ export type Database = {
         | "invites.manage"
         | "tasks.write"
         | "tasks.delete"
+        | "licenses.view"
+        | "licenses.create"
+        | "licenses.update"
+        | "licenses.delete"
+        | "licenses.manage"
+        | "assets.view"
+        | "assets.create"
+        | "assets.update"
+        | "assets.delete"
+        | "assets.manage"
+        | "dashboard.view"
+        | "dashboard.manage"
       asset_category:
         | "laptop"
         | "desktop"
@@ -2795,6 +2807,18 @@ export const Constants = {
         "invites.manage",
         "tasks.write",
         "tasks.delete",
+        "licenses.view",
+        "licenses.create",
+        "licenses.update",
+        "licenses.delete",
+        "licenses.manage",
+        "assets.view",
+        "assets.create",
+        "assets.update",
+        "assets.delete",
+        "assets.manage",
+        "dashboard.view",
+        "dashboard.manage",
       ],
       asset_category: [
         "laptop",

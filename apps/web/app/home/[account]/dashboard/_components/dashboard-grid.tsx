@@ -182,20 +182,16 @@ export function DashboardGrid({
     });
 
     try {
-      const result = await dismissAlert({ alert_id: alertId });
+      await dismissAlert({ 
+        alert_id: alertId,
+        accountSlug,
+      });
 
-      if (!result.success) {
-        toast.error('Failed to dismiss alert', {
-          description: result.error || 'Please try again',
-        });
-        // Note: The page will revalidate and restore the alert if it failed
-      } else {
-        toast.success('Alert dismissed');
-      }
+      toast.success('Alert dismissed');
     } catch (error) {
       console.error('Error dismissing alert:', error);
       toast.error('Failed to dismiss alert', {
-        description: 'An unexpected error occurred',
+        description: error instanceof Error ? error.message : 'An unexpected error occurred',
       });
     }
   };

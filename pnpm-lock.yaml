@@ -1431,9 +1431,15 @@ importers:
       '@kit/prettier-config':
         specifier: workspace:*
         version: link:../../tooling/prettier
+      '@kit/supabase':
+        specifier: workspace:*
+        version: link:../supabase
       '@kit/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/typescript
+      '@supabase/supabase-js':
+        specifier: 2.80.0
+        version: 2.80.0
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.2

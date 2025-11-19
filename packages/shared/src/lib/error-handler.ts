@@ -6,6 +6,15 @@ import {
   LicenseErrors,
   UserErrors,
 } from './error-messages';
+import {
+  isAppError,
+  isNotFoundError,
+  isUnauthorizedError,
+  isForbiddenError,
+  isValidationError as isAppValidationError,
+  isBusinessRuleError,
+  isConflictError,
+} from './app-errors';
 
 /**
  * Error handler utility for consistent error handling across the application
@@ -43,6 +52,50 @@ export function handleError(
   // Capture exception if handler provided
   if (options.captureException && error instanceof Error) {
     options.captureException(error);
+  }
+
+  // Handle new typed AppError classes first
+  if (isNotFoundError(error)) {
+    return context === 'asset'
+      ? AssetErrors.NOT_FOUND
+      : context === 'license'
+        ? LicenseErrors.NOT_FOUND
+        : context === 'user'
+          ? UserErrors.NOT_FOUND
+          : GeneralErrors.UNKNOWN_ERROR;
+  }
+
+  if (isUnauthorizedError(error)) {
+    return GeneralErrors.UNAUTHORIZED;
+  }
+
+  if (isForbiddenError(error)) {
+    return context === 'asset'
+      ? AssetErrors.PERMISSION_DENIED
+      : context === 'user'
+        ? UserErrors.PERMISSION_DENIED
+        : GeneralErrors.FORBIDDEN;
+  }
+
+  if (isAppValidationError(error)) {
+    return GeneralErrors.VALIDATION_ERROR;
+  }
+
+  if (isConflictError(error)) {
+    return context === 'license'
+      ? LicenseErrors.DUPLICATE_KEY
+      : context === 'user'
+        ? UserErrors.DUPLICATE_EMAIL
+        : GeneralErrors.UNKNOWN_ERROR;
+  }
+
+  if (isBusinessRuleError(error)) {
+    // Business rule errors use their message directly
+    return {
+      title: 'Operation Failed',
+      description: error.message,
+      action: 'Please review the requirements and try again',
+    };
   }
 
   // Get specific error message based on context and error type
@@ -231,6 +284,11 @@ export function formatErrorForToast(
   error: unknown,
   options: ErrorHandlerOptions = {},
 ): string {
+  // For AppErrors, use their message directly if it's descriptive
+  if (isAppError(error) && error.message.length > 10) {
+    return error.message;
+  }
+
   const errorMessage = handleError(error, options);
   return `${errorMessage.title}: ${errorMessage.description}`;
 }

@@ -78,7 +78,7 @@ export function ExportActivityDialog({
         });
 
         if (!result.success) {
-          setError(result.message || 'Failed to export activity logs');
+          setError('Failed to export activity logs');
           return;
         }
 

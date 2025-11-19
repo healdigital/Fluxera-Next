@@ -3,13 +3,12 @@
 import { revalidatePath } from 'next/cache';
 
 import { enhanceAction } from '@kit/next/actions';
-import { AssetErrors } from '@kit/shared/error-messages';
-import { getLogger } from '@kit/shared/logger';
 import {
-  PERFORMANCE_THRESHOLDS,
-  measurePerformance,
-  withTimeout,
-} from '@kit/shared/performance';
+  BusinessRuleError,
+  NotFoundError,
+} from '@kit/shared/app-errors';
+import { getLogger } from '@kit/shared/logger';
+import { withAccountPermission } from '@kit/shared/permission-helpers';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import {
@@ -21,54 +20,42 @@ import {
 } from '../schemas/asset.schema';
 
 /**
- * Create a new asset
+ * Creates a new asset.
+ *
+ * Requires `assets.create` permission for the account.
+ *
+ * @param data - Asset data including account slug
+ * @returns The created asset
+ * @throws {NotFoundError} If account doesn't exist
+ * @throws {UnauthorizedError} If user is not authenticated or not a member
+ * @throws {ForbiddenError} If user lacks assets.create permission
  */
 export const createAsset = enhanceAction(
   async (data) => {
-    return measurePerformance('create-asset', async () => {
-      const logger = await getLogger();
-      const client = getSupabaseServerClient();
+    const logger = await getLogger();
+    const client = getSupabaseServerClient();
 
-      try {
-        logger.info(
-          {
-            name: 'assets.create',
-          },
-          'Creating new asset...',
-        );
+    logger.info({ name: 'assets.create' }, 'Creating new asset...');
 
-        // Get account_id from the slug in the data
-        const accountQuery = client
-          .from('accounts')
-          .select('id, slug')
-          .eq('slug', data.accountSlug)
-          .single();
-        const accountResult = await withTimeout(
-          accountQuery as unknown as Promise<typeof accountQuery>,
-          PERFORMANCE_THRESHOLDS.DATABASE_QUERY,
-        );
+    // Get account from slug
+    const { data: account, error: accountError } = await client
+      .from('accounts')
+      .select('id, slug')
+      .eq('slug', data.accountSlug)
+      .single();
 
-        const { data: account, error: accountError } = accountResult as Awaited<
-          typeof accountQuery
-        >;
+    if (accountError || !account) {
+      logger.error(
+        { error: accountError, name: 'assets.create' },
+        'Failed to find account',
+      );
+      throw new NotFoundError('Account', data.accountSlug);
+    }
 
-        if (accountError || !account) {
-          logger.error(
-            {
-              error: accountError,
-              name: 'assets.create',
-            },
-            'Failed to find account',
-          );
-
-          return {
-            success: false,
-            message: AssetErrors.PERMISSION_DENIED.description,
-          };
-        }
-
+    return withAccountPermission(
+      async () => {
         // Create the asset
-        const createQuery = client
+        const { data: asset, error: createError } = await client
           .from('assets')
           .insert({
             account_id: account.id,
@@ -83,35 +70,16 @@ export const createAsset = enhanceAction(
           .select()
           .single();
 
-        const createResult = await withTimeout(
-          createQuery as unknown as Promise<typeof createQuery>,
-          PERFORMANCE_THRESHOLDS.DATABASE_QUERY,
-        );
-
-        const { data: asset, error: createError } = createResult as Awaited<
-          typeof createQuery
-        >;
-
         if (createError) {
           logger.error(
-            {
-              error: createError,
-              name: 'assets.create',
-            },
+            { error: createError, name: 'assets.create' },
             'Failed to create asset',
           );
-
-          return {
-            success: false,
-            message: `${AssetErrors.CREATE_FAILED.description} ${AssetErrors.CREATE_FAILED.action}`,
-          };
+          throw createError;
         }
 
         logger.info(
-          {
-            assetId: asset.id,
-            name: 'assets.create',
-          },
+          { assetId: asset.id, name: 'assets.create' },
           'Asset successfully created',
         );
 
@@ -121,21 +89,14 @@ export const createAsset = enhanceAction(
           success: true,
           data: asset,
         };
-      } catch (error) {
-        logger.error(
-          {
-            error,
-            name: 'assets.create',
-          },
-          'Unexpected error creating asset',
-        );
-
-        return {
-          success: false,
-          message: `${AssetErrors.CREATE_FAILED.description} ${AssetErrors.CREATE_FAILED.action}`,
-        };
-      }
-    });
+      },
+      {
+        accountId: account.id,
+        permission: 'assets.create',
+        client,
+        resourceName: 'asset',
+      },
+    );
   },
   {
     schema: CreateAssetSchema,
@@ -143,108 +104,96 @@ export const createAsset = enhanceAction(
 );
 
 /**
- * Update an existing asset
+ * Updates an existing asset.
+ *
+ * Requires `assets.update` permission for the account.
+ *
+ * @param data - Asset update data
+ * @returns The updated asset
+ * @throws {NotFoundError} If asset doesn't exist
+ * @throws {UnauthorizedError} If user is not authenticated or not a member
+ * @throws {ForbiddenError} If user lacks assets.update permission
  */
 export const updateAsset = enhanceAction(
   async (data) => {
     const logger = await getLogger();
     const client = getSupabaseServerClient();
 
-    try {
-      logger.info(
-        {
-          assetId: data.id,
-          name: 'assets.update',
-        },
-        'Updating asset...',
-      );
+    logger.info(
+      { assetId: data.id, name: 'assets.update' },
+      'Updating asset...',
+    );
 
-      // Get the asset to find its account slug
-      const { data: existingAsset, error: fetchError } = await client
-        .from('assets')
-        .select('account_id, accounts!inner(slug)')
-        .eq('id', data.id)
-        .single();
+    // Get the asset to find its account slug
+    const { data: existingAsset, error: fetchError } = await client
+      .from('assets')
+      .select('account_id, accounts!inner(slug)')
+      .eq('id', data.id)
+      .single();
 
-      if (fetchError || !existingAsset) {
-        logger.error(
-          {
-            error: fetchError,
-            assetId: data.id,
-            name: 'assets.update',
-          },
-          'Failed to find asset',
-        );
-
-        return {
-          success: false,
-          message: `${AssetErrors.NOT_FOUND.description} ${AssetErrors.NOT_FOUND.action}`,
-        };
-      }
-
-      // Update the asset
-      const { data: updatedAsset, error: updateError } = await client
-        .from('assets')
-        .update({
-          name: data.name,
-          category: data.category,
-          status: data.status,
-          description: data.description || null,
-          serial_number: data.serial_number || null,
-          purchase_date: data.purchase_date || null,
-          warranty_expiry_date: data.warranty_expiry_date || null,
-        })
-        .eq('id', data.id)
-        .select()
-        .single();
-
-      if (updateError) {
-        logger.error(
-          {
-            error: updateError,
-            assetId: data.id,
-            name: 'assets.update',
-          },
-          'Failed to update asset',
-        );
-
-        return {
-          success: false,
-          message: `${AssetErrors.UPDATE_FAILED.description} ${AssetErrors.UPDATE_FAILED.action}`,
-        };
-      }
-
-      logger.info(
-        {
-          assetId: data.id,
-          name: 'assets.update',
-        },
-        'Asset successfully updated',
-      );
-
-      const accountSlug = (existingAsset.accounts as { slug: string }).slug;
-      revalidatePath(`/home/${accountSlug}/assets`);
-      revalidatePath(`/home/${accountSlug}/assets/${data.id}`);
-
-      return {
-        success: true,
-        data: updatedAsset,
-      };
-    } catch (error) {
+    if (fetchError || !existingAsset) {
       logger.error(
-        {
-          error,
-          assetId: data.id,
-          name: 'assets.update',
-        },
-        'Unexpected error updating asset',
+        { error: fetchError, assetId: data.id, name: 'assets.update' },
+        'Failed to find asset',
       );
-
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : 'Unexpected error',
-      };
+      throw new NotFoundError('Asset', data.id);
     }
+
+    const accountSlug = (existingAsset.accounts as { slug: string }).slug;
+
+    // Get the full account
+    const { data: account } = await client
+      .from('accounts')
+      .select('id, slug')
+      .eq('slug', accountSlug)
+      .single();
+
+    return withAccountPermission(
+      async () => {
+        // Update the asset
+        const { data: updatedAsset, error: updateError } = await client
+          .from('assets')
+          .update({
+            name: data.name,
+            category: data.category,
+            status: data.status,
+            description: data.description || null,
+            serial_number: data.serial_number || null,
+            purchase_date: data.purchase_date || null,
+            warranty_expiry_date: data.warranty_expiry_date || null,
+          })
+          .eq('id', data.id)
+          .select()
+          .single();
+
+        if (updateError) {
+          logger.error(
+            { error: updateError, assetId: data.id, name: 'assets.update' },
+            'Failed to update asset',
+          );
+          throw updateError;
+        }
+
+        logger.info(
+          { assetId: data.id, name: 'assets.update' },
+          'Asset successfully updated',
+        );
+
+        revalidatePath(`/home/${accountSlug}/assets`);
+        revalidatePath(`/home/${accountSlug}/assets/${data.id}`);
+
+        return {
+          success: true,
+          data: updatedAsset,
+        };
+      },
+      {
+        accountId: account!.id,
+        permission: 'assets.update',
+        client,
+        resourceName: 'asset',
+      },
+    );
   },
   {
     schema: UpdateAssetSchema,
@@ -252,96 +201,84 @@ export const updateAsset = enhanceAction(
 );
 
 /**
- * Delete an asset
+ * Deletes an asset.
+ *
+ * Requires `assets.delete` permission for the account.
+ *
+ * @param data - Asset deletion data
+ * @returns Success status
+ * @throws {NotFoundError} If asset doesn't exist
+ * @throws {UnauthorizedError} If user is not authenticated or not a member
+ * @throws {ForbiddenError} If user lacks assets.delete permission
  */
 export const deleteAsset = enhanceAction(
   async (data) => {
     const logger = await getLogger();
     const client = getSupabaseServerClient();
 
-    try {
-      logger.info(
-        {
-          assetId: data.id,
-          name: 'assets.delete',
-        },
-        'Deleting asset...',
-      );
+    logger.info(
+      { assetId: data.id, name: 'assets.delete' },
+      'Deleting asset...',
+    );
 
-      // Get the asset to find its account slug before deletion
-      const { data: existingAsset, error: fetchError } = await client
-        .from('assets')
-        .select('account_id, accounts!inner(slug)')
-        .eq('id', data.id)
-        .single();
+    // Get the asset to find its account slug before deletion
+    const { data: existingAsset, error: fetchError } = await client
+      .from('assets')
+      .select('account_id, accounts!inner(slug)')
+      .eq('id', data.id)
+      .single();
 
-      if (fetchError || !existingAsset) {
-        logger.error(
-          {
-            error: fetchError,
-            assetId: data.id,
-            name: 'assets.delete',
-          },
-          'Failed to find asset',
-        );
-
-        return {
-          success: false,
-          message: `${AssetErrors.NOT_FOUND.description} ${AssetErrors.NOT_FOUND.action}`,
-        };
-      }
-
-      // Delete the asset
-      const { error: deleteError } = await client
-        .from('assets')
-        .delete()
-        .eq('id', data.id);
-
-      if (deleteError) {
-        logger.error(
-          {
-            error: deleteError,
-            assetId: data.id,
-            name: 'assets.delete',
-          },
-          'Failed to delete asset',
-        );
-
-        return {
-          success: false,
-          message: `${AssetErrors.DELETE_FAILED.description} ${AssetErrors.DELETE_FAILED.action}`,
-        };
-      }
-
-      logger.info(
-        {
-          assetId: data.id,
-          name: 'assets.delete',
-        },
-        'Asset successfully deleted',
-      );
-
-      const accountSlug = (existingAsset.accounts as { slug: string }).slug;
-      revalidatePath(`/home/${accountSlug}/assets`);
-
-      return {
-        success: true,
-      };
-    } catch (error) {
+    if (fetchError || !existingAsset) {
       logger.error(
-        {
-          error,
-          assetId: data.id,
-          name: 'assets.delete',
-        },
-        'Unexpected error deleting asset',
+        { error: fetchError, assetId: data.id, name: 'assets.delete' },
+        'Failed to find asset',
       );
-
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : 'Unexpected error',
-      };
+      throw new NotFoundError('Asset', data.id);
     }
+
+    const accountSlug = (existingAsset.accounts as { slug: string }).slug;
+
+    // Get the full account
+    const { data: account } = await client
+      .from('accounts')
+      .select('id, slug')
+      .eq('slug', accountSlug)
+      .single();
+
+    return withAccountPermission(
+      async () => {
+        // Delete the asset
+        const { error: deleteError } = await client
+          .from('assets')
+          .delete()
+          .eq('id', data.id);
+
+        if (deleteError) {
+          logger.error(
+            { error: deleteError, assetId: data.id, name: 'assets.delete' },
+            'Failed to delete asset',
+          );
+          throw deleteError;
+        }
+
+        logger.info(
+          { assetId: data.id, name: 'assets.delete' },
+          'Asset successfully deleted',
+        );
+
+        revalidatePath(`/home/${accountSlug}/assets`);
+
+        return {
+          success: true,
+        };
+      },
+      {
+        accountId: account!.id,
+        permission: 'assets.delete',
+        client,
+        resourceName: 'asset',
+      },
+    );
   },
   {
     schema: DeleteAssetSchema,
@@ -349,131 +286,120 @@ export const deleteAsset = enhanceAction(
 );
 
 /**
- * Assign an asset to a user
+ * Assigns an asset to a user.
+ *
+ * Requires `assets.manage` permission for the account.
+ *
+ * @param data - Asset assignment data
+ * @returns The updated asset
+ * @throws {NotFoundError} If asset doesn't exist
+ * @throws {BusinessRuleError} If user is not a member of the account
+ * @throws {UnauthorizedError} If user is not authenticated or not a member
+ * @throws {ForbiddenError} If user lacks assets.manage permission
  */
 export const assignAsset = enhanceAction(
   async (data) => {
     const logger = await getLogger();
     const client = getSupabaseServerClient();
 
-    try {
-      logger.info(
-        {
-          assetId: data.asset_id,
-          userId: data.user_id,
-          name: 'assets.assign',
-        },
-        'Assigning asset to user...',
-      );
+    logger.info(
+      { assetId: data.asset_id, userId: data.user_id, name: 'assets.assign' },
+      'Assigning asset to user...',
+    );
 
-      // Get the asset to find its account slug
-      const { data: existingAsset, error: fetchError } = await client
-        .from('assets')
-        .select('account_id, accounts!inner(slug)')
-        .eq('id', data.asset_id)
-        .single();
+    // Get the asset to find its account slug
+    const { data: existingAsset, error: fetchError } = await client
+      .from('assets')
+      .select('account_id, accounts!inner(slug)')
+      .eq('id', data.asset_id)
+      .single();
 
-      if (fetchError || !existingAsset) {
-        logger.error(
-          {
-            error: fetchError,
-            assetId: data.asset_id,
-            name: 'assets.assign',
-          },
-          'Failed to find asset',
-        );
-
-        return {
-          success: false,
-          message: `${AssetErrors.NOT_FOUND.description} ${AssetErrors.NOT_FOUND.action}`,
-        };
-      }
-
-      // Verify the user is a member of the same account
-      const { data: membership, error: membershipError } = await client
-        .from('accounts_memberships')
-        .select('user_id')
-        .eq('account_id', existingAsset.account_id)
-        .eq('user_id', data.user_id)
-        .single();
-
-      if (membershipError || !membership) {
-        logger.error(
-          {
-            error: membershipError,
-            userId: data.user_id,
-            accountId: existingAsset.account_id,
-            name: 'assets.assign',
-          },
-          'User is not a member of this account',
-        );
-
-        return {
-          success: false,
-          message: `${AssetErrors.ASSIGN_FAILED.description} ${AssetErrors.ASSIGN_FAILED.action}`,
-        };
-      }
-
-      // Assign the asset and update status
-      const { data: updatedAsset, error: updateError } = await client
-        .from('assets')
-        .update({
-          assigned_to: data.user_id,
-          assigned_at: new Date().toISOString(),
-          status: 'assigned',
-        })
-        .eq('id', data.asset_id)
-        .select()
-        .single();
-
-      if (updateError) {
-        logger.error(
-          {
-            error: updateError,
-            assetId: data.asset_id,
-            name: 'assets.assign',
-          },
-          'Failed to assign asset',
-        );
-
-        return {
-          success: false,
-          message: `${AssetErrors.ASSIGN_FAILED.description} ${AssetErrors.ASSIGN_FAILED.action}`,
-        };
-      }
-
-      logger.info(
-        {
-          assetId: data.asset_id,
-          userId: data.user_id,
-          name: 'assets.assign',
-        },
-        'Asset successfully assigned',
-      );
-
-      const accountSlug = (existingAsset.accounts as { slug: string }).slug;
-      revalidatePath(`/home/${accountSlug}/assets`);
-      revalidatePath(`/home/${accountSlug}/assets/${data.asset_id}`);
-
-      return {
-        success: true,
-        data: updatedAsset,
-      };
-    } catch (error) {
+    if (fetchError || !existingAsset) {
       logger.error(
-        {
-          error,
-          assetId: data.asset_id,
-          name: 'assets.assign',
-        },
-        'Unexpected error assigning asset',
+        { error: fetchError, assetId: data.asset_id, name: 'assets.assign' },
+        'Failed to find asset',
       );
-
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : 'Unexpected error',
-      };
+      throw new NotFoundError('Asset', data.asset_id);
     }
+
+    const accountSlug = (existingAsset.accounts as { slug: string }).slug;
+
+    // Get the full account
+    const { data: account } = await client
+      .from('accounts')
+      .select('id, slug')
+      .eq('slug', accountSlug)
+      .single();
+
+    return withAccountPermission(
+      async () => {
+        // Verify the user is a member of the same account
+        const { data: membership, error: membershipError } = await client
+          .from('accounts_memberships')
+          .select('user_id')
+          .eq('account_id', existingAsset.account_id)
+          .eq('user_id', data.user_id)
+          .single();
+
+        if (membershipError || !membership) {
+          logger.error(
+            {
+              error: membershipError,
+              userId: data.user_id,
+              accountId: existingAsset.account_id,
+              name: 'assets.assign',
+            },
+            'User is not a member of this account',
+          );
+          throw new BusinessRuleError(
+            'Cannot assign asset to user who is not a member of this account',
+            {
+              userId: data.user_id,
+              accountId: existingAsset.account_id,
+            },
+          );
+        }
+
+        // Assign the asset and update status
+        const { data: updatedAsset, error: updateError } = await client
+          .from('assets')
+          .update({
+            assigned_to: data.user_id,
+            assigned_at: new Date().toISOString(),
+            status: 'assigned',
+          })
+          .eq('id', data.asset_id)
+          .select()
+          .single();
+
+        if (updateError) {
+          logger.error(
+            { error: updateError, assetId: data.asset_id, name: 'assets.assign' },
+            'Failed to assign asset',
+          );
+          throw updateError;
+        }
+
+        logger.info(
+          { assetId: data.asset_id, userId: data.user_id, name: 'assets.assign' },
+          'Asset successfully assigned',
+        );
+
+        revalidatePath(`/home/${accountSlug}/assets`);
+        revalidatePath(`/home/${accountSlug}/assets/${data.asset_id}`);
+
+        return {
+          success: true,
+          data: updatedAsset,
+        };
+      },
+      {
+        accountId: account!.id,
+        permission: 'assets.manage',
+        client,
+        resourceName: 'asset assignment',
+      },
+    );
   },
   {
     schema: AssignAssetSchema,
@@ -481,120 +407,104 @@ export const assignAsset = enhanceAction(
 );
 
 /**
- * Unassign an asset from a user
+ * Unassigns an asset from a user.
+ *
+ * Requires `assets.manage` permission for the account.
+ *
+ * @param data - Asset unassignment data
+ * @returns The updated asset
+ * @throws {NotFoundError} If asset doesn't exist
+ * @throws {BusinessRuleError} If asset is not currently assigned
+ * @throws {UnauthorizedError} If user is not authenticated or not a member
+ * @throws {ForbiddenError} If user lacks assets.manage permission
  */
 export const unassignAsset = enhanceAction(
   async (data) => {
     const logger = await getLogger();
     const client = getSupabaseServerClient();
 
-    try {
-      logger.info(
-        {
-          assetId: data.asset_id,
-          name: 'assets.unassign',
-        },
-        'Unassigning asset...',
-      );
+    logger.info(
+      { assetId: data.asset_id, name: 'assets.unassign' },
+      'Unassigning asset...',
+    );
 
-      // Get the asset to find its account slug
-      const { data: existingAsset, error: fetchError } = await client
-        .from('assets')
-        .select('account_id, assigned_to, accounts!inner(slug)')
-        .eq('id', data.asset_id)
-        .single();
+    // Get the asset to find its account slug
+    const { data: existingAsset, error: fetchError } = await client
+      .from('assets')
+      .select('account_id, assigned_to, accounts!inner(slug)')
+      .eq('id', data.asset_id)
+      .single();
 
-      if (fetchError || !existingAsset) {
-        logger.error(
-          {
-            error: fetchError,
-            assetId: data.asset_id,
-            name: 'assets.unassign',
-          },
-          'Failed to find asset',
-        );
-
-        return {
-          success: false,
-          message: `${AssetErrors.NOT_FOUND.description} ${AssetErrors.NOT_FOUND.action}`,
-        };
-      }
-
-      // Check if asset is currently assigned
-      if (!existingAsset.assigned_to) {
-        logger.warn(
-          {
-            assetId: data.asset_id,
-            name: 'assets.unassign',
-          },
-          'Asset is not currently assigned',
-        );
-
-        return {
-          success: false,
-          message: `${AssetErrors.NOT_ASSIGNED.description} ${AssetErrors.NOT_ASSIGNED.action}`,
-        };
-      }
-
-      // Unassign the asset and reset status to available
-      const { data: updatedAsset, error: updateError } = await client
-        .from('assets')
-        .update({
-          assigned_to: null,
-          assigned_at: null,
-          status: 'available',
-        })
-        .eq('id', data.asset_id)
-        .select()
-        .single();
-
-      if (updateError) {
-        logger.error(
-          {
-            error: updateError,
-            assetId: data.asset_id,
-            name: 'assets.unassign',
-          },
-          'Failed to unassign asset',
-        );
-
-        return {
-          success: false,
-          message: `${AssetErrors.UNASSIGN_FAILED.description} ${AssetErrors.UNASSIGN_FAILED.action}`,
-        };
-      }
-
-      logger.info(
-        {
-          assetId: data.asset_id,
-          name: 'assets.unassign',
-        },
-        'Asset successfully unassigned',
-      );
-
-      const accountSlug = (existingAsset.accounts as { slug: string }).slug;
-      revalidatePath(`/home/${accountSlug}/assets`);
-      revalidatePath(`/home/${accountSlug}/assets/${data.asset_id}`);
-
-      return {
-        success: true,
-        data: updatedAsset,
-      };
-    } catch (error) {
+    if (fetchError || !existingAsset) {
       logger.error(
-        {
-          error,
-          assetId: data.asset_id,
-          name: 'assets.unassign',
-        },
-        'Unexpected error unassigning asset',
+        { error: fetchError, assetId: data.asset_id, name: 'assets.unassign' },
+        'Failed to find asset',
       );
-
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : 'Unexpected error',
-      };
+      throw new NotFoundError('Asset', data.asset_id);
     }
+
+    const accountSlug = (existingAsset.accounts as { slug: string }).slug;
+
+    // Get the full account
+    const { data: account } = await client
+      .from('accounts')
+      .select('id, slug')
+      .eq('slug', accountSlug)
+      .single();
+
+    return withAccountPermission(
+      async () => {
+        // Check if asset is currently assigned
+        if (!existingAsset.assigned_to) {
+          logger.warn(
+            { assetId: data.asset_id, name: 'assets.unassign' },
+            'Asset is not currently assigned',
+          );
+          throw new BusinessRuleError('Asset is not currently assigned', {
+            assetId: data.asset_id,
+          });
+        }
+
+        // Unassign the asset and reset status to available
+        const { data: updatedAsset, error: updateError } = await client
+          .from('assets')
+          .update({
+            assigned_to: null,
+            assigned_at: null,
+            status: 'available',
+          })
+          .eq('id', data.asset_id)
+          .select()
+          .single();
+
+        if (updateError) {
+          logger.error(
+            { error: updateError, assetId: data.asset_id, name: 'assets.unassign' },
+            'Failed to unassign asset',
+          );
+          throw updateError;
+        }
+
+        logger.info(
+          { assetId: data.asset_id, name: 'assets.unassign' },
+          'Asset successfully unassigned',
+        );
+
+        revalidatePath(`/home/${accountSlug}/assets`);
+        revalidatePath(`/home/${accountSlug}/assets/${data.asset_id}`);
+
+        return {
+          success: true,
+          data: updatedAsset,
+        };
+      },
+      {
+        accountId: account!.id,
+        permission: 'assets.manage',
+        client,
+        resourceName: 'asset assignment',
+      },
+    );
   },
   {
     schema: UnassignAssetSchema,

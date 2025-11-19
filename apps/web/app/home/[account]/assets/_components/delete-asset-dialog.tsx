@@ -58,15 +58,6 @@ export function DeleteAssetDialog({
         setOpen(false);
         // Redirect to assets list after successful deletion
         router.push(`/home/${accountSlug}/assets`);
-      } else {
-        toast.error(
-          result.message || (
-            <Trans
-              i18nKey="assets:deleteAssetError"
-              defaults="Failed to delete asset"
-            />
-          ),
-        );
       }
     } catch (error) {
       if (isRedirectError(error)) {
