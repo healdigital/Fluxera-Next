@@ -47,6 +47,17 @@ export const DeleteAssetSchema = z.object({
   id: z.string().uuid(),
 });
 
+export const BulkDeleteAssetsSchema = z.object({
+  accountSlug: z.string().min(1),
+  assetIds: z.array(z.string().uuid()).min(1, 'At least one asset must be selected'),
+});
+
+export const BulkAssignAssetsSchema = z.object({
+  accountSlug: z.string().min(1),
+  assetIds: z.array(z.string().uuid()).min(1, 'At least one asset must be selected'),
+  userId: z.string().uuid(),
+});
+
 export type AssetCategory = z.infer<typeof AssetCategorySchema>;
 export type AssetStatus = z.infer<typeof AssetStatusSchema>;
 export type CreateAssetInput = z.infer<typeof CreateAssetSchema>;
@@ -54,3 +65,5 @@ export type UpdateAssetInput = z.infer<typeof UpdateAssetSchema>;
 export type AssignAssetInput = z.infer<typeof AssignAssetSchema>;
 export type UnassignAssetInput = z.infer<typeof UnassignAssetSchema>;
 export type DeleteAssetInput = z.infer<typeof DeleteAssetSchema>;
+export type BulkDeleteAssetsInput = z.infer<typeof BulkDeleteAssetsSchema>;
+export type BulkAssignAssetsInput = z.infer<typeof BulkAssignAssetsSchema>;

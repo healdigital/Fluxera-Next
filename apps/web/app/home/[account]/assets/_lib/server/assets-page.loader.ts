@@ -76,10 +76,67 @@ export async function loadAssetsPageData(
           () => loadTeamWorkspace(slug),
           PERFORMANCE_THRESHOLDS.DATABASE_QUERY,
         ),
+        measureAsync(
+          'load-account-users',
+          () => loadAccountUsers(client, slug),
+          PERFORMANCE_THRESHOLDS.DATABASE_QUERY,
+        ),
       ]);
     },
     PERFORMANCE_THRESHOLDS.PAGE_LOAD,
   );
+}
+
+/**
+ * Load all users for an account (for assignment dropdowns)
+ * @param client - Supabase client
+ * @param accountSlug - Account slug
+ */
+async function loadAccountUsers(
+  client: SupabaseClient<Database>,
+  accountSlug: string,
+): Promise<Array<{ id: string; name: string; email: string }>> {
+  try {
+    // First, get the account_id from the slug
+    const { data: account, error: accountError } = await client
+      .from('accounts')
+      .select('id')
+      .eq('slug', accountSlug)
+      .single();
+
+    if (accountError || !account) {
+      console.error('Error loading account:', accountError);
+      return [];
+    }
+
+    // Get all members of the account
+    const { data: memberships, error: membershipsError } = await client
+      .from('accounts_memberships')
+      .select(
+        `
+        user_id,
+        account:accounts!inner(id, name, email)
+      `,
+      )
+      .eq('account_id', account.id);
+
+    if (membershipsError || !memberships) {
+      console.error('Error loading account members:', membershipsError);
+      return [];
+    }
+
+    // Transform to the expected format
+    return memberships
+      .filter((m) => m.account)
+      .map((m) => ({
+        id: m.user_id,
+        name: m.account.name || '',
+        email: m.account.email || '',
+      }));
+  } catch (error) {
+    console.error('Unexpected error loading account users:', error);
+    return [];
+  }
 }
 
 /**

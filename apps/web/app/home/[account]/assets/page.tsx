@@ -51,7 +51,7 @@ async function AssetsPage({ params, searchParams }: AssetsPageProps) {
     pageSize: filters.pageSize ? parseInt(filters.pageSize, 10) : 50,
   };
 
-  const [paginatedAssets, workspace] = await loadAssetsPageData(
+  const [paginatedAssets, workspace, users] = await loadAssetsPageData(
     client,
     slug,
     parsedFilters,
@@ -69,6 +69,7 @@ async function AssetsPage({ params, searchParams }: AssetsPageProps) {
         <AssetsList
           assets={paginatedAssets.assets}
           accountSlug={workspace.account.slug}
+          users={users}
           pagination={{
             currentPage: paginatedAssets.page,
             totalPages: paginatedAssets.totalPages,

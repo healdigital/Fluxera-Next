@@ -29,6 +29,8 @@ import { AssetStatusWidget } from './widgets/asset-status-widget.lazy';
 import { MetricsSummaryWidget } from './widgets/metrics-summary-widget';
 import { QuickActionsWidget } from './widgets/quick-actions-widget';
 import { TrendChartWidget } from './widgets/trend-chart-widget.lazy';
+import { ExpandedMetricsModal } from './expanded-metrics-modal';
+import { ExpandedChartModal } from './expanded-chart-modal';
 
 interface DashboardGridProps {
   metrics: TeamDashboardMetrics;
@@ -63,6 +65,10 @@ export function DashboardGrid({
   const [metrics, setMetrics] = useState<TeamDashboardMetrics>(initialMetrics);
   const [isLiveUpdateActive, setIsLiveUpdateActive] = useState(false);
   const [lastUpdateTime, setLastUpdateTime] = useState<Date>(new Date());
+
+  // Modal state
+  const [metricsModalOpen, setMetricsModalOpen] = useState(false);
+  const [chartModalOpen, setChartModalOpen] = useState(false);
 
   /**
    * Set up real-time subscriptions and automatic refresh
@@ -221,64 +227,84 @@ export function DashboardGrid({
       : defaultWidgets;
 
   return (
-    <div className="space-y-4">
-      {/* Live update indicator */}
-      <div className="flex items-center justify-end">
-        <div
-          className={`flex items-center gap-2 rounded-full px-3 py-1 text-xs transition-all ${
-            isLiveUpdateActive
-              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-              : 'bg-muted text-muted-foreground'
-          }`}
-          data-test="live-update-indicator"
-        >
-          <Activity
-            className={`h-3 w-3 ${isLiveUpdateActive ? 'animate-pulse' : ''}`}
-          />
-          <span>
-            {isLiveUpdateActive
-              ? 'Updating...'
-              : `Last updated: ${lastUpdateTime.toLocaleTimeString()}`}
-          </span>
+    <>
+      <div className="space-y-4">
+        {/* Live update indicator */}
+        <div className="flex items-center justify-end">
+          <div
+            className={`flex items-center gap-2 rounded-full px-3 py-1 text-xs transition-all ${
+              isLiveUpdateActive
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                : 'bg-muted text-muted-foreground'
+            }`}
+            data-test="live-update-indicator"
+          >
+            <Activity
+              className={`h-3 w-3 ${isLiveUpdateActive ? 'animate-pulse' : ''}`}
+            />
+            <span>
+              {isLiveUpdateActive
+                ? 'Updating...'
+                : `Last updated: ${lastUpdateTime.toLocaleTimeString()}`}
+            </span>
+          </div>
         </div>
-      </div>
 
-      {/* Dashboard widgets grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {displayWidgets.map((widgetType, index) => {
-          // Determine if widget should be lazy loaded
-          // First 3 widgets load immediately, rest are lazy loaded
-          const shouldLazyLoad = index >= 3;
+        {/* Dashboard widgets grid */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {displayWidgets.map((widgetType, index) => {
+            // Determine if widget should be lazy loaded
+            // First 3 widgets load immediately, rest are lazy loaded
+            const shouldLazyLoad = index >= 3;
 
-          return shouldLazyLoad ? (
-            <LazyWidgetLoader key={`${widgetType}-${index}`}>
-              <Suspense fallback={<DashboardWidgetSkeleton />}>
+            return shouldLazyLoad ? (
+              <LazyWidgetLoader key={`${widgetType}-${index}`}>
+                <Suspense fallback={<DashboardWidgetSkeleton />}>
+                  <WidgetRenderer
+                    widgetType={widgetType}
+                    metrics={metrics}
+                    alerts={optimisticAlerts}
+                    accountSlug={accountSlug}
+                    onDismissAlert={handleDismissAlert}
+                    onOpenMetricsModal={() => setMetricsModalOpen(true)}
+                    onOpenChartModal={() => setChartModalOpen(true)}
+                  />
+                </Suspense>
+              </LazyWidgetLoader>
+            ) : (
+              <Suspense
+                key={`${widgetType}-${index}`}
+                fallback={<DashboardWidgetSkeleton />}
+              >
                 <WidgetRenderer
                   widgetType={widgetType}
                   metrics={metrics}
                   alerts={optimisticAlerts}
                   accountSlug={accountSlug}
                   onDismissAlert={handleDismissAlert}
+                  onOpenMetricsModal={() => setMetricsModalOpen(true)}
+                  onOpenChartModal={() => setChartModalOpen(true)}
                 />
               </Suspense>
-            </LazyWidgetLoader>
-          ) : (
-            <Suspense
-              key={`${widgetType}-${index}`}
-              fallback={<DashboardWidgetSkeleton />}
-            >
-              <WidgetRenderer
-                widgetType={widgetType}
-                metrics={metrics}
-                alerts={optimisticAlerts}
-                accountSlug={accountSlug}
-                onDismissAlert={handleDismissAlert}
-              />
-            </Suspense>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-    </div>
+
+      {/* Expanded Modals */}
+      <ExpandedMetricsModal
+        open={metricsModalOpen}
+        onOpenChange={setMetricsModalOpen}
+        metrics={metrics}
+        accountSlug={accountSlug}
+      />
+
+      <ExpandedChartModal
+        open={chartModalOpen}
+        onOpenChange={setChartModalOpen}
+        accountSlug={accountSlug}
+      />
+    </>
   );
 }
 
@@ -292,17 +318,29 @@ function WidgetRenderer({
   alerts,
   accountSlug,
   onDismissAlert,
+  onOpenMetricsModal,
+  onOpenChartModal,
 }: {
   widgetType: DashboardWidget['widget_type'];
   metrics: TeamDashboardMetrics;
   alerts: DashboardAlert[];
   accountSlug: string;
   onDismissAlert: (alertId: string) => Promise<void>;
+  onOpenMetricsModal: () => void;
+  onOpenChartModal: () => void;
 }) {
   // Render the appropriate widget based on type
   switch (widgetType) {
     case 'metrics_summary':
-      return <MetricsSummaryWidget metrics={metrics} />;
+      return (
+        <div
+          onClick={onOpenMetricsModal}
+          className="cursor-pointer transition-transform hover:scale-[1.02]"
+          data-test="widget-metrics-summary-clickable"
+        >
+          <MetricsSummaryWidget metrics={metrics} />
+        </div>
+      );
 
     case 'asset_status':
       return (
@@ -313,7 +351,11 @@ function WidgetRenderer({
 
     case 'trend_chart':
       return (
-        <div data-test="widget-trend-chart">
+        <div
+          onClick={onOpenChartModal}
+          className="cursor-pointer transition-transform hover:scale-[1.02]"
+          data-test="widget-trend-chart-clickable"
+        >
           <TrendChartWidget accountSlug={accountSlug} metricType="assets" />
         </div>
       );

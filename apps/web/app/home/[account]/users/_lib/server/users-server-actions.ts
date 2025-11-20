@@ -1262,3 +1262,70 @@ export const exportUserActivity = enhanceAction(
     }),
   },
 );
+
+
+/**
+ * Loads user detail data for display in modals.
+ *
+ * This is a server action that can be called from client components.
+ *
+ * @param userId - The ID of the user to load
+ * @param accountSlug - The account slug
+ * @returns User detail data
+ */
+export const getUserDetailData = enhanceAction(
+  async (data: { userId: string; accountSlug: string }) => {
+    const logger = await getLogger();
+    const client = getSupabaseServerClient();
+
+    logger.info(
+      { name: 'users.getDetailData', userId: data.userId },
+      'Loading user detail data...',
+    );
+
+    // Get account
+    const { data: account, error: accountError } = await client
+      .from('accounts')
+      .select('id, slug')
+      .eq('slug', data.accountSlug)
+      .single();
+
+    if (accountError || !account) {
+      logger.error(
+        { error: accountError, name: 'users.getDetailData' },
+        'Failed to find account',
+      );
+      throw new NotFoundError('Account', data.accountSlug);
+    }
+
+    return withAccountPermission(
+      async () => {
+        const { loadUserDetailData } = await import('./user-detail.loader');
+        const userData = await loadUserDetailData(
+          client,
+          data.userId,
+          data.accountSlug,
+        );
+
+        logger.info(
+          { userId: data.userId, name: 'users.getDetailData' },
+          'User detail data loaded successfully',
+        );
+
+        return { success: true, data: userData };
+      },
+      {
+        accountId: account.id,
+        permission: 'members.manage',
+        client,
+        resourceName: 'user details',
+      },
+    );
+  },
+  {
+    schema: z.object({
+      userId: z.string().uuid('Invalid user ID'),
+      accountSlug: z.string().min(1, 'Account slug is required'),
+    }),
+  },
+);

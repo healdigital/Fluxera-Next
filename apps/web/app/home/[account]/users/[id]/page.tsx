@@ -1,10 +1,5 @@
-import Link from 'next/link';
-
-import { Edit } from 'lucide-react';
-
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { AppBreadcrumbs } from '@kit/ui/app-breadcrumbs';
-import { Button } from '@kit/ui/button';
 import { PageBody } from '@kit/ui/page';
 
 import { TeamAccountLayoutPageHeader } from '~/home/[account]/_components/team-account-layout-page-header';
@@ -55,6 +50,13 @@ async function UserDetailPage({ params }: UserDetailPageProps) {
     .select('name, hierarchy_level')
     .order('hierarchy_level', { ascending: true });
 
+  // Get account ID
+  const { data: accountData } = await client
+    .from('accounts')
+    .select('id')
+    .eq('slug', account)
+    .single();
+
   const displayName =
     userData.profile?.display_name || userData.email || 'User';
 
@@ -64,22 +66,7 @@ async function UserDetailPage({ params }: UserDetailPageProps) {
         title={displayName}
         description={<AppBreadcrumbs />}
         account={account}
-      >
-        <Button
-          asChild
-          variant="default"
-          size="sm"
-          data-test="edit-user-button"
-        >
-          <Link
-            href={`/home/${account}/users/${id}/edit`}
-            aria-label={`Edit ${displayName}`}
-          >
-            <Edit className="mr-2 h-4 w-4" aria-hidden="true" />
-            Edit Profile
-          </Link>
-        </Button>
-      </TeamAccountLayoutPageHeader>
+      />
 
       <PageBody>
         <BackToUsersButton accountSlug={account} />
@@ -87,6 +74,7 @@ async function UserDetailPage({ params }: UserDetailPageProps) {
           <UserDetailView
             userData={userData}
             accountSlug={account}
+            accountId={accountData?.id || ''}
             availableRoles={roles || []}
           />
           <UserPermissionsView

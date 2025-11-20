@@ -1,7 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
 import { Calendar, Link as LinkIcon, Package } from 'lucide-react';
 
 import { Badge } from '@kit/ui/badge';
@@ -16,19 +14,6 @@ interface LicenseCardProps {
 }
 
 export function LicenseCard({ license, accountSlug }: LicenseCardProps) {
-  const router = useRouter();
-
-  const handleClick = () => {
-    router.push(`/home/${accountSlug}/licenses/${license.id}`);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleClick();
-    }
-  };
-
   // Format expiration date
   const expirationDate = new Date(license.expiration_date);
   const formattedDate = expirationDate.toLocaleDateString('en-US', {
@@ -39,9 +24,7 @@ export function LicenseCard({ license, accountSlug }: LicenseCardProps) {
 
   return (
     <Card
-      className="hover:bg-muted/50 focus-within:ring-ring cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-offset-2"
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
+      className="hover:bg-muted/50 focus-within:ring-ring transition-colors focus-within:ring-2 focus-within:ring-offset-2"
       tabIndex={0}
       role="button"
       aria-label={`View details for ${license.name}`}

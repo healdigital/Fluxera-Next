@@ -1459,3 +1459,286 @@ export const exportLicenses = enhanceAction(
     schema: ExportLicensesActionSchema,
   },
 );
+
+/**
+ * Bulk deletes multiple licenses.
+ *
+ * @param data - Bulk delete data with license IDs
+ * @returns Results with successful and failed deletions
+ */
+export const bulkDeleteLicenses = enhanceAction(
+  async (data) => {
+    const logger = await getLogger();
+    const client = getSupabaseServerClient();
+
+    logger.info(
+      { licenseCount: data.licenseIds.length, name: 'licenses.bulk-delete' },
+      'Bulk deleting licenses...',
+    );
+
+    // Get account from slug
+    const { data: account, error: accountError } = await client
+      .from('accounts')
+      .select('id, slug')
+      .eq('slug', data.accountSlug)
+      .single();
+
+    if (accountError || !account) {
+      logger.error(
+        { error: accountError, name: 'licenses.bulk-delete' },
+        'Failed to find account',
+      );
+
+      return {
+        success: false,
+        message: 'Account not found',
+      };
+    }
+
+    const successful: string[] = [];
+    const failed: Array<{ id: string; error: string }> = [];
+
+    // Process each license deletion
+    for (const licenseId of data.licenseIds) {
+      try {
+        // Verify license belongs to this account
+        const { data: license, error: fetchError } = await client
+          .from('software_licenses')
+          .select('id, account_id')
+          .eq('id', licenseId)
+          .eq('account_id', account.id)
+          .single();
+
+        if (fetchError || !license) {
+          failed.push({
+            id: licenseId,
+            error: 'License not found or does not belong to this account',
+          });
+          continue;
+        }
+
+        // Delete the license (cascade will delete assignments)
+        const { error: deleteError } = await client
+          .from('software_licenses')
+          .delete()
+          .eq('id', licenseId);
+
+        if (deleteError) {
+          logger.error(
+            {
+              error: deleteError,
+              licenseId,
+              name: 'licenses.bulk-delete',
+            },
+            'Failed to delete license',
+          );
+          failed.push({
+            id: licenseId,
+            error: deleteError.message || 'Failed to delete license',
+          });
+        } else {
+          successful.push(licenseId);
+        }
+      } catch (error) {
+        logger.error(
+          { error, licenseId, name: 'licenses.bulk-delete' },
+          'Error processing license deletion',
+        );
+        failed.push({
+          id: licenseId,
+          error:
+            error instanceof Error ? error.message : 'Unknown error occurred',
+        });
+      }
+    }
+
+    logger.info(
+      {
+        successful: successful.length,
+        failed: failed.length,
+        name: 'licenses.bulk-delete',
+      },
+      'Bulk delete completed',
+    );
+
+    revalidatePath(`/home/${data.accountSlug}/licenses`);
+
+    return {
+      success: true,
+      data: {
+        successful,
+        failed,
+      },
+    };
+  },
+  {
+    schema: z.object({
+      accountSlug: z.string().min(1),
+      licenseIds: z
+        .array(z.string().uuid())
+        .min(1, 'At least one license must be selected'),
+    }),
+  },
+);
+
+/**
+ * Bulk renews multiple licenses by updating their expiration dates.
+ *
+ * @param data - Bulk renew data with license IDs and new expiration date
+ * @returns Results with successful and failed renewals
+ */
+export const bulkRenewLicenses = enhanceAction(
+  async (data) => {
+    const logger = await getLogger();
+    const client = getSupabaseServerClient();
+
+    logger.info(
+      {
+        licenseCount: data.licenseIds.length,
+        newExpirationDate: data.newExpirationDate,
+        name: 'licenses.bulk-renew',
+      },
+      'Bulk renewing licenses...',
+    );
+
+    // Get account from slug
+    const { data: account, error: accountError } = await client
+      .from('accounts')
+      .select('id, slug')
+      .eq('slug', data.accountSlug)
+      .single();
+
+    if (accountError || !account) {
+      logger.error(
+        { error: accountError, name: 'licenses.bulk-renew' },
+        'Failed to find account',
+      );
+
+      return {
+        success: false,
+        message: 'Account not found',
+      };
+    }
+
+    // Get the current user for audit tracking
+    const {
+      data: { user: currentUser },
+      error: userError,
+    } = await client.auth.getUser();
+
+    if (userError || !currentUser) {
+      logger.error(
+        {
+          error: userError,
+          name: 'licenses.bulk-renew',
+        },
+        'Failed to get current user',
+      );
+
+      return {
+        success: false,
+        message: 'Authentication required',
+      };
+    }
+
+    const successful: string[] = [];
+    const failed: Array<{ id: string; error: string }> = [];
+
+    // Process each license renewal
+    for (const licenseId of data.licenseIds) {
+      try {
+        // Verify license belongs to this account
+        const { data: license, error: fetchError } = await client
+          .from('software_licenses')
+          .select('id, account_id, purchase_date')
+          .eq('id', licenseId)
+          .eq('account_id', account.id)
+          .single();
+
+        if (fetchError || !license) {
+          failed.push({
+            id: licenseId,
+            error: 'License not found or does not belong to this account',
+          });
+          continue;
+        }
+
+        // Validate that new expiration date is after purchase date
+        const purchaseDate = new Date(license.purchase_date);
+        const newExpirationDate = new Date(data.newExpirationDate);
+
+        if (newExpirationDate <= purchaseDate) {
+          failed.push({
+            id: licenseId,
+            error: 'New expiration date must be after purchase date',
+          });
+          continue;
+        }
+
+        // Update the license expiration date
+        const { error: updateError } = await client
+          .from('software_licenses')
+          .update({
+            expiration_date: data.newExpirationDate,
+            updated_by: currentUser.id,
+          })
+          .eq('id', licenseId);
+
+        if (updateError) {
+          logger.error(
+            {
+              error: updateError,
+              licenseId,
+              name: 'licenses.bulk-renew',
+            },
+            'Failed to renew license',
+          );
+          failed.push({
+            id: licenseId,
+            error: updateError.message || 'Failed to renew license',
+          });
+        } else {
+          successful.push(licenseId);
+        }
+      } catch (error) {
+        logger.error(
+          { error, licenseId, name: 'licenses.bulk-renew' },
+          'Error processing license renewal',
+        );
+        failed.push({
+          id: licenseId,
+          error:
+            error instanceof Error ? error.message : 'Unknown error occurred',
+        });
+      }
+    }
+
+    logger.info(
+      {
+        successful: successful.length,
+        failed: failed.length,
+        name: 'licenses.bulk-renew',
+      },
+      'Bulk renew completed',
+    );
+
+    revalidatePath(`/home/${data.accountSlug}/licenses`);
+
+    return {
+      success: true,
+      data: {
+        successful,
+        failed,
+      },
+    };
+  },
+  {
+    schema: z.object({
+      accountSlug: z.string().min(1),
+      licenseIds: z
+        .array(z.string().uuid())
+        .min(1, 'At least one license must be selected'),
+      newExpirationDate: z.string().date('Invalid expiration date'),
+    }),
+  },
+);

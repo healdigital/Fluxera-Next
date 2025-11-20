@@ -10,6 +10,8 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import {
   AssignAssetSchema,
+  BulkAssignAssetsSchema,
+  BulkDeleteAssetsSchema,
   CreateAssetSchema,
   DeleteAssetSchema,
   UnassignAssetSchema,
@@ -517,5 +519,299 @@ export const unassignAsset = enhanceAction(
   },
   {
     schema: UnassignAssetSchema,
+  },
+);
+
+/**
+ * Bulk deletes multiple assets.
+ *
+ * Requires `assets.delete` permission for the account.
+ *
+ * @param data - Bulk delete data with asset IDs
+ * @returns Results with successful and failed deletions
+ * @throws {NotFoundError} If account doesn't exist
+ * @throws {UnauthorizedError} If user is not authenticated or not a member
+ * @throws {ForbiddenError} If user lacks assets.delete permission
+ */
+export const bulkDeleteAssets = enhanceAction(
+  async (data) => {
+    const logger = await getLogger();
+    const client = getSupabaseServerClient();
+
+    logger.info(
+      { assetCount: data.assetIds.length, name: 'assets.bulk-delete' },
+      'Bulk deleting assets...',
+    );
+
+    // Get account from slug
+    const { data: account, error: accountError } = await client
+      .from('accounts')
+      .select('id, slug')
+      .eq('slug', data.accountSlug)
+      .single();
+
+    if (accountError || !account) {
+      logger.error(
+        { error: accountError, name: 'assets.bulk-delete' },
+        'Failed to find account',
+      );
+      throw new NotFoundError('Account', data.accountSlug);
+    }
+
+    return withAccountPermission(
+      async () => {
+        const successful: string[] = [];
+        const failed: Array<{ id: string; error: string }> = [];
+
+        // Process each asset deletion
+        for (const assetId of data.assetIds) {
+          try {
+            // Verify asset belongs to this account
+            const { data: asset, error: fetchError } = await client
+              .from('assets')
+              .select('id, account_id')
+              .eq('id', assetId)
+              .eq('account_id', account.id)
+              .single();
+
+            if (fetchError || !asset) {
+              failed.push({
+                id: assetId,
+                error: 'Asset not found or does not belong to this account',
+              });
+              continue;
+            }
+
+            // Delete the asset
+            const { error: deleteError } = await client
+              .from('assets')
+              .delete()
+              .eq('id', assetId);
+
+            if (deleteError) {
+              logger.error(
+                {
+                  error: deleteError,
+                  assetId,
+                  name: 'assets.bulk-delete',
+                },
+                'Failed to delete asset',
+              );
+              failed.push({
+                id: assetId,
+                error: deleteError.message || 'Failed to delete asset',
+              });
+            } else {
+              successful.push(assetId);
+            }
+          } catch (error) {
+            logger.error(
+              { error, assetId, name: 'assets.bulk-delete' },
+              'Error processing asset deletion',
+            );
+            failed.push({
+              id: assetId,
+              error:
+                error instanceof Error
+                  ? error.message
+                  : 'Unknown error occurred',
+            });
+          }
+        }
+
+        logger.info(
+          {
+            successful: successful.length,
+            failed: failed.length,
+            name: 'assets.bulk-delete',
+          },
+          'Bulk delete completed',
+        );
+
+        revalidatePath(`/home/${data.accountSlug}/assets`);
+
+        return {
+          success: true,
+          data: {
+            successful,
+            failed,
+          },
+        };
+      },
+      {
+        accountId: account.id,
+        permission: 'assets.delete',
+        client,
+        resourceName: 'assets',
+      },
+    );
+  },
+  {
+    schema: BulkDeleteAssetsSchema,
+  },
+);
+
+/**
+ * Bulk assigns multiple assets to a user.
+ *
+ * Requires `assets.manage` permission for the account.
+ *
+ * @param data - Bulk assign data with asset IDs and user ID
+ * @returns Results with successful and failed assignments
+ * @throws {NotFoundError} If account doesn't exist
+ * @throws {BusinessRuleError} If user is not a member of the account
+ * @throws {UnauthorizedError} If user is not authenticated or not a member
+ * @throws {ForbiddenError} If user lacks assets.manage permission
+ */
+export const bulkAssignAssets = enhanceAction(
+  async (data) => {
+    const logger = await getLogger();
+    const client = getSupabaseServerClient();
+
+    logger.info(
+      {
+        assetCount: data.assetIds.length,
+        userId: data.userId,
+        name: 'assets.bulk-assign',
+      },
+      'Bulk assigning assets...',
+    );
+
+    // Get account from slug
+    const { data: account, error: accountError } = await client
+      .from('accounts')
+      .select('id, slug')
+      .eq('slug', data.accountSlug)
+      .single();
+
+    if (accountError || !account) {
+      logger.error(
+        { error: accountError, name: 'assets.bulk-assign' },
+        'Failed to find account',
+      );
+      throw new NotFoundError('Account', data.accountSlug);
+    }
+
+    return withAccountPermission(
+      async () => {
+        // Verify the user is a member of the account
+        const { data: membership, error: membershipError } = await client
+          .from('accounts_memberships')
+          .select('user_id')
+          .eq('account_id', account.id)
+          .eq('user_id', data.userId)
+          .single();
+
+        if (membershipError || !membership) {
+          logger.error(
+            {
+              error: membershipError,
+              userId: data.userId,
+              accountId: account.id,
+              name: 'assets.bulk-assign',
+            },
+            'User is not a member of this account',
+          );
+          throw new BusinessRuleError(
+            'Cannot assign assets to user who is not a member of this account',
+            {
+              userId: data.userId,
+              accountId: account.id,
+            },
+          );
+        }
+
+        const successful: string[] = [];
+        const failed: Array<{ id: string; error: string }> = [];
+
+        // Process each asset assignment
+        for (const assetId of data.assetIds) {
+          try {
+            // Verify asset belongs to this account
+            const { data: asset, error: fetchError } = await client
+              .from('assets')
+              .select('id, account_id')
+              .eq('id', assetId)
+              .eq('account_id', account.id)
+              .single();
+
+            if (fetchError || !asset) {
+              failed.push({
+                id: assetId,
+                error: 'Asset not found or does not belong to this account',
+              });
+              continue;
+            }
+
+            // Assign the asset
+            const { error: updateError } = await client
+              .from('assets')
+              .update({
+                assigned_to: data.userId,
+                assigned_at: new Date().toISOString(),
+                status: 'assigned',
+              })
+              .eq('id', assetId);
+
+            if (updateError) {
+              logger.error(
+                {
+                  error: updateError,
+                  assetId,
+                  name: 'assets.bulk-assign',
+                },
+                'Failed to assign asset',
+              );
+              failed.push({
+                id: assetId,
+                error: updateError.message || 'Failed to assign asset',
+              });
+            } else {
+              successful.push(assetId);
+            }
+          } catch (error) {
+            logger.error(
+              { error, assetId, name: 'assets.bulk-assign' },
+              'Error processing asset assignment',
+            );
+            failed.push({
+              id: assetId,
+              error:
+                error instanceof Error
+                  ? error.message
+                  : 'Unknown error occurred',
+            });
+          }
+        }
+
+        logger.info(
+          {
+            successful: successful.length,
+            failed: failed.length,
+            name: 'assets.bulk-assign',
+          },
+          'Bulk assign completed',
+        );
+
+        revalidatePath(`/home/${data.accountSlug}/assets`);
+
+        return {
+          success: true,
+          data: {
+            successful,
+            failed,
+          },
+        };
+      },
+      {
+        accountId: account.id,
+        permission: 'assets.manage',
+        client,
+        resourceName: 'asset assignments',
+      },
+    );
+  },
+  {
+    schema: BulkAssignAssetsSchema,
   },
 );

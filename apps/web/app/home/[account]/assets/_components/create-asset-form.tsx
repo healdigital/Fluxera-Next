@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { useRef, useState, useTransition } from 'react';
 
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
@@ -44,9 +45,17 @@ import { createAsset } from '../_lib/server/assets-server-actions';
 
 interface CreateAssetFormProps {
   accountSlug: string;
+  onSuccess?: () => void;
+  onError?: (error: Error) => void;
+  onDirtyChange?: (isDirty: boolean) => void;
 }
 
-export function CreateAssetForm({ accountSlug }: CreateAssetFormProps) {
+export function CreateAssetForm({
+  accountSlug,
+  onSuccess,
+  onError,
+  onDirtyChange,
+}: CreateAssetFormProps) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -69,6 +78,13 @@ export function CreateAssetForm({ accountSlug }: CreateAssetFormProps) {
       image_url: '',
     },
   });
+
+  // Track dirty state
+  React.useEffect(() => {
+    if (onDirtyChange) {
+      onDirtyChange(form.formState.isDirty);
+    }
+  }, [form.formState.isDirty, onDirtyChange]);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -150,8 +166,12 @@ export function CreateAssetForm({ accountSlug }: CreateAssetFormProps) {
             URL.revokeObjectURL(imagePreview);
           }
 
-          // Redirect to assets list
-          router.push(`/home/${accountSlug}/assets`);
+          // Call success callback if provided, otherwise redirect
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            router.push(`/home/${accountSlug}/assets`);
+          }
         }
       } catch (err) {
         // Handle redirect errors from Next.js
@@ -159,9 +179,15 @@ export function CreateAssetForm({ accountSlug }: CreateAssetFormProps) {
           throw err;
         }
 
-        setError(
-          err instanceof Error ? err.message : 'An unexpected error occurred',
-        );
+        const errorMessage =
+          err instanceof Error ? err.message : 'An unexpected error occurred';
+
+        setError(errorMessage);
+
+        // Call error callback if provided
+        if (onError) {
+          onError(err instanceof Error ? err : new Error(errorMessage));
+        }
       }
     });
   };

@@ -123,3 +123,30 @@ export const DeleteLicenseSchema = z.object({
 });
 
 export type DeleteLicenseData = z.infer<typeof DeleteLicenseSchema>;
+
+/**
+ * Schema for bulk deleting multiple licenses
+ * Requires account slug and array of license IDs
+ */
+export const BulkDeleteLicensesSchema = z.object({
+  accountSlug: z.string().min(1),
+  licenseIds: z
+    .array(z.string().uuid())
+    .min(1, 'At least one license must be selected'),
+});
+
+export type BulkDeleteLicensesData = z.infer<typeof BulkDeleteLicensesSchema>;
+
+/**
+ * Schema for bulk renewing multiple licenses
+ * Requires account slug, array of license IDs, and new expiration date
+ */
+export const BulkRenewLicensesSchema = z.object({
+  accountSlug: z.string().min(1),
+  licenseIds: z
+    .array(z.string().uuid())
+    .min(1, 'At least one license must be selected'),
+  newExpirationDate: z.string().date('Invalid expiration date'),
+});
+
+export type BulkRenewLicensesData = z.infer<typeof BulkRenewLicensesSchema>;

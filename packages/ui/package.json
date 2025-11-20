@@ -124,7 +124,13 @@
     "./marketing": "./src/makerkit/marketing/index.tsx",
     "./oauth-provider-logo-image": "./src/makerkit/oauth-provider-logo-image.tsx",
     "./file-uploader": "./src/makerkit/file-uploader.tsx",
-    "./inline-help": "./src/makerkit/inline-help.tsx"
+    "./inline-help": "./src/makerkit/inline-help.tsx",
+    "./use-modal-state": "./src/hooks/use-modal-state.ts",
+    "./use-unsaved-changes": "./src/hooks/use-unsaved-changes.ts",
+    "./use-keyboard-navigation": "./src/hooks/use-keyboard-navigation.ts",
+    "./use-context-preservation": "./src/hooks/use-context-preservation.ts",
+    "./hooks": "./src/hooks/index.ts",
+    "./modal": "./src/modal/index.ts"
   },
   "typesVersions": {
     "*": {

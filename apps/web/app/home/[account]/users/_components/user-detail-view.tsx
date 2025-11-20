@@ -1,21 +1,21 @@
 'use client';
 
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import {
-  Activity,
   Briefcase,
   Building2,
   Calendar,
   Clock,
+  Edit,
   Laptop,
   Loader2,
   Mail,
   MapPin,
   Phone,
-  Shield,
   User,
 } from 'lucide-react';
 
@@ -36,20 +36,23 @@ import {
   unassignAssetFromUser,
 } from '../_lib/server/users-server-actions';
 import { AssignAssetsDialog } from './assign-assets-dialog';
-import { AssignRoleDialog } from './assign-role-dialog';
-import { ChangeStatusDialog } from './change-status-dialog';
+import { EditUserModal } from './edit-user-modal';
 
 interface UserDetailViewProps {
   userData: UserDetailData;
   accountSlug: string;
+  accountId: string;
   availableRoles: Array<{ name: string; hierarchy_level: number }>;
 }
 
 export function UserDetailView({
   userData,
   accountSlug,
+  accountId,
   availableRoles,
 }: UserDetailViewProps) {
+  const router = useRouter();
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const {
     profile,
     membership,
@@ -202,27 +205,15 @@ export function UserDetailView({
               <CardDescription>Membership and activity details</CardDescription>
             </div>
             <div className="flex gap-2">
-              <Link href={`/home/${accountSlug}/users/${user_id}/activity`}>
-                <Button variant="outline" size="sm">
-                  <Activity className="mr-2 h-4 w-4" />
-                  View Activity
-                </Button>
-              </Link>
-              <AssignRoleDialog
-                userId={user_id}
-                accountId={membership.account_id}
-                accountSlug={accountSlug}
-                currentRole={membership.account_role}
-                userName={displayName}
-                availableRoles={availableRoles}
-              />
-              <ChangeStatusDialog
-                userId={user_id}
-                accountId={membership.account_id}
-                accountSlug={accountSlug}
-                currentStatus={currentStatus}
-                userName={displayName}
-              />
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setEditModalOpen(true)}
+                data-test="edit-user-button"
+              >
+                <Edit className="mr-2 h-4 w-4" />
+                Edit Profile
+              </Button>
             </div>
           </div>
         </CardHeader>
@@ -382,6 +373,21 @@ export function UserDetailView({
           )}
         </CardContent>
       </Card>
+
+      {/* Edit User Modal */}
+      <EditUserModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        userId={user_id}
+        profile={profile}
+        accountSlug={accountSlug}
+        accountId={accountId}
+        currentRole={membership.account_role}
+        currentStatus={currentStatus}
+        userName={displayName}
+        availableRoles={availableRoles}
+        onSuccess={() => router.refresh()}
+      />
     </div>
   );
 }

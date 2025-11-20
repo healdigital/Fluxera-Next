@@ -53,6 +53,12 @@ async function UsersPage({ params, searchParams }: UsersPageProps) {
     parsedFilters,
   );
 
+  // Fetch available roles for the invite modal
+  const { data: roles } = await client
+    .from('roles')
+    .select('name, hierarchy_level')
+    .order('hierarchy_level', { ascending: true });
+
   return (
     <>
       <TeamAccountLayoutPageHeader
@@ -65,6 +71,8 @@ async function UsersPage({ params, searchParams }: UsersPageProps) {
         <UsersList
           users={paginatedUsers.users}
           accountSlug={workspace.account.slug}
+          accountId={workspace.account.id}
+          availableRoles={roles || []}
           pagination={{
             currentPage: paginatedUsers.page,
             totalPages: paginatedUsers.totalPages,
